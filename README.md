@@ -170,6 +170,42 @@ renders whatever did succeed.
 
 ---
 
+## Deploy
+
+### Vercel
+
+Deploy-ready with no config — Vercel detects Next.js and runs `npm run build`.
+
+```bash
+npm i -g vercel
+vercel                 # preview deployment
+vercel --prod          # production
+```
+
+Then add the one optional environment variable:
+
+```bash
+vercel env add YOUTUBE_API_KEY production
+```
+
+**The app works without it** — Deezer, all 51 radio stations and pasted links are
+unaffected. Only YouTube search and the YouTube music chart need a key.
+
+The build is verified from a clean `git clone` + `npm ci` + `npm run build`,
+which is exactly what Vercel runs.
+
+### GitHub
+
+```bash
+git clone https://github.com/arjav1181/muscify.git
+cd muscify
+cp .env.local.example .env.local   # optional
+npm install
+npm run dev
+```
+
+---
+
 ## Scripts
 
 ```bash
