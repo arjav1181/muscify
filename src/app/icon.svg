@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="muscify">
+  <rect width="512" height="512" rx="96" fill="#000000"/>
+  <circle cx="256" cy="256" r="164" fill="#1db954"/>
+  <path d="M212 164v184l152-92z" fill="#000000"/>
+</svg>

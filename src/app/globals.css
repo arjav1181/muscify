@@ -1,0 +1,185 @@
+@import "tailwindcss";
+
+/* Spotify's palette, promoted to theme tokens so every utility derives from
+   one source rather than a pile of hex literals in JSX. */
+@theme {
+  --color-base: #000000;
+  --color-surface: #121212;
+  --color-elevated: #181818;
+  --color-highlight: #282828;
+
+  --color-spotify: #1db954;
+  --color-spotify-dark: #1aa34a;
+  --color-spotify-tint: #1db9541f;
+
+  --color-on: #ffffff;
+  --color-sub: #b3b3b3;
+  --color-dim: #6a6a6a;
+  --color-line: #ffffff1a;
+  --color-line-strong: #ffffff33;
+
+  --radius-card: 8px;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--color-base);
+  color: var(--color-on);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+  /* The library is a single scroll container, so the document itself never
+     scrolls and the shell can pin the player bar to the viewport bottom. */
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+::selection {
+  background: var(--color-spotify);
+  color: #000;
+}
+
+/* ── scrollbars ───────────────────────────────────────────────────────────── */
+
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: #ffffff1f;
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 8px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #ffffff33;
+  background-clip: content-box;
+}
+
+/* ── sliders ──────────────────────────────────────────────────────────────── */
+
+input[type="range"].mus-range {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  height: 12px;
+}
+
+input[type="range"].mus-range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--color-on) 0%,
+    var(--color-on) var(--fill, 0%),
+    #ffffff4d var(--fill, 0%),
+    #ffffff4d 100%
+  );
+  transition: background 120ms linear;
+}
+
+input[type="range"].mus-range::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: #ffffff4d;
+}
+input[type="range"].mus-range::-moz-range-progress {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--color-on);
+}
+
+input[type="range"].mus-range:hover::-webkit-slider-runnable-track {
+  background: linear-gradient(
+    to right,
+    var(--color-spotify) 0%,
+    var(--color-spotify) var(--fill, 0%),
+    #ffffff4d var(--fill, 0%),
+    #ffffff4d 100%
+  );
+}
+input[type="range"].mus-range:hover::-moz-range-progress {
+  background: var(--color-spotify);
+}
+
+input[type="range"].mus-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  margin-top: -4px;
+  border-radius: 999px;
+  background: var(--color-on);
+  opacity: 0;
+  transition: opacity 120ms;
+}
+input[type="range"].mus-range:hover::-webkit-slider-thumb,
+input[type="range"].mus-range:focus-visible::-webkit-slider-thumb {
+  opacity: 1;
+}
+input[type="range"].mus-range:focus-visible {
+  outline: none;
+}
+input[type="range"].mus-range:focus-visible::-webkit-slider-thumb {
+  background: var(--color-spotify);
+}
+
+/* Visible focus for keyboard users everywhere, without ringing mouse users. */
+:focus-visible {
+  outline: 2px solid var(--color-on);
+  outline-offset: 2px;
+}
+
+@keyframes muscify-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes muscify-pulse {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.animate-fade-up {
+  animation: muscify-fade-up 280ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+/* Equaliser bars on the row that is currently playing. */
+.eq-bar {
+  transform-origin: bottom;
+  animation: muscify-pulse 900ms ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
