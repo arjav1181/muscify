@@ -1,24 +1,37 @@
 import { NextResponse } from "next/server";
-import { stationToTrack } from "@/lib/sources";
-import { matchStations } from "@/lib/sources/somafm";
-import type { SourceResult, Track } from "@/lib/types";
+import { allStations } from "@/lib/sources";
+import { matchStationsIn, stationToTrack } from "@/lib/sources/radio";
+import type { RadioRegion, SourceResult, Track } from "@/lib/types";
+
+const REGIONS: RadioRegion[] = ["international", "india"];
+
+function regionParam(url: URL): RadioRegion | undefined {
+  const raw = url.searchParams.get("region")?.toLowerCase();
+  return REGIONS.find((r) => r === raw);
+}
 
 /**
- * Station matching for the radio view.
+ * Station search.
  *
- * A radio-ish word ("jazz radio") opens tag matching so a genre lands on a
- * station; without one, only distinctive station names match — so a plain genre
- * query still reaches the track search instead of returning nothing.
+ * A radio-ish word ("hindi radio", "bollywood radio") opens tag and language
+ * matching; a bare word only matches distinctive station names. That heuristic
+ * is inherited from the original JARVIS player and is what keeps a plain genre
+ * search falling through to the track search instead of matching a station
+ * that happens to share a word.
  */
 export async function GET(req: Request) {
-  const q = (new URL(req.url).searchParams.get("q") ?? "").slice(0, 120).trim();
+  const url = new URL(req.url);
+  const q = (url.searchParams.get("q") ?? "").slice(0, 120).trim();
+  const region = regionParam(url);
+
   if (!q) return NextResponse.json<SourceResult<Track>>({ results: [], errors: [] });
 
   try {
-    const stations = await matchStations(q);
+    const { stations, errors } = await allStations();
+    const matches = matchStationsIn(q, stations, region);
     return NextResponse.json<SourceResult<Track>>({
-      results: stations.map(stationToTrack),
-      errors: [],
+      results: matches.map(stationToTrack),
+      errors,
     });
   } catch (e) {
     return NextResponse.json<SourceResult<Track>>(

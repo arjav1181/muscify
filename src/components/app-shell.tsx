@@ -87,6 +87,7 @@ function MobileNav() {
   const pathname = usePathname();
   const links = [
     ["/", "Home"],
+    ["/discover", "For you"],
     ["/search", "Search"],
     ["/library", "Library"],
     ["/radio", "Radio"],

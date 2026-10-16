@@ -9,6 +9,7 @@ import {
   Plus,
   Radio as RadioIcon,
   Search,
+  Sparkles,
   Timer,
 } from "lucide-react";
 import Link from "next/link";
@@ -20,6 +21,7 @@ import { useUi } from "@/store/ui-store";
 
 const NAV = [
   { href: "/", label: "Home", icon: Home },
+  { href: "/discover", label: "Made for you", icon: Sparkles },
   { href: "/search", label: "Search", icon: Search },
   { href: "/library", label: "Your Library", icon: LibraryIcon },
   { href: "/radio", label: "Radio", icon: RadioIcon },

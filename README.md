@@ -27,13 +27,26 @@ and a tap-to-play fallback when the browser blocks autoplay.
 | Source | Search | Playback engine | Notes |
 |---|---|---|---|
 | YouTube | Data API v3, `videoCategoryId=10` | IFrame Player API | Full play/pause/seek/volume/duration |
-| Deezer | Public search + charts | Official embed widget | **No pause API** — see [Known limits](#known-limits) |
+| Deezer | Public search + charts | Official embed widget | **Currently unplayable** — see [Known limits](#known-limits) |
 | SomaFM | `channels.json`, 51 stations | Native `<audio>` | Only source with a real pause + volume |
 | SoundCloud | oEmbed, pasted links | Official embed widget | Controls via `postMessage` |
 
 **Library** — playlists (create/rename/delete/reorder/undo), Liked Songs, followed
 artists, Recently Played with play counts, and a catalog derived from what you've
 actually played. All persisted through a swappable `LibraryRepository`.
+
+**Recommendations** ("Made for you", `/discover`) — three strategies, each backed by a
+real source, each degrading independently:
+
+| Strategy | Source | Needs a key? |
+|---|---|---|
+| Artist radio | Deezer's curated `/artist/{id}/radio` | No |
+| Similar artists | Deezer's artist-similarity graph | No |
+| Station-seeded | A radio station's genre/language tags → search | No |
+| Mood shelves | Curated queries → search | YouTube only |
+
+Personalised rows are built from your own listening history (the most-played
+artists), so the shelves change as you listen.
 
 **Discovery** — Home with curated shelves, search with seven filter tabs
 (songs/videos/artists/albums/playlists/radio), radio directory with genre-aware station
@@ -46,6 +59,7 @@ keyboard shortcuts, toasts with undo, installable PWA, dark-only theme.
 
 ```
 /            Home (curated shelves)
+/discover    Made for you (recommendations)
 /search      Filterable search
 /library     Playlists · Liked · Artists · Albums · Recently Played
 /radio       SomaFM directory with station search
@@ -103,9 +117,10 @@ per source rather than thrown, so one dead provider never blanks a page.
 
 | Missing | What still works |
 |---|---|
-| `YOUTUBE_API_KEY` | Deezer search/charts, all 51 radio stations, pasted links via oEmbed |
-| Deezer (geo-blocked) | YouTube search + charts, radio, pasted links |
+| `YOUTUBE_API_KEY` | All 213 radio stations, Deezer artist radio + similar artists, pasted links via oEmbed |
+| Deezer (geo-blocked) | YouTube search + charts, all radio, pasted links |
 | SomaFM API unreachable | 12 built-in fallback stations |
+| Radio Browser unreachable | SomaFM directory still renders |
 
 **Pasted links always work with no key at all**, because every provider's oEmbed
 endpoint is unauthenticated. Search results, when a source fails, say so explicitly
@@ -122,8 +137,16 @@ These are real constraints, not oversights.
   such control. What `fadeOutSeconds` does is ramp the master volume down over the last
   N seconds and back up on the next track — which removes the dead silence, most of what
   people want, without pretending to overlap.
-- **Deezer's widget has no pause API.** Pausing unloads the iframe; resuming restarts
-  the track. This is inherited from the official widget and can't be fixed client-side.
+- **Deezer is discoverable but not playable.** Its player widget URL now 302-redirects to
+  a placeholder and returns `X-Frame-Options: SAMEORIGIN`, so it cannot be framed from a
+  third-party origin at all. The API's 30-second `preview` field has also been removed.
+  Deezer tracks still appear in search, albums and recommendations, and can be saved to
+  playlists — but selecting one surfaces a notice with a one-click **"Search YouTube
+  instead"** fallback rather than silent nothing. This is a change upstream of us: the
+  original JARVIS player depended on that widget, and it has since rotted.
+- **Deezer search and charts are geo-restricted** in some territories (empty `data` with a
+  non-zero `total`). The app reports this explicitly instead of showing an empty shelf.
+  Artist radio, similar artists and track lookups are served globally and do work.
 - **No offline or background playback.** Caching provider streams breaks their terms.
 - **Lyrics come from LRCLIB**, a free community database of transcriptions. Not every
   track has one, and they're community-submitted rather than licensed — fine for
@@ -163,6 +186,7 @@ GET /api/music/resolve?url=
 GET /api/music/playlist?id=
 GET /api/music/album?id=
 GET /api/music/artist?id=&source=deezer|youtube
+GET /api/music/recommend?mode=seeded|related|station|moods&...
 ```
 
 Every response is `{ results, errors }` — `errors` is populated per-source and the UI

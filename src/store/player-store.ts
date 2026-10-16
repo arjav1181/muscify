@@ -33,6 +33,9 @@ interface PlayerState {
   fade: { direction: "in" | "out"; startedAt: number; durationMs: number } | null;
 
   error: string | null;
+  /** Set when the provider's playback surface refused to start. Carries a
+   *  ready-made alternative so the user isn't left at a dead end. */
+  unavailable: { message: string; query: string } | null;
   activeSource: Track["source"] | null;
   ducked: boolean;
   /** Epoch ms at which the sleep timer fires; 0 = inactive. */
@@ -73,6 +76,12 @@ interface PlayerState {
   setTimeline: (position: number, duration: number) => void;
   setSource: (source: Track["source"] | null) => void;
   setError: (error: string | null) => void;
+  setUnavailable: (state: { message: string; query: string } | null) => void;
+  /**
+   * Dismisses the notice and returns the search query for the unplayable track.
+   * Navigation stays in the component — a store shouldn't own routing.
+   */
+  takeYoutubeFallback: () => string | null;
   setFade: (fade: PlayerState["fade"]) => void;
   duck: (ms?: number) => void;
   /** Snapshots volume, ramps the store to `from`, then calls back when done. */
@@ -130,6 +139,7 @@ export const usePlayer = create<PlayerState>((set, get) => {
     fade: null,
 
     error: null,
+    unavailable: null,
     activeSource: null,
     ducked: false,
     sleepTimerEndsAt: 0,
@@ -342,6 +352,15 @@ export const usePlayer = create<PlayerState>((set, get) => {
       })),
     setSource: (source) => set({ activeSource: source }),
     setError: (error) => set({ error, isLoading: false }),
+
+    setUnavailable: (unavailable) => set({ unavailable, isLoading: false }),
+
+    takeYoutubeFallback: () => {
+      const query = get().unavailable?.query;
+      if (!query) return null;
+      set({ unavailable: null });
+      return query;
+    },
     setFade: (fade) => set({ fade }),
 
     duck: (ms = 2500) => {

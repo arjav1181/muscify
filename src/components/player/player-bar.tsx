@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import {
   AlertTriangle,
   Heart,
@@ -40,6 +41,10 @@ export function PlayerBar() {
   const ducked = usePlayer((s) => s.ducked);
   const error = usePlayer((s) => s.error);
   const setError = usePlayer((s) => s.setError);
+  const unavailable = usePlayer((s) => s.unavailable);
+  const setUnavailable = usePlayer((s) => s.setUnavailable);
+  const takeYoutubeFallback = usePlayer((s) => s.takeYoutubeFallback);
+  const router = useRouter();
   const queueOpen = useUi((s) => s.queueOpen);
   const setQueueOpen = useUi((s) => s.setQueueOpen);
   const lyricsOpen = useUi((s) => s.lyricsOpen);
@@ -94,6 +99,33 @@ export function PlayerBar() {
       {track.source === "deezer" ? (
         <div className="absolute inset-x-0 -top-px h-[3px] overflow-hidden bg-highlight">
           <div className="h-full w-1/3 animate-pulse bg-spotify/60" />
+        </div>
+      ) : null}
+
+      {unavailable ? (
+        <div className="flex flex-wrap items-center justify-center gap-2 border-b border-line bg-highlight px-4 py-1.5 text-xs text-sub">
+          <AlertTriangle size={13} className="shrink-0 text-amber-400" />
+          <span className="truncate">{unavailable.message}</span>
+          <button
+            type="button"
+            onClick={() => {
+              // The catalog only holds Deezer ids; the search route is where a
+              // Deezer title becomes a playable YouTube video.
+              const query = takeYoutubeFallback();
+              if (query) router.push(`/search?q=${encodeURIComponent(query)}&tab=videos`);
+            }}
+            className="shrink-0 rounded-full bg-spotify px-3 py-1 font-semibold text-black transition hover:bg-spotify-dark"
+          >
+            Search YouTube instead
+          </button>
+          <button
+            type="button"
+            onClick={() => setUnavailable(null)}
+            aria-label="Dismiss"
+            className="shrink-0 rounded px-1 text-dim hover:text-on"
+          >
+            ✕
+          </button>
         </div>
       ) : null}
 

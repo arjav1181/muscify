@@ -9,6 +9,12 @@ export interface EngineHandlers {
    * Pass false to clear the prompt once playback actually starts.
    */
   onNeedsGesture(needed: boolean): void;
+  /**
+   * The provider's own playback surface refused to start (e.g. the embed is
+   * blocked or discontinued). Distinct from onError: nothing failed, the
+   * channel simply isn't available, so the UI should offer an alternative.
+   */
+  onUnavailable(message: string): void;
   onPosition(position: number, duration: number): void;
   onLoading(loading: boolean): void;
 }

@@ -189,3 +189,57 @@ export function extractDeezerTrackId(url: string): string | null {
     return null;
   }
 }
+/**
+ * Deezer's curated "artist radio" — an editor-shaped station of tracks
+ * associated with an artist, including tracks by related artists.
+ *
+ * Unlike `/search` and `/chart`, this endpoint is served globally, which makes
+ * it the most reliable recommendation source available without an API key.
+ */
+export async function deezerArtistRadio(artistId: number, limit = 25): Promise<Track[]> {
+  const qs = new URLSearchParams({ limit: String(Math.min(limit, 100)) });
+  const res = await fetch(`${DEEZER}/artist/${artistId}/radio?${qs}`, {
+    next: { revalidate: 3600 },
+  });
+  if (!res.ok) throw new Error(`Deezer artist radio failed (${res.status})`);
+  const json = (await res.json()) as { data?: DeezerItem[]; error?: { message?: string } };
+  if (json.error?.message) throw new Error(json.error.message);
+  const items = (json.data ?? []).filter((t) => t.id != null);
+  if (!items.length) throw new Error("no results");
+  return items.map((t) => toTrack(t, ""));
+}
+
+export interface DeezerRelatedArtist {
+  id: number;
+  name: string;
+  picture: string;
+  followers: number;
+}
+
+/**
+ * Deezer's artist-similarity graph. Editorial rather than collaborative, but
+ * it's real data about which artists sit next to each other.
+ */
+export async function deezerRelatedArtists(
+  artistId: number,
+  limit = 12,
+): Promise<DeezerRelatedArtist[]> {
+  const qs = new URLSearchParams({ limit: String(Math.min(limit, 100)) });
+  const res = await fetch(`${DEEZER}/artist/${artistId}/related?${qs}`, {
+    next: { revalidate: 86_400 },
+  });
+  if (!res.ok) throw new Error(`Deezer related artists failed (${res.status})`);
+  const json = (await res.json()) as {
+    data?: DeezerArtistItem[];
+    error?: { message?: string };
+  };
+  if (json.error?.message) throw new Error(json.error.message);
+  return (json.data ?? [])
+    .filter((a) => a.id != null)
+    .map((a) => ({
+      id: a.id as number,
+      name: stripTags(a.name ?? ""),
+      picture: a.picture_big ?? a.picture_medium ?? "",
+      followers: a.nb_fan ?? 0,
+    }));
+}

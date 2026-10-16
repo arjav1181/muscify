@@ -57,6 +57,12 @@ export function PlayerHost() {
       usePlayer.getState().next(true);
     },
     onError: (message) => usePlayer.getState().setError(message),
+    onUnavailable: (message) => {
+      const state = usePlayer.getState();
+      const track = state.queue[state.index];
+      if (!track) return;
+      state.setUnavailable({ message, query: `${track.artist} ${track.title}`.trim() });
+    },
     onNeedsGesture: (needed) => usePlayer.getState().setNeedsGesture(needed),
     onPosition: (position, duration) => usePlayer.getState().setTimeline(position, duration),
     onLoading: (loading) => usePlayer.getState().setLoading(loading),
@@ -81,6 +87,7 @@ export function PlayerHost() {
         if (activeSource.current === source) base.onEnded();
       },
       onError: mine((m) => base.onError(m)),
+      onUnavailable: mine((m) => base.onUnavailable(m)),
       onNeedsGesture: mine((n) => base.onNeedsGesture(n)),
       onPosition: (position, duration) => {
         if (activeSource.current === source) base.onPosition(position, duration);

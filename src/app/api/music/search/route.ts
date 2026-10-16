@@ -1,14 +1,13 @@
 import { NextResponse } from "next/server";
-import { stationToTrack } from "@/lib/sources";
-import { matchStations } from "@/lib/sources/somafm";
+import { matchStationsIn, stationToTrack } from "@/lib/sources/radio";
 import { searchPlaylists } from "@/lib/sources/youtube";
 import {
   searchDeezerAlbums,
   searchDeezerArtists,
 } from "@/lib/sources/deezer";
 import { searchChannels, hasYoutubeKey } from "@/lib/sources/youtube";
-import { search } from "@/lib/sources";
-import type { SearchTab } from "@/lib/types";
+import { allStations, search } from "@/lib/sources";
+import type { RadioRegion, SearchTab } from "@/lib/types";
 
 const TABS: SearchTab[] = [
   "all",
@@ -36,6 +35,8 @@ export async function GET(req: Request) {
   const q = (url.searchParams.get("q") ?? "").slice(0, 200).trim();
   const raw = (url.searchParams.get("tab") ?? "all").toLowerCase();
   const tab = (TABS.find((t) => t === raw) ?? "all") as SearchTab;
+  const regionRaw = (url.searchParams.get("region") ?? "").toLowerCase();
+  const region = (["international", "india"] as const).find((r) => r === regionRaw);
 
   if (!q) return NextResponse.json({ tab, results: [], errors: [] });
 
@@ -48,7 +49,7 @@ export async function GET(req: Request) {
       case "playlists":
         return NextResponse.json(await playlists(q));
       case "radio":
-        return NextResponse.json(await radio(q));
+        return NextResponse.json(await radio(q, region));
       case "videos":
         return NextResponse.json(await videos(q));
       default:
@@ -138,7 +139,11 @@ async function playlists(q: string) {
   return { tab: "playlists", results, errors };
 }
 
-async function radio(q: string) {
-  const stations = await matchStations(q);
-  return { tab: "radio", results: stations.map(stationToTrack), errors: [] };
+async function radio(q: string, region?: RadioRegion) {
+  const { stations, errors } = await allStations();
+  return {
+    tab: "radio",
+    results: matchStationsIn(q, stations, region).map(stationToTrack),
+    errors,
+  };
 }

@@ -1,6 +1,6 @@
-import type { BrowseKind, SourceFilter, SourceResult, Track } from "@/lib/types";
+import type { BrowseKind, RadioRegion, SourceFilter, SourceResult, Track } from "@/lib/types";
 import { chartDeezer, extractDeezerTrackId, searchDeezer } from "./deezer";
-import { rotation } from "./somafm";
+import { allStations, stationToTrack } from "./radio";
 import {
   extractPlaylistId,
   extractVideoId,
@@ -10,21 +10,7 @@ import {
   trendingYoutube,
 } from "./youtube";
 
-export function stationToTrack(st: {
-  id: string;
-  title: string;
-  stream: string;
-  image: string;
-}): Track {
-  return {
-    source: "radio",
-    id: st.id,
-    title: st.title,
-    artist: "SomaFM Radio",
-    cover: st.image,
-    stream: st.stream,
-  };
-}
+export { allStations, stationToTrack };
 
 /**
  * Aggregated search across the track sources.
@@ -56,13 +42,24 @@ export async function search(query: string, source: SourceFilter = "auto"): Prom
   return { results, errors };
 }
 
-export async function browse(kind: BrowseKind = "trending"): Promise<SourceResult<Track>> {
+export async function browse(
+  kind: BrowseKind = "trending",
+  region?: RadioRegion,
+): Promise<SourceResult<Track>> {
   const results: Track[] = [];
   const errors: string[] = [];
 
   if (kind === "radio") {
     try {
-      results.push(...(await rotation()).map(stationToTrack));
+      const { stations, errors: dirErrors } = await allStations();
+      errors.push(...dirErrors);
+      const scoped = region ? stations.filter((s) => s.region === region) : stations;
+      // Default ordering puts the chill station first so "next" cycles sensibly,
+      // matching the original's behaviour.
+      const sorted = [...scoped].sort(
+        (a, b) => Number(b.id === "groovesalad") - Number(a.id === "groovesalad"),
+      );
+      results.push(...sorted.map(stationToTrack));
     } catch (e) {
       errors.push(`radio: ${message(e)}`);
     }

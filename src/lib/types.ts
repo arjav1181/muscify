@@ -28,7 +28,14 @@ export interface Track {
   plays?: number;
   /** Track count for playlists and albums, as reported in search results. */
   itemCount?: number;
+  /** Radio only: which directory the station came from. */
+  region?: RadioRegion;
+  /** Radio only: station language, where the directory reports one. */
+  language?: string;
 }
+
+/** Which directory a radio station came from. */
+export type RadioRegion = "international" | "india";
 
 export interface Station {
   id: string;
@@ -36,6 +43,9 @@ export interface Station {
   stream: string;
   tags: string;
   image: string;
+  region: RadioRegion;
+  language?: string;
+  bitrate?: number;
 }
 
 export interface Artist {
