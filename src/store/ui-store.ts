@@ -18,6 +18,7 @@ export type ModalKind =
   | { kind: "edit-playlist"; playlistId: string }
   | { kind: "add-to-playlist"; track: Track }
   | { kind: "confirm"; title: string; body: string; confirmLabel: string; run: () => void }
+  | { kind: "equalizer" }
   | null;
 
 interface UiState {

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import { useLibrary } from "@/store/library-store";
+import { EqualizerPanel } from "@/components/equalizer-panel";
 import { useUi } from "@/store/ui-store";
 
 /**
@@ -26,6 +27,7 @@ export function ModalHost() {
       {modal.kind === "create-playlist" ? <CreatePlaylistDialog /> : null}
       {modal.kind === "edit-playlist" ? <EditPlaylistDialog id={modal.playlistId} /> : null}
       {modal.kind === "confirm" ? <ConfirmDialog /> : null}
+      {modal.kind === "equalizer" ? <EqualizerPanel /> : null}
     </div>
   );
 }

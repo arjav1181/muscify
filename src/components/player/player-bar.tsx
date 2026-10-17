@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { SlidersHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { AlertTriangle, Heart, ListMusic, ListPlus, Maximize2, Mic2, MoreHorizontal, Radio as RadioIcon } from "lucide-react";
 import { artFallback } from "@/lib/art";
@@ -267,6 +268,15 @@ export function PlayerBar() {
             className="rounded-full p-2 text-sub transition hover:bg-highlight hover:text-on"
           >
             <Maximize2 size={17} />
+          </button>
+          <button
+            type="button"
+            onClick={() => useUi.getState().openModal({ kind: "equalizer" })}
+            aria-label="Open equalizer"
+            title="Equalizer"
+            className="rounded-full p-2 text-sub transition hover:bg-highlight hover:text-on"
+          >
+            <SlidersHorizontal size={17} />
           </button>
           <button
             type="button"
