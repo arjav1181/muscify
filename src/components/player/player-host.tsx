@@ -5,10 +5,11 @@ import { createDeezerEngine } from "@/lib/engines/deezer-engine";
 import { createRadioEngine } from "@/lib/engines/radio-engine";
 import { createSoundcloudEngine } from "@/lib/engines/soundcloud-engine";
 import type { EngineHandlers, PlaybackEngine } from "@/lib/engines/types";
+import { planSwitch } from "@/lib/engines/switch-plan";
 import { createYoutubeEngine } from "@/lib/engines/youtube-engine";
 import { registerEngineControl } from "@/lib/engines/control";
 import { usePlayer } from "@/store/player-store";
-import type { SourceId } from "@/lib/types";
+import { trackKey, type SourceId } from "@/lib/types";
 
 const SOURCES: SourceId[] = ["youtube", "deezer", "soundcloud", "radio"];
 
@@ -36,6 +37,8 @@ export function PlayerHost() {
   const hosts = useRef<Partial<Record<SourceId, HTMLDivElement | null>>>({});
   const engines = useRef<Partial<Record<SourceId, PlaybackEngine>>>({});
   const activeSource = useRef<SourceId | null>(null);
+  /** Key of the track currently loaded, so a same-track re-render is not a switch. */
+  const activeTrack = useRef<string | null>(null);
   const skips = useRef(0);
   const skipWindow = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -126,31 +129,53 @@ export function PlayerHost() {
     };
   }, []);
 
-  // Track switches: tear everything down, then start the incoming source.
+  /*
+   * Track switches.
+   *
+   * This previously guarded on `target === activeSource.current` and returned
+   * early. That guard compared the *source*, not the *track*, so moving from one
+   * YouTube track to another YouTube track — or one radio station to another —
+   * never reached `engine.load()`. The player sat on the old song with no error
+   * anywhere. The decision now lives in lib/engines/switch-plan.ts as a pure
+   * function, because the case is far too easy to miss by reading.
+   */
   useEffect(() => {
     const state = usePlayer.getState();
     const target = track?.source ?? null;
-    if (target === activeSource.current) return;
+    const targetKey = track ? trackKey(track) : null;
 
-    // Claim the slot *before* tearing the others down, so their shutdown events
-    // are correctly attributed to a stale engine and ignored.
-    activeSource.current = target;
+    const plan = planSwitch({
+      target,
+      active: activeSource.current,
+      all: SOURCES,
+      targetKey,
+      activeKey: activeTrack.current,
+      isPlaying: state.isPlaying,
+    });
 
-    for (const source of SOURCES) {
-      if (source !== target) engines.current[source]?.stop();
-    }
+    // The same track merely re-rendered. Nothing to do.
+    if (!plan.load && !plan.idle) return;
 
-    if (!track || !target) {
+    // Claim the slot *before* tearing anything down, so shutdown events from
+    // the engines being stopped are attributed to a stale source and ignored.
+    activeSource.current = plan.claim;
+    activeTrack.current = targetKey;
+
+    for (const source of plan.stopSources) engines.current[source]?.stop();
+
+    if (plan.idle || !plan.claim) {
       state.setSource(null);
+      state.setTimeline(0, 0);
       return;
     }
-    state.setSource(target);
+
+    state.setSource(plan.claim);
     state.setTimeline(0, 0);
 
-    const engine = engines.current[target];
-    if (!engine) return;
+    const engine = engines.current[plan.claim];
+    if (!engine || !track) return;
     engine.load(track);
-    if (state.isPlaying) engine.play();
+    if (plan.play) engine.play();
   }, [track]);
 
   // Transport: play / pause, including the tap that clears a gesture prompt.
