@@ -66,11 +66,13 @@ interface LibraryState {
   isTrackHidden: (track: Track, contextId?: string) => boolean;
   /** True while a snooze is in force. */
   isTrackSnoozed: (track: Track) => boolean;
-  /** Applies hide/snooze/explicit rules to a candidate list. */
-  filterByTaste: <T extends { key: string; explicit?: boolean }>(
-    items: T[],
-    contextId?: string,
-  ) => T[];
+  /**
+   * Applies hide/snooze/explicit rules to a candidate list.
+   *
+   * Takes tracks rather than `{key}` records because that is what every caller
+   * has; the key is derived here so no caller can pass a mismatched one.
+   */
+  filterByTaste: (tracks: Track[], contextId?: string) => Track[];
   /** Raw play log, oldest first. Private events included but flagged. */
   playEvents: () => PlayEvent[];
 
@@ -255,16 +257,16 @@ export const useLibrary = create<LibraryState>((set, get) => {
 
     isTrackSnoozed: (track) => isSnoozed(get().taste, trackKey(track)),
 
-    filterByTaste: (items, contextId) => {
+    filterByTaste: (tracks, contextId) => {
       const s = get();
       // Sources do not carry the explicit flag for every track, so fall back
       // to whatever the local catalogue already knows about it.
       const known = (key: string) => s.catalog[key]?.track.explicit === true;
-      return applyTasteFilter(items, s.taste, {
-        contextId,
-        excludeExplicit: s.settings.excludeExplicit,
-        isExplicit: known,
-      });
+      return applyTasteFilter(
+        tracks.map((track) => ({ key: trackKey(track), explicit: track.explicit })),
+        s.taste,
+        { contextId, excludeExplicit: s.settings.excludeExplicit, isExplicit: known },
+      ).map((kept) => tracks.find((t) => trackKey(t) === kept.key)!);
     },
 
     playEvents: () => get().taste.plays,

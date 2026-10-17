@@ -8,6 +8,12 @@ import { useLibrary } from "@/store/library-store";
 import { usePlayer } from "@/store/player-store";
 import { useResource } from "@/hooks/use-resource";
 import { MOODS } from "@/lib/sources/recommend";
+import {
+  DaylistShelf,
+  PromptPlaylist,
+  TasteProfilePanel,
+  WeeklyShelf,
+} from "@/components/views/discovery-panels";
 import { Shelf } from "@/components/shelf";
 import { TrackCard } from "@/components/track-card";
 
@@ -205,8 +211,13 @@ export function DiscoverView() {
         that only exists inside Spotify.
       </p>
 
+      <PromptPlaylist />
+
       {hasHistory ? (
         <>
+          <DaylistShelf />
+          <WeeklyShelf />
+          <TasteProfilePanel />
           <BecauseYouPlayed />
           <RelatedArtistsRail />
         </>
