@@ -132,6 +132,7 @@ export function NowPlayingView({ onClose }: { onClose: () => void }) {
 
   return (
     <div
+      ref={panelRef}
       role="dialog"
       aria-modal="true"
       aria-label={`Now playing: ${track.title} by ${track.artist}`}
