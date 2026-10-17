@@ -1,5 +1,7 @@
 import { stripTags } from "@/lib/html";
 import type { Track } from "@/lib/types";
+import { cached, type Endpoint } from "./youtube/cache";
+import { TTL } from "./youtube/policy";
 
 const YT_API = "https://www.googleapis.com/youtube/v3";
 const OEMBED = "https://www.youtube.com/oembed";
@@ -46,25 +48,64 @@ function thumb(id: string, name: "hqdefault" | "mqdefault" | "maxresdefault"): s
   return `https://i.ytimg.com/vi/${id}/${name}.jpg`;
 }
 
+/**
+ * Quota-aware fetch.
+ *
+ * Every call goes through the cache, which charges the endpoint's real unit
+ * cost, collapses concurrent duplicates, and serves a stale copy when YouTube
+ * refuses. The `revalidate` window below is deliberately much longer than it
+ * used to be: `search.list` costs 100 of the 10,000 units YouTube grants per
+ * day, so re-buying the same results every five minutes exhausted the budget
+ * within an afternoon. See lib/sources/youtube/policy.ts for the reasoning.
+ *
+ * The Next fetch cache is kept underneath so a cold start (new lambda, fresh
+ * deployment) can be served from the CDN rather than paying full price.
+ */
 async function ytFetch<T = { items?: YoutubeItem[] }>(
   path: string,
   params: Record<string, string>,
-  revalidate: number,
+  kind: keyof typeof TTL,
 ): Promise<T> {
   const key = youtubeApiKey();
   if (!key) throw new Error("YouTube API key missing");
+
+  const policy = TTL[kind];
   const url = new URL(`${YT_API}/${path}`);
   for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
   url.searchParams.set("key", key);
-  const res = await fetch(url, { next: { revalidate } });
-  if (!res.ok) {
-    // Quota exhaustion is the common failure and deserves an explicit message,
-    // since "fix the key" is the wrong advice for it.
-    const detail = res.status === 403 ? "quota exceeded — try again later or use a different key" : `status ${res.status}`;
-    throw new Error(`YouTube ${path} failed (${detail})`);
+
+  const outcome = await cached<T>(
+    path as Endpoint,
+    params,
+    policy.freshFor,
+    async () => {
+      const res = await fetch(url, { next: { revalidate: policy.freshFor } });
+      if (!res.ok) {
+        // 403 and 429 both mean the budget is gone. "Fix the key" is the
+        // wrong advice for that, so say what it actually is.
+        const detail =
+          res.status === 403
+            ? "quota exceeded — try again later or use a different key"
+            : res.status === 429
+              ? "rate limited — try again shortly"
+              : `status ${res.status}`;
+        throw new Error(`YouTube ${path} failed (${detail})`);
+      }
+      return (await res.json()) as T;
+    },
+  );
+
+  if (outcome.stale) {
+    // Surfaced to the caller so the UI can say the results are cached rather
+    // than implying they are live.
+    console.warn(`[youtube] serving stale ${path} response (upstream refused)`);
   }
-  return (await res.json()) as T;
+
+  return outcome.value;
 }
+
+/** Current quota state, for the settings UI. */
+export { quotaStatus as youtubeQuota, cacheSize as youtubeCacheSize } from "./youtube/cache";
 
 export async function searchYoutube(query: string, max = 24): Promise<Track[]> {
   const data = await ytFetch(
@@ -77,7 +118,7 @@ export async function searchYoutube(query: string, max = 24): Promise<Track[]> {
       maxResults: String(Math.min(max, 50)),
       q: query,
     },
-    300,
+    "search",
   );
   const out: Track[] = [];
   for (const item of data.items ?? []) {
@@ -98,7 +139,7 @@ export async function trendingYoutube(max = 24): Promise<Track[]> {
       videoCategoryId: MUSIC_CATEGORY,
       maxResults: String(Math.min(max, 50)),
     },
-    900,
+    "chart",
   );
   const out: Track[] = [];
   for (const item of data.items ?? []) {
@@ -242,7 +283,7 @@ async function channelCategories(ids: string[]): Promise<Map<string, { categoryI
         snippet?: { categoryId?: string };
         topicDetails?: { topicCategories?: string[] };
       }[];
-    }>("channels", { part: "snippet,topicDetails", id: unique.join(",") }, 600);
+    }>("channels", { part: "snippet,topicDetails", id: unique.join(",") }, "channels");
 
     for (const item of data.items ?? []) {
       if (!item.id) continue;
@@ -322,7 +363,7 @@ export async function searchChannels(query: string, max = 12): Promise<ChannelRe
       maxResults: String(Math.min(max, 25)),
       q: query,
     },
-    300,
+    "search",
   );
   const out: ChannelResult[] = [];
   for (const item of data.items ?? []) {
@@ -354,7 +395,8 @@ export async function channelVideos(channelId: string, max = 24): Promise<Track[
       maxResults: String(Math.min(max, 50)),
       order: "viewCount",
     },
-    600,
+    // Channel contents move as uploads land, but not by the minute.
+    "search",
   );
   return (data.items ?? []).map(toVideo).filter((t): t is Track => t !== null);
 }
@@ -369,7 +411,7 @@ export async function searchPlaylists(query: string, max = 12): Promise<Track[]>
       maxResults: String(Math.min(max, 25)),
       q: query,
     },
-    300,
+    "search",
   );
   const out: Track[] = [];
   for (const item of data.items ?? []) {
