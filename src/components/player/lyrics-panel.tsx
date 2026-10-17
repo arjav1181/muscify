@@ -93,7 +93,7 @@ export function LyricsPanel() {
                 key={`${line.time}-${i}`}
                 data-line={i}
                 className={`text-lg leading-snug font-bold transition-colors ${
-                  i === active ? "text-on" : "text-sub/40"
+                  i === active ? "text-on" : "text-dim"
                 }`}
               >
                 {i === active && karaoke
@@ -104,7 +104,7 @@ export function LyricsPanel() {
                       .filter((w) => w.lineIndex === i)
                       .map((word) => (
                         <span key={word.start} className="relative inline-block">
-                          <span className="text-sub/40">{word.word}</span>
+                          <span className="text-dim">{word.word}</span>
                           <span
                             aria-hidden
                             className="absolute inset-0 overflow-hidden whitespace-pre text-on"

@@ -49,7 +49,7 @@ export function Sidebar() {
               <Link
                 href={href}
                 aria-current={active ? "page" : undefined}
-                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
+                className={`flex min-h-11 items-center gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition-colors ${
                   active ? "bg-highlight text-on" : "text-sub hover:text-on"
                 }`}
               >
@@ -147,7 +147,7 @@ function PlaylistThumb({ playlistId, name }: { playlistId: string; name: string 
         <img src={cover} alt="" className="h-full w-full object-cover" loading="lazy" />
       ) : (
         <span className="flex h-full w-full items-center justify-center">
-          <ListMusic size={14} className="text-white/40" />
+          <ListMusic size={14} className="text-muted" />
         </span>
       )}
     </span>

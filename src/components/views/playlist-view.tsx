@@ -66,9 +66,9 @@ export function PlaylistView({ id }: { id: string }) {
 
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium text-sub">Playlist</p>
-          <h2 className="mt-2 mb-4 text-4xl font-bold tracking-tight text-on md:text-6xl">
+          <h1 className="mt-2 mb-4 text-4xl font-bold tracking-tight text-on md:text-6xl">
             {playlist.name}
-          </h2>
+          </h1>
           {playlist.description ? (
             <p className="mb-2 max-w-2xl text-sm text-sub">{playlist.description}</p>
           ) : null}

@@ -177,7 +177,7 @@ function RelatedArtistsRail() {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={a.image} alt="" className="h-full w-full object-cover" loading="lazy" />
                 ) : (
-                  <Mic2 size={22} className="mx-auto mt-7 text-white/30" />
+                  <Mic2 size={22} className="mx-auto mt-7 text-muted" />
                 )}
               </div>
               <h3 className="w-full truncate text-sm font-semibold text-on">{a.name}</h3>
@@ -207,9 +207,9 @@ export function DiscoverView() {
 
   return (
     <div className="animate-fade-up pt-6">
-      <h2 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-on">
+      <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-on">
         <Sparkles size={20} className="text-spotify" /> Made for you
-      </h2>
+      </h1>
       <p className="mt-1 mb-8 max-w-2xl text-sm text-sub">
         Mood shelves and artist radio, seeded from what you&apos;ve played. These come from
         Deezer&apos;s curated artist radio and similarity graph — not a

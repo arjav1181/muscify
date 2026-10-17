@@ -48,7 +48,7 @@ export function HomeView() {
 
   return (
     <div className="animate-fade-up pt-6">
-      <h2 className="mb-6 text-3xl font-bold tracking-tight text-on">{greeting}</h2>
+      <h1 className="mb-6 text-3xl font-bold tracking-tight text-on">{greeting}</h1>
 
       {featured.length ? (
         <div className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

@@ -35,18 +35,37 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <GlobalEffects />
 
       <div className="flex min-h-0 flex-1 gap-2 overflow-hidden p-2">
+        {/*
+          Skip link. Invisible until focused, then pinned to the top-left. A
+          keyboard user would otherwise tab through the whole sidebar — logo,
+          seven nav items, the create button — on every single page.
+        */}
+        <a
+          href="#muscify-scroll"
+          className="sr-only rounded-full bg-white px-4 py-2 text-sm font-medium text-black focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50"
+        >
+          Skip to content
+        </a>
+
         <div className="hidden shrink-0 md:block">
           <Suspense fallback={<div className="h-full w-[260px]" />}>
             <Sidebar />
           </Suspense>
         </div>
 
-        <main className="relative flex min-w-0 flex-1 flex-col overflow-hidden rounded-lg bg-surface">
+        <main
+          id="muscify-main"
+          className="relative flex min-w-0 flex-1 flex-col overflow-hidden rounded-lg bg-surface"
+        >
           <TopBar />
           <Suspense fallback={<div className="h-10 md:hidden" />}>
             <MobileNav />
           </Suspense>
-          <div id="muscify-scroll" className="min-h-0 flex-1 overflow-y-auto px-4 pb-10 md:px-6">
+          <div
+            id="muscify-scroll"
+            tabIndex={-1}
+            className="min-h-0 flex-1 overflow-y-auto px-4 pb-10 md:px-6 focus:outline-none"
+          >
             {ready ? children : <BootSkeleton />}
           </div>
         </main>

@@ -39,12 +39,12 @@ function StatTile({
 }) {
   return (
     <div className="rounded-lg border border-white/10 bg-white/5 p-4">
-      <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-white/50">
+      <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-dim">
         <Icon className="h-3.5 w-3.5" aria-hidden />
         {label}
       </div>
       <div className="mt-1 text-2xl font-semibold tabular-nums">{value}</div>
-      {hint ? <div className="mt-0.5 text-xs text-white/45">{hint}</div> : null}
+      {hint ? <div className="mt-0.5 text-xs text-muted">{hint}</div> : null}
     </div>
   );
 }
@@ -99,9 +99,9 @@ export function StatsView() {
   if (stats.plays === 0) {
     return (
       <div className="mx-auto max-w-3xl px-6 py-16 text-center">
-        <Headphones className="mx-auto h-10 w-10 text-white/30" aria-hidden />
+        <Headphones className="mx-auto h-10 w-10 text-muted" aria-hidden />
         <h1 className="mt-4 text-2xl font-semibold">No listening stats yet</h1>
-        <p className="mx-auto mt-2 max-w-md text-sm text-white/60">
+        <p className="mx-auto mt-2 max-w-md text-sm text-dim">
           Stats build from tracks you play for more than 30 seconds. Nothing is uploaded —
           this is computed from a play log kept in your browser.
         </p>
@@ -126,7 +126,7 @@ export function StatsView() {
     <div className="mx-auto max-w-5xl px-6 py-8">
       <header className="mb-6">
         <h1 className="text-3xl font-bold">Listening stats</h1>
-        <p className="mt-1 text-sm text-white/60">
+        <p className="mt-1 text-sm text-dim">
           {summarise(stats)} · computed locally from your play log
         </p>
         {settings.privateSession ? (
@@ -135,7 +135,7 @@ export function StatsView() {
           </p>
         ) : null}
         {stats.privateExcluded > 0 ? (
-          <p className="mt-2 text-xs text-white/40">
+          <p className="mt-2 text-xs text-muted">
             {stats.privateExcluded} private listen{stats.privateExcluded === 1 ? "" : "s"} excluded.
           </p>
         ) : null}
@@ -155,12 +155,12 @@ export function StatsView() {
 
       <section className="mt-8">
         <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold">
-          <Timer className="h-4 w-4 text-white/50" aria-hidden />
+          <Timer className="h-4 w-4 text-dim" aria-hidden />
           When you listen
-          {peak ? <span className="text-sm font-normal text-white/50">peak {peak}</span> : null}
+          {peak ? <span className="text-sm font-normal text-dim">peak {peak}</span> : null}
         </h2>
         <HourChart byHour={stats.byHour} />
-        <div className="mt-1 flex justify-between text-[10px] text-white/35">
+        <div className="mt-1 flex justify-between text-[10px] text-muted">
           <span>12am</span>
           <span>6am</span>
           <span>12pm</span>
@@ -178,9 +178,9 @@ export function StatsView() {
                 key={artist.name}
                 className="flex items-center gap-3 rounded-md px-2 py-1.5 hover:bg-white/5"
               >
-                <span className="w-5 text-right text-xs tabular-nums text-white/35">{i + 1}</span>
+                <span className="w-5 text-right text-xs tabular-nums text-muted">{i + 1}</span>
                 <span className="min-w-0 flex-1 truncate text-sm">{artist.name}</span>
-                <span className="shrink-0 text-xs tabular-nums text-white/45">
+                <span className="shrink-0 text-xs tabular-nums text-muted">
                   {formatDuration(artist.ms)}
                 </span>
               </li>
@@ -196,14 +196,14 @@ export function StatsView() {
               return (
                 <li key={track.key} className="rounded-md px-2 py-1.5 hover:bg-white/5">
                   <div className="flex items-center gap-3">
-                    <span className="w-5 text-right text-xs tabular-nums text-white/35">{i + 1}</span>
+                    <span className="w-5 text-right text-xs tabular-nums text-muted">{i + 1}</span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm">{meta?.title ?? track.key}</span>
-                      <span className="block truncate text-xs text-white/45">
+                      <span className="block truncate text-xs text-muted">
                         {meta?.artist ?? "unknown artist"}
                       </span>
                     </span>
-                    <span className="shrink-0 text-xs tabular-nums text-white/45">
+                    <span className="shrink-0 text-xs tabular-nums text-muted">
                       {track.plays}×
                     </span>
                   </div>
@@ -217,19 +217,19 @@ export function StatsView() {
       <section className="mt-8">
         <h2 className="mb-3 text-lg font-semibold">Daily listening</h2>
         {stats.byDay.length === 0 ? (
-          <p className="text-sm text-white/50">No daily data.</p>
+          <p className="text-sm text-dim">No daily data.</p>
         ) : (
           <ul className="space-y-1 text-sm">
             {[...stats.byDay].reverse().slice(0, 14).map((day) => (
               <li key={day.day} className="flex items-center gap-3 rounded-md px-2 py-1 hover:bg-white/5">
-                <span className="w-28 shrink-0 tabular-nums text-white/50">{day.day}</span>
+                <span className="w-28 shrink-0 tabular-nums text-dim">{day.day}</span>
                 <span
                   className="h-1.5 rounded-full bg-white/40"
                   style={{
                     width: `${Math.max(4, (day.ms / Math.max(...stats.byDay.map((d) => d.ms))) * 100)}%`,
                   }}
                 />
-                <span className="ml-auto shrink-0 text-xs tabular-nums text-white/45">
+                <span className="ml-auto shrink-0 text-xs tabular-nums text-muted">
                   {formatDuration(day.ms)} · {day.plays}×
                 </span>
               </li>
@@ -238,7 +238,7 @@ export function StatsView() {
         )}
       </section>
 
-      <p className="mt-8 text-xs text-white/35">
+      <p className="mt-8 text-xs text-muted">
         This is your own history on this device, not a cross-device recap. Nothing here leaves
         your browser.
       </p>

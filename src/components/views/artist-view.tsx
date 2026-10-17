@@ -48,15 +48,15 @@ export function ArtistView({ id }: { id: string }) {
             // eslint-disable-next-line @next/next/no-img-element
             <img src={primary.cover} alt="" className="h-full w-full object-cover" />
           ) : (
-            <Mic2 size={56} className="text-white/30" />
+            <Mic2 size={56} className="text-muted" />
           )}
         </div>
 
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium text-sub">Artist</p>
-          <h2 className="mt-2 mb-4 text-4xl font-bold tracking-tight text-on md:text-6xl">
+          <h1 className="mt-2 mb-4 text-4xl font-bold tracking-tight text-on md:text-6xl">
             {name}
-          </h2>
+          </h1>
           {primary ? (
             <p className="text-sm text-sub">
               {tracks.length} {tracks.length === 1 ? "song" : "songs"}

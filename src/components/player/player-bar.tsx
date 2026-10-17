@@ -2,15 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import {
-  AlertTriangle,
-  Heart,
-  ListMusic,
-  ListPlus,
-  Mic2,
-  MoreHorizontal,
-  Radio as RadioIcon,
-} from "lucide-react";
+import { AlertTriangle, Heart, ListMusic, ListPlus, Maximize2, Mic2, MoreHorizontal, Radio as RadioIcon } from "lucide-react";
 import { artFallback } from "@/lib/art";
 import { trackKey, type Track } from "@/lib/types";
 import { useLibrary } from "@/store/library-store";
@@ -20,6 +12,7 @@ import { useTrackMenu } from "@/components/track-menu";
 import { PlaybackControls } from "./playback-controls";
 import { ProgressBar } from "./progress-bar";
 import { QueuePanel } from "./queue-panel";
+import { NowPlayingView } from "./now-playing-view";
 import { VolumeControl } from "./volume-control";
 import { SleepTimerMenu } from "./sleep-timer-menu";
 
@@ -47,6 +40,10 @@ export function PlayerBar() {
   const router = useRouter();
   const queueOpen = useUi((s) => s.queueOpen);
   const setQueueOpen = useUi((s) => s.setQueueOpen);
+
+  const nowPlayingOpen = useUi((s) => s.nowPlayingOpen);
+
+  const setNowPlayingOpen = useUi((s) => s.setNowPlayingOpen);
   const lyricsOpen = useUi((s) => s.lyricsOpen);
   const setLyricsOpen = useUi((s) => s.setLyricsOpen);
   const openContextMenu = useUi((s) => s.openContextMenu);
@@ -89,10 +86,16 @@ export function PlayerBar() {
   const href = externalUrl(track);
 
   return (
-    <footer
+    /*
+      `complementary` rather than `contentinfo`: a contentinfo landmark is for
+      site-level metadata (copyright, legal links), not a persistent control
+      surface. This is the player bar, and naming it explicitly is the pattern
+      captured from Spotify's own accessibility tree in docs/ux-grounding.md.
+    */
+    <aside
       ref={barRef}
       className="relative shrink-0 border-t border-line bg-base"
-      aria-label="Player"
+      aria-label="Now playing bar"
     >
       {/* Deezer's widget has no seek API, so show an indeterminate state
           rather than a progress bar that would lie. */}
@@ -166,7 +169,7 @@ export function PlayerBar() {
               />
             ) : (
               <span className="flex h-full w-full items-center justify-center">
-                <RadioIcon size={20} className="text-white/40" />
+                <RadioIcon size={20} className="text-muted" />
               </span>
             )}
           </div>
@@ -258,6 +261,15 @@ export function PlayerBar() {
           </button>
           <button
             type="button"
+            onClick={() => setNowPlayingOpen(true)}
+            aria-label="Show Now Playing view"
+            title="Show Now Playing view"
+            className="hidden rounded-full p-2 text-sub transition hover:bg-highlight hover:text-on sm:block"
+          >
+            <Maximize2 size={17} />
+          </button>
+          <button
+            type="button"
             onClick={() => setQueueOpen(!queueOpen)}
             aria-label="Queue"
             aria-expanded={queueOpen}
@@ -285,6 +297,10 @@ export function PlayerBar() {
           </button>
         </div>
       </div>
+      {nowPlayingOpen && track ? (
+        <NowPlayingView onClose={() => setNowPlayingOpen(false)} />
+      ) : null}
+
       {queueOpen ? (
         <div className="absolute right-2 bottom-full z-40 mb-2 max-h-[60vh] w-[min(380px,calc(100vw-16px))] overflow-hidden">
           <QueuePanel inline />
@@ -308,6 +324,6 @@ export function PlayerBar() {
           </span>
         </button>
       ) : null}
-    </footer>
+    </aside>
   );
 }

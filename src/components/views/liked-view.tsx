@@ -58,9 +58,9 @@ export function LikedSongsView() {
 
         <div className="min-w-0">
           <p className="text-sm font-medium text-sub">Playlist</p>
-          <h2 className="mt-2 mb-4 text-4xl font-bold tracking-tight text-on md:text-6xl">
+          <h1 className="mt-2 mb-4 text-4xl font-bold tracking-tight text-on md:text-6xl">
             Liked Songs
-          </h2>
+          </h1>
           <p className="text-sm text-sub">
             <span className="font-semibold text-on">{tracks.length}</span>{" "}
             {tracks.length === 1 ? "song" : "songs"}

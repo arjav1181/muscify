@@ -94,7 +94,7 @@ export function DaylistShelf() {
 
   return (
     <section className="mb-8">
-      <p className="mb-3 flex items-center gap-2 text-xs text-white/35">
+      <p className="mb-3 flex items-center gap-2 text-xs text-muted">
         <Compass className="h-3.5 w-3.5" aria-hidden />
         Built from what you listen to at this hour — not a server-side editorial list.
       </p>
@@ -127,7 +127,7 @@ export function WeeklyShelf() {
 
   return (
     <section className="mb-8">
-      <p className="mb-3 flex items-center gap-2 text-xs text-white/35">
+      <p className="mb-3 flex items-center gap-2 text-xs text-muted">
         <Sparkles className="h-3.5 w-3.5" aria-hidden />
         Weighted toward what you actually play. Same all week, reshuffles Monday — no server
         schedule involved.
@@ -153,10 +153,10 @@ export function TasteProfilePanel() {
     return (
       <section className="mb-8 rounded-lg border border-white/10 bg-white/5 p-5">
         <h2 className="flex items-center gap-2 text-lg font-semibold">
-          <Radar className="h-4 w-4 text-white/50" aria-hidden />
+          <Radar className="h-4 w-4 text-dim" aria-hidden />
           Taste profile
         </h2>
-        <p className="mt-2 text-sm text-white/55">
+        <p className="mt-2 text-sm text-dim">
           Not enough listening history yet — play a dozen tracks and this fills in with your own
           top artists and tags. Nothing is sent anywhere; it is computed from a log kept in this
           browser.
@@ -170,17 +170,17 @@ export function TasteProfilePanel() {
   return (
     <section className="mb-8 rounded-lg border border-white/10 bg-white/5 p-5">
       <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold">
-        <Radar className="h-4 w-4 text-white/50" aria-hidden />
+        <Radar className="h-4 w-4 text-dim" aria-hidden />
         Taste profile
       </h2>
-      <p className="mb-4 text-xs text-white/40">
+      <p className="mb-4 text-xs text-muted">
         A description of your listening distribution — not an assessment of you. Hide, snooze and
         private sessions all change what appears here.
       </p>
 
       <div className="grid gap-6 md:grid-cols-2">
         <div>
-          <h3 className="mb-2 text-xs font-medium uppercase tracking-wide text-white/45">
+          <h3 className="mb-2 text-xs font-medium uppercase tracking-wide text-muted">
             Top artists
           </h3>
           <ul className="space-y-1">
@@ -191,7 +191,7 @@ export function TasteProfilePanel() {
                   className="h-1.5 rounded-full bg-white/40"
                   style={{ width: `${Math.max(6, (artist.ms / maxArtist) * 100)}%` }}
                 />
-                <span className="ml-auto shrink-0 text-xs tabular-nums text-white/40">
+                <span className="ml-auto shrink-0 text-xs tabular-nums text-muted">
                   {Math.round(artist.share * 100)}%
                 </span>
               </li>
@@ -200,11 +200,11 @@ export function TasteProfilePanel() {
         </div>
 
         <div>
-          <h3 className="mb-2 text-xs font-medium uppercase tracking-wide text-white/45">
+          <h3 className="mb-2 text-xs font-medium uppercase tracking-wide text-muted">
             Most-listened tags
           </h3>
           {profile.topTags.length === 0 ? (
-            <p className="text-sm text-white/45">
+            <p className="text-sm text-muted">
               No tags recorded — this only fills in for tracks whose source reports them.
             </p>
           ) : (
@@ -212,7 +212,7 @@ export function TasteProfilePanel() {
               {profile.topTags.slice(0, 14).map((tag) => (
                 <span
                   key={tag.tag}
-                  className="rounded-full border border-white/15 px-2.5 py-1 text-xs text-white/70"
+                  className="rounded-full border border-white/15 px-2.5 py-1 text-xs text-dim"
                 >
                   {tag.tag}
                 </span>
@@ -220,7 +220,7 @@ export function TasteProfilePanel() {
             </div>
           )}
           {profile.coldTags.length > 0 ? (
-            <p className="mt-3 text-xs text-white/35">
+            <p className="mt-3 text-xs text-muted">
               Rarely heard: {profile.coldTags.slice(0, 6).join(", ")}
             </p>
           ) : null}
@@ -307,10 +307,10 @@ export function PromptPlaylist() {
   return (
     <section className="mb-8 rounded-lg border border-white/10 bg-white/5 p-5">
       <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold">
-        <Wand2 className="h-4 w-4 text-white/50" aria-hidden />
+        <Wand2 className="h-4 w-4 text-dim" aria-hidden />
         Describe what you want to hear
       </h2>
-      <p className="mb-3 text-xs text-white/40">
+      <p className="mb-3 text-xs text-muted">
         Moods, languages, eras and artists all work. Try{" "}
         <em>“90s punjabi bhangra for the gym”</em> or <em>“chill korean like DPR IAN”</em>.
       </p>
@@ -327,7 +327,7 @@ export function PromptPlaylist() {
           onChange={(e) => setDraft(e.target.value)}
           placeholder="e.g. calm instrumental for studying"
           aria-label="Describe the playlist you want"
-          className="flex-1 rounded-full border border-line-strong bg-black/30 px-4 py-2 text-sm placeholder:text-white/30 focus:outline-none"
+          className="flex-1 rounded-full border border-line-strong bg-black/30 px-4 py-2 text-sm placeholder:text-muted focus:outline-none"
         />
         <button
           type="submit"
@@ -340,7 +340,7 @@ export function PromptPlaylist() {
 
       {intent ? (
         <div className="mt-4">
-          <p className="mb-2 text-xs text-white/45">{describeIntent(intent)}</p>
+          <p className="mb-2 text-xs text-muted">{describeIntent(intent)}</p>
 
           {intent.terms.length > 0 ? (
             <div className="mb-3 flex flex-wrap gap-1.5">
@@ -358,9 +358,9 @@ export function PromptPlaylist() {
           ) : null}
 
           {loading ? (
-            <p className="text-sm text-white/45">Searching…</p>
+            <p className="text-sm text-muted">Searching…</p>
           ) : tracks.length === 0 ? (
-            <p className="text-sm text-white/45">
+            <p className="text-sm text-muted">
               Nothing matched. Try fewer words, or name an artist or language you know is in the
               sources.
             </p>
@@ -369,13 +369,13 @@ export function PromptPlaylist() {
               <ol className="divide-y divide-white/5">
                 {tracks.slice(0, 12).map((track, i) => (
                   <li key={track.source + track.id} className="flex items-center gap-3 py-1.5">
-                    <span className="w-5 text-right text-xs tabular-nums text-white/30">{i + 1}</span>
+                    <span className="w-5 text-right text-xs tabular-nums text-muted">{i + 1}</span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm">{track.title}</span>
-                      <span className="block truncate text-xs text-white/45">{track.artist}</span>
+                      <span className="block truncate text-xs text-muted">{track.artist}</span>
                     </span>
                     {track.duration ? (
-                      <span className="shrink-0 text-xs tabular-nums text-white/35">
+                      <span className="shrink-0 text-xs tabular-nums text-muted">
                         {Math.floor(track.duration / 60)}:{String(track.duration % 60).padStart(2, "0")}
                       </span>
                     ) : null}

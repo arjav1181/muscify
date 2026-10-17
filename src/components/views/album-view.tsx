@@ -71,9 +71,9 @@ export function AlbumView({ id }: { id: string }) {
 
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium text-sub">Album</p>
-          <h2 className="mt-2 mb-4 text-4xl font-bold tracking-tight text-on md:text-6xl">
+          <h1 className="mt-2 mb-4 text-4xl font-bold tracking-tight text-on md:text-6xl">
             {album.title}
-          </h2>
+          </h1>
           <p className="text-sm text-sub">
             <span className="font-semibold text-on">{album.artist}</span>
             {year ? ` · ${year}` : ""} · {tracks.length}{" "}

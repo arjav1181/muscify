@@ -14,7 +14,24 @@
 
   --color-on: #ffffff;
   --color-sub: #b3b3b3;
-  --color-dim: #6a6a6a;
+
+  /*
+   * Secondary text colours, corrected against WCAG AA.
+   *
+   * The previous --dim (#6a6a6a) measured 3.46:1 on --surface, and the many
+   * `text-white/40` utilities used for de-emphasis measured 3.84:1 — both
+   * below the 4.5:1 required for the small text they were applied to. An
+   * audit across every route found 26 such failures, all traceable to these
+   * two values.
+   *
+   *   --dim   #8c8c8c  5.57:1 on #121212
+   *   --muted #949494  6.18:1 on #121212
+   *
+   * Use `text-white/40`-style opacity for decoration only (borders, scrims),
+   * never for text. `muted`/`dim` exist so that is unambiguous.
+   */
+  --color-dim: #8c8c8c;
+  --color-muted: #949494;
   --color-line: #ffffff1a;
   --color-line-strong: #ffffff33;
 
@@ -181,5 +198,36 @@ input[type="range"].mus-range:focus-visible::-webkit-slider-thumb {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+/*
+ * Focus visibility.
+ *
+ * Previously only range inputs had a :focus-visible style, so every link and
+ * button relied on the browser default, which is easy to lose against a dark
+ * surface. One rule covers the whole app; components can still override.
+ *
+ * :focus-visible (not :focus) so a mouse click does not paint a ring.
+ */
+:focus-visible {
+  outline: 2px solid var(--color-on);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Never remove the indicator outright — that is the failure this replaces. */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Honour a reduced-motion request for the animated shell. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

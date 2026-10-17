@@ -37,7 +37,7 @@ export function LibraryView() {
 
   return (
     <div className="animate-fade-up pt-6">
-      <h2 className="text-2xl font-bold tracking-tight text-on">Your Library</h2>
+      <h1 className="text-2xl font-bold tracking-tight text-on">Your Library</h1>
 
       <div className="my-5 flex flex-wrap items-center gap-2">
         {FILTERS.map(({ id, label, icon: Icon }) => (

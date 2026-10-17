@@ -53,7 +53,7 @@ function StationCard({ track }: { track: Track }) {
             }}
           />
         ) : (
-          <RadioIcon size={20} className="text-white/40" />
+          <RadioIcon size={20} className="text-muted" />
         )}
       </div>
 

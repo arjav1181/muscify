@@ -24,6 +24,8 @@ interface UiState {
   toasts: Toast[];
   modal: ModalKind;
   queueOpen: boolean;
+  /** Full-screen Now Playing overlay. */
+  nowPlayingOpen: boolean;
   lyricsOpen: boolean;
   contextMenu: { x: number; y: number; items: ContextItem[] } | null;
 
@@ -37,6 +39,7 @@ interface UiState {
   openModal: (modal: Exclude<ModalKind, null>) => void;
   closeModal: () => void;
   setQueueOpen: (open: boolean) => void;
+  setNowPlayingOpen: (open: boolean) => void;
   setLyricsOpen: (open: boolean) => void;
   openContextMenu: (x: number, y: number, items: ContextItem[]) => void;
   closeContextMenu: () => void;
@@ -59,6 +62,7 @@ export const useUi = create<UiState>((set) => ({
   toasts: [],
   modal: null,
   queueOpen: false,
+  nowPlayingOpen: false,
   lyricsOpen: false,
   contextMenu: null,
 
@@ -80,6 +84,7 @@ export const useUi = create<UiState>((set) => ({
   openModal: (modal) => set({ modal }),
   closeModal: () => set({ modal: null }),
   setQueueOpen: (queueOpen) => set({ queueOpen }),
+  setNowPlayingOpen: (nowPlayingOpen) => set({ nowPlayingOpen }),
   setLyricsOpen: (lyricsOpen) => set({ lyricsOpen }),
   openContextMenu: (x, y, items) =>
     // Clamp so the menu never opens off-screen near an edge.

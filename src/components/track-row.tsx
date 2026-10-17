@@ -106,7 +106,7 @@ export function TrackRow({
               }}
             />
           ) : (
-            <ImageOff size={14} className="mx-auto mt-3 text-white/40" />
+            <ImageOff size={14} className="mx-auto mt-3 text-muted" />
           )}
         </button>
       ) : null}

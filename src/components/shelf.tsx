@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { KeyboardEvent, ReactNode } from "react";
 import { AlertTriangle, Play } from "lucide-react";
 import type { Track } from "@/lib/types";
 import { TrackCard as DefaultTrackCard } from "@/components/track-card";
@@ -78,16 +78,100 @@ export function Shelf({
       ) : tracks.length === 0 ? (
         <p className="py-4 text-sm text-dim">{emptyLabel ?? "Nothing here right now."}</p>
       ) : (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-          {tracks.map((track, i) =>
-            renderCard ? (
-              <span key={`${track.source}:${track.id}:${i}`}>{renderCard(track, i)}</span>
-            ) : (
-              <DefaultTrackCard key={`${track.source}:${track.id}:${i}`} track={track} index={i} />
-            ),
-          )}
+        /*
+         * A real `grid`/`gridcell` structure with arrow-key traversal.
+         *
+         * A plain scroll container gives no keyboard route to the items past
+         * the fold: the accessibility tree is a flat list with no row count,
+         * and a keyboard user cannot tell there is more to the right. This is
+         * the pattern captured from Spotify's own shelves in
+         * docs/ux-grounding.md, and it was documented but never built until now.
+         */
+        <div
+          role="grid"
+          aria-label={title}
+          aria-rowcount={1}
+          onKeyDown={onGridKeyDown}
+          className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+        >
+          {tracks.map((track, i) => (
+            <div
+              key={`${track.source}:${track.id}:${i}`}
+              role="gridcell"
+              aria-colindex={i + 1}
+              data-shelf-cell
+              className="min-w-0"
+            >
+              {renderCard ? (
+                renderCard(track, i)
+              ) : (
+                <DefaultTrackCard track={track} index={i} />
+              )}
+            </div>
+          ))}
         </div>
       )}
     </section>
   );
+}
+
+/**
+ * Arrow-key traversal across a shelf.
+ *
+ * Left/Right move one cell, Up/Down move a whole row, Home/End jump to the
+ * ends. The column count is measured from the live layout rather than
+ * hardcoded, because this component renders two across on a phone and five on
+ * a desktop, and the row stride has to follow the actual layout or Up jumps
+ * into the wrong place.
+ */
+function onGridKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+  const { key } = event;
+  if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].includes(key)) return;
+
+  const cells = Array.from(event.currentTarget.querySelectorAll<HTMLElement>("[data-shelf-cell]"));
+  if (cells.length === 0) return;
+
+  const active = document.activeElement as HTMLElement | null;
+  const activeCell = active?.closest<HTMLElement>("[data-shelf-cell]");
+  const from = activeCell ? cells.indexOf(activeCell) : -1;
+
+  // Derive columns from where the first row of cells actually sits.
+  const firstTop = cells[0]!.getBoundingClientRect().top;
+  let columns = cells.findIndex((c) => Math.abs(c.getBoundingClientRect().top - firstTop) > 1);
+  if (columns < 1) columns = cells.length;
+
+  let next: number;
+  switch (key) {
+    case "ArrowLeft":
+      next = from <= 0 ? cells.length - 1 : from - 1;
+      break;
+    case "ArrowRight":
+      next = from < 0 || from === cells.length - 1 ? 0 : from + 1;
+      break;
+    case "ArrowUp":
+      // Clamp to the same column, wrapping into the previous row's end.
+      next = from - columns;
+      if (next < 0) next = from < 0 ? 0 : (from % columns) - columns;
+      if (next < 0) next += cells.length;
+      break;
+    case "ArrowDown":
+      next = from < 0 ? 0 : from + columns;
+      if (next >= cells.length) next = from < 0 ? 0 : from % columns;
+      break;
+    case "Home":
+      next = 0;
+      break;
+    default:
+      next = cells.length - 1;
+  }
+
+  if (next < 0 || next >= cells.length) return;
+  event.preventDefault();
+
+  // Focus the cell's own control rather than the wrapper, so Enter/Space work.
+  const target = cells[next]!;
+  const focusable = target.querySelector<HTMLElement>(
+    "button, a[href], [tabindex]:not([tabindex='-1'])",
+  );
+  (focusable ?? target).focus();
 }
