@@ -81,6 +81,10 @@ export function SearchResults({
         </p>
       ) : results.length || artists.length || albums.length || playlists.length ? (
         <div className="space-y-10">
+          {/* The page's own heading. Result groups below are h2. */}
+          <h1 className="sr-only">
+            {query ? `Search results for ${query}` : "Search results"}
+          </h1>
           {artists.length ? (
             <section>
               <h2 className="mb-3 text-lg font-bold text-on">Artists</h2>

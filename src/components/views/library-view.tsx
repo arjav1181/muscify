@@ -91,6 +91,7 @@ function Playlists() {
     return (
       <EmptyState
         icon={LibraryIcon}
+        headingLevel={2}
         title="Your library is empty"
         body="Create a playlist to start collecting the music you love."
         action={{ label: "Create playlist", run: () => openModal({ kind: "create-playlist" }) }}
@@ -352,16 +353,24 @@ export function EmptyState({
   title,
   body,
   action,
+  headingLevel = 1,
 }: {
   icon: typeof Music2;
   title: string;
   body: string;
   action?: { label: string; run: () => void };
+  /**
+   * The empty state stands in for the page's content, so its title is the
+   * top-level heading by default. Pass 2 when it renders inside a section that
+   * already owns an h1.
+   */
+  headingLevel?: 1 | 2 | 3;
 }) {
+  const Heading = `h${headingLevel}` as "h1" | "h2" | "h3";
   return (
     <div className="py-16 text-center">
       <Icon size={32} className="mx-auto mb-4 text-dim" />
-      <h3 className="mb-2 text-lg font-semibold text-on">{title}</h3>
+      <Heading className="mb-2 text-lg font-semibold text-on">{title}</Heading>
       <p className="mx-auto mb-6 max-w-sm text-sm text-sub">{body}</p>
       {action ? (
         <button

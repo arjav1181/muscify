@@ -143,7 +143,7 @@ export function RadioView() {
 
   return (
     <div className="animate-fade-up pt-6">
-      <h2 className="text-2xl font-bold tracking-tight text-on">Radio</h2>
+      <h1 className="text-2xl font-bold tracking-tight text-on">Radio</h1>
       <p className="mt-1 mb-5 text-sm text-sub">
         Live, always-on streams. Radio never ends — it just rolls into the next station.
       </p>

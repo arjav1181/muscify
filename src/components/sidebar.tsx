@@ -30,7 +30,7 @@ export function Sidebar() {
       className="flex h-full w-full shrink-0 flex-col overflow-y-auto md:w-[260px]"
     >
       <div className="flex items-center gap-2 px-3 py-3">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex min-h-11 items-center gap-2">
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-spotify text-black">
             <Compass size={18} strokeWidth={2.5} />
           </span>
@@ -93,7 +93,7 @@ export function Sidebar() {
             type="button"
             onClick={() => openModal({ kind: "create-playlist" })}
             aria-label="Create playlist"
-            className="rounded-full p-1 text-dim transition hover:text-on"
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-full text-dim transition hover:text-on"
           >
             <Plus size={16} />
           </button>
