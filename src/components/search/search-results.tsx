@@ -75,16 +75,18 @@ export function SearchResults({
         </div>
       ) : null}
 
+      {/* The page's own heading, present in every state — an empty result set
+          or a failed lookup is still a page. Result groups below are h2. */}
+      <h1 className="sr-only">
+        {query ? `Search results for ${query}` : "Search"}
+      </h1>
+
       {loading && !results.length ? (
         <p className="flex items-center gap-2 py-8 text-sm text-sub">
           <Loader2 size={16} className="animate-spin" /> Searching…
         </p>
       ) : results.length || artists.length || albums.length || playlists.length ? (
         <div className="space-y-10">
-          {/* The page's own heading. Result groups below are h2. */}
-          <h1 className="sr-only">
-            {query ? `Search results for ${query}` : "Search results"}
-          </h1>
           {artists.length ? (
             <section>
               <h2 className="mb-3 text-lg font-bold text-on">Artists</h2>
