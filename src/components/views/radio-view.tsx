@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Radio as RadioIcon, Search, Wifi, X } from "lucide-react";
-import { artFallback } from "@/lib/art";
+import { Search, Wifi, X } from "lucide-react";
+import { StationArt } from "@/components/station-art";
 import type { RadioRegion, Track } from "@/lib/types";
 import { usePlayer } from "@/store/player-store";
 import { useResource } from "@/hooks/use-resource";
@@ -35,27 +35,13 @@ function StationCard({ track }: { track: Track }) {
         isCurrent ? toggle() : playTracks([track], 0, { kind: "station", id: track.id })
       }
       onContextMenu={(e) => trackMenu(e, track)}
+      // Without this the accessible name was the concatenation of every child
+      // node, producing things like "Radio Bollywood Gaane PuraneIndian Radio".
+      aria-label={`Play ${track.title}`}
+      aria-current={isCurrent ? "true" : undefined}
       className="group flex items-center gap-4 rounded-lg bg-surface p-3 text-left transition-colors hover:bg-highlight"
     >
-      <div
-        className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded"
-        style={{ background: artFallback(track) }}
-      >
-        {track.cover ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={track.cover}
-            alt=""
-            loading="lazy"
-            className="h-full w-full object-cover"
-            onError={(e) => {
-              e.currentTarget.style.display = "none";
-            }}
-          />
-        ) : (
-          <RadioIcon size={20} className="text-muted" />
-        )}
-      </div>
+      <StationArt src={track.cover} name={track.title} />
 
       <div className="min-w-0 flex-1">
         <p className={`truncate text-sm font-semibold ${isCurrent ? "text-spotify" : "text-on"}`}>
