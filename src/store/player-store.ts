@@ -207,6 +207,15 @@ export const usePlayer = create<PlayerState>((set, get) => {
       const { queue, index, repeat, shuffle } = get();
       if (!queue.length) return;
 
+      // Bank the listen before moving on, so stats reflect what was actually
+      // heard. Capped at the track length: a track left paused overnight must
+      // not register eight hours of listening.
+      if (index >= 0 && index < queue.length) {
+        const track = queue[index];
+        const listened = Math.round(Math.min(get().position, track.duration ?? Infinity) * 1000);
+        useLibrary.getState().notePlay(track, listened);
+      }
+
       if (fromTrackEnd && repeat === "one") {
         set({ position: 0, isPlaying: true, needsGesture: false });
         return;

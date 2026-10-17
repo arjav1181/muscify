@@ -107,6 +107,36 @@ export function useTrackMenu() {
       });
     }
 
+    // Taste controls, appended after navigation so the destructive-adjacent
+    // actions stay below the harmless ones.
+    const lib = useLibrary.getState();
+    if (lib.settings.tasteControls) {
+      const hidden = lib.isTrackHidden(track);
+      const snoozed = lib.isTrackSnoozed(track);
+      const toast = useUi.getState().toast;
+
+      items.push({
+        label: hidden ? "Unhide song" : "Hide song",
+        run: () => {
+          if (hidden) lib.unhideTrack(track);
+          else lib.hideTrack(track);
+          toast(hidden ? "Song unhidden" : "Hidden from recommendations", "success");
+        },
+      });
+
+      items.push({
+        label: snoozed ? "Remove snooze" : "Snooze for 30 days",
+        run: () => {
+          if (snoozed) lib.unsnoozeTrack(track);
+          else lib.snoozeTrack(track);
+          toast(
+            snoozed ? "Snooze removed" : "Snoozed for 30 days — it will come back",
+            "success",
+          );
+        },
+      });
+    }
+
     const href = sourceUrl(track);
     if (href) {
       items.push({

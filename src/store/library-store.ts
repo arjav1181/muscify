@@ -3,15 +3,31 @@
 import { create } from "zustand";
 import {
   DEFAULT_SETTINGS,
+  SNAPSHOT_VERSION,
   emptySnapshot,
   type LibrarySnapshot,
   type LikedEntry,
   type LibraryRepository,
   type Playlist,
   type RecentlyPlayed,
+  type SearchEntry,
   type Settings,
 } from "@/lib/persistence/types";
 import { LocalLibraryRepository } from "@/lib/persistence/local";
+import {
+  applyTasteFilter,
+  emptyTasteState,
+  hide as hideTrackIn,
+  isHiddenIn,
+  isSnoozed,
+  pruneSnoozed,
+  recordPlay,
+  snooze as snoozeTrackIn,
+  unhide as unhideTrackIn,
+  unsnooze as unsnoozeTrackIn,
+  type PlayEvent,
+  type TasteState,
+} from "@/lib/taste/taste";
 import { trackKey, type Track } from "@/lib/types";
 
 const MAX_RECENT = 100;
@@ -27,9 +43,36 @@ interface LibraryState {
   followedArtists: string[];
   followedPlaylists: string[];
   settings: Settings;
+  /** Hide / snooze / play log. See lib/taste. */
+  taste: TasteState;
+  /** Most-recent-first search queries. */
+  searchHistory: SearchEntry[];
 
   init: (repo?: LibraryRepository) => Promise<void>;
   reset: () => Promise<void>;
+
+  /** Records a completed listen for stats and taste weighting. */
+  notePlay: (track: Track, ms: number) => void;
+  /** `scope` defaults to "global"; pass a playlist/album key to scope it. */
+  hideTrack: (track: Track, scope?: string) => void;
+  unhideTrack: (track: Track, scope?: string) => void;
+  snoozeTrack: (track: Track, days?: number) => void;
+  unsnoozeTrack: (track: Track) => void;
+  pruneTaste: () => void;
+  noteSearch: (query: string) => void;
+  clearSearchHistory: () => void;
+
+  /** True when the track is hidden here or globally. */
+  isTrackHidden: (track: Track, contextId?: string) => boolean;
+  /** True while a snooze is in force. */
+  isTrackSnoozed: (track: Track) => boolean;
+  /** Applies hide/snooze/explicit rules to a candidate list. */
+  filterByTaste: <T extends { key: string; explicit?: boolean }>(
+    items: T[],
+    contextId?: string,
+  ) => T[];
+  /** Raw play log, oldest first. Private events included but flagged. */
+  playEvents: () => PlayEvent[];
 
   putTracks: (tracks: Track[]) => void;
   getTrack: (key: string) => Track | null;
@@ -72,7 +115,7 @@ export const useLibrary = create<LibraryState>((set, get) => {
   const snapshot = (): LibrarySnapshot => {
     const s = get();
     return {
-      version: 1,
+      version: SNAPSHOT_VERSION,
       catalog: s.catalog,
       playlists: s.playlists,
       liked: s.liked,
@@ -80,6 +123,8 @@ export const useLibrary = create<LibraryState>((set, get) => {
       followedArtists: s.followedArtists,
       followedPlaylists: s.followedPlaylists,
       settings: s.settings,
+      taste: s.taste,
+      searchHistory: s.searchHistory,
     };
   };
 
@@ -115,6 +160,8 @@ export const useLibrary = create<LibraryState>((set, get) => {
     followedArtists: [],
     followedPlaylists: [],
     settings: { ...DEFAULT_SETTINGS },
+    taste: emptyTasteState(),
+    searchHistory: [],
 
     init: async (custom) => {
       repo = custom ?? new LocalLibraryRepository();
@@ -129,6 +176,8 @@ export const useLibrary = create<LibraryState>((set, get) => {
         followedArtists: data.followedArtists,
         followedPlaylists: data.followedPlaylists,
         settings: data.settings,
+        taste: data.taste,
+        searchHistory: data.searchHistory,
       });
     },
 
@@ -137,6 +186,88 @@ export const useLibrary = create<LibraryState>((set, get) => {
       const fresh = emptySnapshot();
       set({ ...fresh, ready: true });
     },
+
+    // ------------------------------------------------------------- taste
+
+    /**
+     * Records a completed listen.
+     *
+     * Called once per track when playback ends or the listener moves on, with
+     * the time actually spent on the track. Short skips are discarded by
+     * `recordPlay`, so this is safe to call unconditionally.
+     */
+    notePlay: (track: Track, ms: number) => {
+      const key = trackKey(track);
+      const s = get();
+      commit({ taste: recordPlay(s.taste, { key, at: Date.now(), ms }, s.settings.privateSession) });
+    },
+
+    hideTrack: (track: Track, scope = "global") => {
+      commit({ taste: hideTrackIn(get().taste, trackKey(track), scope) });
+    },
+
+    unhideTrack: (track: Track, scope?: string) => {
+      commit({ taste: unhideTrackIn(get().taste, trackKey(track), scope) });
+    },
+
+    snoozeTrack: (track: Track, days = 30) => {
+      commit({
+        taste: snoozeTrackIn(get().taste, trackKey(track), Date.now(), days * 86_400_000),
+      });
+    },
+
+    unsnoozeTrack: (track: Track) => {
+      commit({ taste: unsnoozeTrackIn(get().taste, trackKey(track)) });
+    },
+
+    /** Clears expired snoozes so the stored list cannot grow without bound. */
+    pruneTaste: () => {
+      const s = get();
+      const next = pruneSnoozed(s.taste);
+      if (next.snoozed.length !== s.taste.snoozed.length) commit({ taste: next });
+    },
+
+    // ------------------------------------------------------------ search
+
+    /**
+     * Records a submitted query, bumping an existing entry rather than
+     * appending a duplicate, and keeping the list most-recent-first.
+     */
+    noteSearch: (query: string) => {
+      const trimmed = query.trim().slice(0, 80);
+      if (!trimmed) return;
+      const key = trimmed.toLowerCase();
+      const s = get();
+      const existing = s.searchHistory.find((h) => h.query.toLowerCase() === key);
+      const rest = s.searchHistory.filter((h) => h.query.toLowerCase() !== key);
+      const entry: SearchEntry = {
+        query: trimmed,
+        at: Date.now(),
+        count: (existing?.count ?? 0) + 1,
+      };
+      const searchHistory = [entry, ...rest].sort((a, b) => b.at - a.at).slice(0, 12);
+      commit({ searchHistory });
+    },
+
+    clearSearchHistory: () => commit({ searchHistory: [] }),
+
+    isTrackHidden: (track, contextId) => isHiddenIn(get().taste, trackKey(track), contextId),
+
+    isTrackSnoozed: (track) => isSnoozed(get().taste, trackKey(track)),
+
+    filterByTaste: (items, contextId) => {
+      const s = get();
+      // Sources do not carry the explicit flag for every track, so fall back
+      // to whatever the local catalogue already knows about it.
+      const known = (key: string) => s.catalog[key]?.track.explicit === true;
+      return applyTasteFilter(items, s.taste, {
+        contextId,
+        excludeExplicit: s.settings.excludeExplicit,
+        isExplicit: known,
+      });
+    },
+
+    playEvents: () => get().taste.plays,
 
     putTracks: (tracks) => {
       if (!tracks.length) return;

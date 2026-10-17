@@ -1,10 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Search, X } from "lucide-react";
+import { Search, ShieldHalf, X } from "lucide-react";
 import { resolveMusicUrl } from "@/lib/api-client";
 import { usePlayer } from "@/store/player-store";
 import { useUi } from "@/store/ui-store";
+import { useLibrary } from "@/store/library-store";
 
 /**
  * Sticky header carrying the global search field.
@@ -75,6 +76,55 @@ export function TopBar() {
           </button>
         ) : null}
       </form>
+
+      <PrivateSessionToggle />
     </header>
+  );
+}
+
+/**
+ * Private Session.
+ *
+ * Lives in the top bar rather than a settings page because it is meant to be
+ * flipped *before* listening, in the same motion as pressing play — burying it
+ * would make it something nobody ever turns on.
+ *
+ * It stops plays being counted in stats and taste weighting. It does not hide
+ * them from recently-played: this is not a private mode, it is a taste
+ * control, and conflating the two would misrepresent what it does.
+ */
+function PrivateSessionToggle() {
+  const active = useLibrary((s) => s.settings.privateSession);
+  const updateSettings = useLibrary((s) => s.updateSettings);
+  const toast = useUi((s) => s.toast);
+
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        const next = !active;
+        updateSettings({ privateSession: next });
+        toast(
+          next
+            ? "Private Session on — new listens won't affect stats or recommendations"
+            : "Private Session off",
+          "success",
+        );
+      }}
+      aria-pressed={active}
+      title={
+        active
+          ? "Private Session is on. New listens are excluded from stats and recommendations."
+          : "Turn on Private Session to keep this listening out of your stats"
+      }
+      className={`ml-3 flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+        active
+          ? "border-green-400/60 bg-green-400/15 text-green-300"
+          : "border-line-strong text-dim hover:text-on"
+      }`}
+    >
+      <ShieldHalf size={14} aria-hidden />
+      <span className="hidden sm:inline">Private</span>
+    </button>
   );
 }

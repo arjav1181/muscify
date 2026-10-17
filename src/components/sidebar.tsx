@@ -1,17 +1,6 @@
 "use client";
 
-import {
-  Compass,
-  Heart,
-  Home,
-  Library as LibraryIcon,
-  ListMusic,
-  Plus,
-  Radio as RadioIcon,
-  Search,
-  Sparkles,
-  Timer,
-} from "lucide-react";
+import { BarChart3, Compass, Heart, Home, Library as LibraryIcon, ListMusic, Plus, Radio as RadioIcon, Search, Sparkles, Timer } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { artFallback } from "@/lib/art";
@@ -25,6 +14,7 @@ const NAV = [
   { href: "/search", label: "Search", icon: Search },
   { href: "/library", label: "Your Library", icon: LibraryIcon },
   { href: "/radio", label: "Radio", icon: RadioIcon },
+  { href: "/stats", label: "Listening stats", icon: BarChart3 },
 ];
 
 export function Sidebar() {
