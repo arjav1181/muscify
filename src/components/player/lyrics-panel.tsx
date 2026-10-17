@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { AlertTriangle, Loader2, X } from "lucide-react";
 import { activeLineIndex, useLyrics } from "@/hooks/use-lyrics";
+import { buildWordTimings, wordProgress } from "@/lib/lyrics/word-sync";
 import { useLibrary } from "@/store/library-store";
 import { usePlayer } from "@/store/player-store";
 import { useUi } from "@/store/ui-store";
@@ -22,6 +23,14 @@ export function LyricsPanel() {
   const setLyricsOpen = useUi((s) => s.setLyricsOpen);
 
   const { result, loading, error } = useLyrics(enabled ? track : null);
+  const karaoke = useLibrary((s) => s.settings.karaokeLyrics);
+
+  // Dependencies must name `result`, not `result.lines` — the compiler infers
+  // the whole object and rejects a narrower list.
+  const timings = useMemo(
+    () => (result?.lines.length ? buildWordTimings(result.lines) : []),
+    [result],
+  );
 
   const containerRef = useRef<HTMLDivElement>(null);
   const shouldAutoScroll = useRef(true);
@@ -87,10 +96,32 @@ export function LyricsPanel() {
                   i === active ? "text-on" : "text-sub/40"
                 }`}
               >
-                {line.text}
+                {i === active && karaoke
+                  ? // Word-level sweep. Timings are interpolated within each
+                    // line from LRCLIB's line timestamps, so they re-anchor
+                    // every line instead of drifting.
+                    timings
+                      .filter((w) => w.lineIndex === i)
+                      .map((word) => (
+                        <span key={word.start} className="relative inline-block">
+                          <span className="text-sub/40">{word.word}</span>
+                          <span
+                            aria-hidden
+                            className="absolute inset-0 overflow-hidden whitespace-pre text-on"
+                            style={{ width: `${wordProgress(word, position) * 100}%` }}
+                          >
+                            {word.word}
+                          </span>
+                          {" "}
+                        </span>
+                      ))
+                  : line.text}
               </p>
             ))}
-            <p className="pt-4 text-xs text-dim">Source: {result.source}</p>
+            <p className="pt-4 text-xs text-dim">
+              Source: {result.source}
+              {karaoke ? " · word timing interpolated from line timestamps, not forced-aligned" : null}
+            </p>
           </div>
         ) : result?.plain ? (
           <p className="text-sm leading-relaxed whitespace-pre-wrap text-sub">{result.plain}</p>

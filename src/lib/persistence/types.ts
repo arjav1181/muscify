@@ -75,6 +75,8 @@ export interface Settings {
   excludeExplicit: boolean;
   /** Show the Hide / Snooze controls in track menus. */
   tasteControls: boolean;
+  /** Word-by-word sweep over synced lyrics. Timings are interpolated. */
+  karaokeLyrics: boolean;
   /** Compact list density. */
   compactMode: boolean;
   /** Accent colour key from the theme palette. */
@@ -97,6 +99,7 @@ export const DEFAULT_SETTINGS: Settings = {
   privateSession: false,
   excludeExplicit: false,
   tasteControls: true,
+  karaokeLyrics: true,
   compactMode: false,
   accent: "spotify",
   sleepTimerMinutes: 0,
