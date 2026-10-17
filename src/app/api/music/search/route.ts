@@ -5,7 +5,7 @@ import {
   searchDeezerAlbums,
   searchDeezerArtists,
 } from "@/lib/sources/deezer";
-import { searchChannels, hasYoutubeKey } from "@/lib/sources/youtube";
+import { searchArtists, hasYoutubeKey } from "@/lib/sources/youtube";
 import { allStations, search } from "@/lib/sources";
 import type { RadioRegion, SearchTab } from "@/lib/types";
 
@@ -76,7 +76,7 @@ async function artists(q: string) {
 
   if (hasYoutubeKey()) {
     try {
-      const channels = await searchChannels(q, 10);
+      const { results: channels, verified } = await searchArtists(q, 10);
       results.push(
         ...channels.map((c) => ({
           source: "youtube",
@@ -88,6 +88,12 @@ async function artists(q: string) {
           videoCount: c.videoCount,
         })),
       );
+      // Say so rather than presenting an unfiltered channel list as artists.
+      if (!verified && channels.length > 0) {
+        errors.push(
+          "youtube: no channel could be confirmed as a music channel, so these results are unfiltered",
+        );
+      }
     } catch (e) {
       errors.push(`youtube: ${message(e)}`);
     }

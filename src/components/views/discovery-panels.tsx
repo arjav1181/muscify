@@ -11,6 +11,7 @@ import {
   type TrackMeta,
 } from "@/lib/discovery/discovery";
 import { describeIntent, intentToQueries, parsePrompt } from "@/lib/discovery/prompt";
+import { buildWeights, personalise } from "@/lib/discovery/ranking";
 import { useLibrary } from "@/store/library-store";
 import { usePlayer } from "@/store/player-store";
 import { useUi } from "@/store/ui-store";
@@ -275,14 +276,28 @@ export function PromptPlaylist() {
   // changes. Not memoised: the list is at most ~30 items, so recomputing per
   // render is cheaper than tracking which slice of the store it depends on.
   const taste = useLibrary((s) => s.taste);
+  const catalog = useLibrary((s) => s.catalog);
   const excludeExplicit = useLibrary((s) => s.settings.excludeExplicit);
-  const filterByTaste = useLibrary((s) => s.filterByTaste);
-  void taste;
-  void excludeExplicit;
 
-  // Suppression is applied after results arrive: the search sources are remote
-  // and cannot know what this listener has hidden.
-  const tracks = filterByTaste(data ?? []);
+  /**
+   * Remote search returns whatever the provider thinks matches, in the
+   * provider's order — the same list for everyone. Ranking it here against the
+   * play log is what makes the shelf respond to what has actually been played.
+   */
+  const tracks = personalise(data ?? [], taste, {
+    ...buildWeights(
+      taste.plays,
+      (key) => {
+        const entry = catalog[key];
+        if (!entry) return undefined;
+        return {
+          artist: entry.track.artist,
+          language: entry.track.language,
+        };
+      },
+    ),
+    excludeExplicit,
+  });
 
   const submit = (value: string) => {
     const q = value.trim();

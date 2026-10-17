@@ -34,7 +34,11 @@ interface YoutubeItem {
     videoCount?: string;
     hiddenSubscriberCount?: boolean;
     resourceId?: { playlistId?: string };
-    thumbnails?: Record<string, { url?: string }>;
+    /** Present on music videos: the credited artist, not the uploader. */
+    topicDetails?: { musicArtistName?: string; musicGenre?: string[] };
+    /** Only returned when statistics are requested and the caller has quota. */
+    statistics?: { viewCount?: string };
+    thumbnails?: Record<string, { url?: string; width?: number; height?: number }>;
   };
 }
 
@@ -205,7 +209,110 @@ export interface ChannelResult {
   description: string;
 }
 
-/** YouTube "channels" search stands in for artists — these sources have no artist entity. */
+/**
+ * YouTube's guide category for music channels.
+ *
+ * YouTube channels carry a `categoryId`, and music channels are categorised as
+ * "Music", id `10`. That is the real signal this whole function exists for: a
+ * channel search returns every channel whose name matches, so "pritam" surfaces
+ * gaming and vlog channels alongside musicians.
+ *
+ * The `categoryId` *filter* parameter on channels.list is deprecated, but the
+ * field is still returned in the snippet, so it is read rather than filtered on.
+ */
+const MUSIC_CATEGORY_ID = "10";
+
+/**
+ * Batch-resolves channel categories.
+ *
+ * channels.list accepts up to 50 comma-separated ids and costs one quota unit,
+ * so one call covers a whole page of candidates. A failure returns an empty map
+ * rather than throwing, because the caller treats "unknown category" as
+ * "not confirmed" and falls back rather than hiding every result.
+ */
+async function channelCategories(ids: string[]): Promise<Map<string, { categoryId?: string; topics: string[] }>> {
+  const unique = [...new Set(ids)].filter(Boolean).slice(0, 50);
+  const out = new Map<string, { categoryId?: string; topics: string[] }>();
+  if (unique.length === 0) return out;
+
+  try {
+    const data = await ytFetch<{
+      items?: {
+        id?: string;
+        snippet?: { categoryId?: string };
+        topicDetails?: { topicCategories?: string[] };
+      }[];
+    }>("channels", { part: "snippet,topicDetails", id: unique.join(",") }, 600);
+
+    for (const item of data.items ?? []) {
+      if (!item.id) continue;
+      out.set(item.id, {
+        categoryId: item.snippet?.categoryId,
+        topics: item.topicDetails?.topicCategories ?? [],
+      });
+    }
+  } catch {
+    // Unknown category is treated as unconfirmed, not as a hard failure.
+  }
+
+  return out;
+}
+
+/**
+ * True when a channel is verifiably a music channel.
+ *
+ * The category is authoritative. Free-form topic categories are accepted as a
+ * secondary signal because a lot of independent musicians never set a guide
+ * category but do describe themselves as music.
+ */
+function isMusicChannel(
+  info: { categoryId?: string; topics: string[] } | undefined,
+): boolean {
+  if (!info) return false;
+  if (info.categoryId === MUSIC_CATEGORY_ID) return true;
+  return info.topics.some((topic) => /^music$/i.test(topic.trim()));
+}
+
+/**
+ * Artist search.
+ *
+ * YouTube has no artist entity, so a channel search stands in for one. The
+ * problem is that channels are not artists: searching "pritam" returns any
+ * channel with that word in its name, which is how gaming and vlog channels end
+ * up in the artists tab.
+ *
+ * Two steps fix it:
+ *  1. Take channel-search candidates, which keeps ids routable to a real
+ *     channel page.
+ *  2. Resolve each candidate's guide category in one batched call and keep only
+ *     music channels.
+ *
+ * If the category check confirms nothing — an obscure artist who never set a
+ * category — the unfiltered results are returned rather than an empty list, and
+ * the caller is told the result is unverified so the UI can say so.
+ */
+export async function searchArtists(
+  query: string,
+  max = 12,
+): Promise<{ results: ChannelResult[]; verified: boolean }> {
+  const candidates = await searchChannels(query, Math.min(25, Math.max(max * 2, 10)));
+
+  if (candidates.length === 0) return { results: [], verified: true };
+
+  const categories = await channelCategories(candidates.map((c) => c.id));
+
+  const verified = candidates.filter((c) => isMusicChannel(categories.get(c.id)));
+  const source = verified.length > 0 ? verified : candidates;
+
+  return {
+    results: source.slice(0, max),
+    // False means the category could not confirm anything, so the list is a
+    // best-effort answer rather than a filtered one.
+    verified: verified.length > 0,
+  };
+}
+
+/** Raw channel search. Kept as the imprecise fallback for {@link searchArtists}. */
 export async function searchChannels(query: string, max = 12): Promise<ChannelResult[]> {
   const data = await ytFetch(
     "search",
