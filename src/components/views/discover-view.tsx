@@ -197,7 +197,13 @@ function RelatedArtistsRail() {
  * source behind it rather than implying Spotify-grade personalisation.
  */
 export function DiscoverView() {
-  const hasHistory = useLibrary((s) => s.recentlyPlayed.length > 0);
+  // Gated on the same record the discovery panels read. This used to test
+  // `recentlyPlayed`, which is a different log — a listener whose history came
+  // from the v1 migration, or whose play events were pruned, would see the
+  // cold-start copy while their stats page had plenty to show.
+  const hasHistory = useLibrary(
+    (s) => s.taste.plays.some((play) => !play.private && play.ms >= 30_000),
+  );
 
   return (
     <div className="animate-fade-up pt-6">
