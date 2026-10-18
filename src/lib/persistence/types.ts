@@ -64,6 +64,13 @@ export interface Settings {
   pauseOnBlur: boolean;
   /** Queue up similar tracks when the queue runs dry. */
   autoplaySimilar: boolean;
+  /**
+   * Trim sources that play far louder than the running reference.
+   *
+   * Radio only, like the equaliser, and for the same reason: it is a gain stage
+   * in a graph this app owns, and third-party iframes are not.
+   */
+  normaliseLoudness: boolean;
   /** Resolve and show lyrics when a track starts. */
   lyricsEnabled: boolean;
   /**
@@ -95,6 +102,7 @@ export const DEFAULT_SETTINGS: Settings = {
   autoplay: true,
   pauseOnBlur: false,
   autoplaySimilar: true,
+  normaliseLoudness: true,
   lyricsEnabled: true,
   privateSession: false,
   excludeExplicit: false,

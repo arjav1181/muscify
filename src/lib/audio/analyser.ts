@@ -21,6 +21,7 @@
  */
 
 import { TempoEstimator } from "./tempo.ts";
+import { createNormalizer, dbToGain } from "./normalize.ts";
 
 /** Rolling measurements for whatever is currently playing. */
 export interface AudioFeatures {
@@ -89,6 +90,16 @@ export class AudioAnalyser {
   private ctx: AudioContext | null = null;
   private input: MediaElementAudioSourceNode | null = null;
   private eq: BiquadFilterNode[] = [];
+  /**
+   * Loudness trim, between the EQ and the analysis tap.
+   *
+   * Placed after the EQ deliberately: the correction is computed from the
+   * signal the listener actually hears, so equalising first and measuring after
+   * is the only order that can produce the right number.
+   */
+  private normaliseGain: GainNode | null = null;
+  private normaliser = createNormalizer();
+  private normalising = false;
   private analyser: AnalyserNode | null = null;
   private element: HTMLAudioElement | null = null;
 
@@ -159,12 +170,17 @@ export class AudioAnalyser {
       // A little smoothing keeps the loudness meter from flickering per frame.
       this.analyser.smoothingTimeConstant = 0.65;
 
-      // input → EQ chain → analyser → speakers.
+      // input → EQ chain → loudness trim → analyser → speakers.
+      this.normaliseGain = this.ctx.createGain();
+      this.normaliseGain.gain.value = 1;
+
       let node: AudioNode = this.input;
       for (const band of this.eq) {
         node.connect(band);
         node = band;
       }
+      node.connect(this.normaliseGain);
+      node = this.normaliseGain;
       node.connect(this.analyser);
       this.analyser.connect(this.ctx.destination);
 
@@ -188,9 +204,11 @@ export class AudioAnalyser {
     // the element keeps its association for a future attach.
     this.input?.disconnect();
     for (const band of this.eq) band.disconnect();
+    this.normaliseGain?.disconnect();
     this.analyser?.disconnect();
     this.input = null;
     this.eq = [];
+    this.normaliseGain = null;
     this.analyser = null;
     this.prevSpectrum = null;
     this.reset();
@@ -201,6 +219,7 @@ export class AudioAnalyser {
     this.raf = 0;
     this.input?.disconnect();
     this.eq = [];
+    this.normaliseGain = null;
     this.analyser = null;
     this.input = null;
     this.element = null;
@@ -211,6 +230,45 @@ export class AudioAnalyser {
     this.tempo.reset();
     this.fluxMean = 0;
     this.lastOnsetAt = 0;
+  }
+
+  /**
+   * Turns loudness normalisation on or off.
+   *
+   * Off means a gain of exactly 1, not "stop updating": the reference keeps
+   * learning either way, so switching it on mid-listen does not have to wait
+   * for a fresh measurement before doing anything. That is the difference
+   * between a toggle and a switch someone has to think about.
+   */
+  setNormalisation(enabled: boolean): void {
+    this.normalising = enabled;
+    if (!enabled) {
+      this.normaliser.reset();
+      if (this.normaliseGain) this.normaliseGain.gain.value = 1;
+    }
+  }
+
+  /** Whether loudness normalisation is currently engaged. */
+  get isNormalising(): boolean {
+    return this.normalising;
+  }
+
+  /**
+   * Feeds one RMS measurement to the normaliser and applies the correction.
+   *
+   * `setTargetAtTime` rather than a direct assignment: a per-tick step change
+   * on a gain node is audible as a click, and this one runs at 30Hz.
+   */
+  private applyLoudnessTrim(energy: number): void {
+    if (!this.normalising || !this.normaliseGain) return;
+    if (!Number.isFinite(energy) || energy <= 0) return;
+
+    const db = this.normaliser.observe(energy);
+    const target = dbToGain(db);
+    if (!Number.isFinite(target)) return;
+
+    const now = this.ctx?.currentTime ?? 0;
+    this.normaliseGain.gain.setTargetAtTime(target, now, 0.05);
   }
 
   /** Clamps a gain to the range the band nodes accept. */
@@ -281,6 +339,12 @@ export class AudioAnalyser {
     const energy = rms(this.timeBuf);
     const brightness = centroid(this.freqBuf, ctx.sampleRate, analyser.fftSize);
     const flux = this.pushFlux(this.freqBuf, now);
+
+    // Loudness trim runs off the *raw* RMS, before the adaptive normalisation
+    // below rescales energy for reporting. Normalising the measurement and then
+    // correcting the signal from it would be circular: the trim would chase its
+    // own effect.
+    this.applyLoudnessTrim(energy);
 
     // Normalise against the running peak so energy means "loud relative to what
     // this source has been doing", not an absolute dB figure.

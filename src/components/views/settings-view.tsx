@@ -277,9 +277,11 @@ export function SettingsView() {
           />
         </Row>
         <Row label="Loudness normalisation" hint={describeNormalization()}>
-          <span className="rounded-full border border-line-strong px-3 py-1 text-xs text-muted">
-            Radio only
-          </span>
+          <Toggle
+            checked={settings.normaliseLoudness}
+            onChange={(v) => update({ normaliseLoudness: v })}
+            label="Loudness normalisation"
+          />
         </Row>
         <Row label="Equalizer" hint="10-band EQ, applied to radio streams">
           <span className="rounded-full border border-line-strong px-3 py-1 text-xs text-muted">

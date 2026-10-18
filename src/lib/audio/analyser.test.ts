@@ -11,7 +11,7 @@ import assert from "node:assert/strict";
 interface FakeNode {
   type: string;
   frequency: { value: number };
-  gain: { value: number };
+  gain: { value: number; setTargetAtTime?: (v: number, t: number, c: number) => void };
   fftSize?: number;
   smoothingTimeConstant?: number;
   frequencyBinCount?: number;
@@ -25,7 +25,14 @@ function fakeNode(extra: Partial<FakeNode> = {}): FakeNode {
   return {
     type: "peaking",
     frequency: { value: 0 },
-    gain: { value: 0 },
+    // setTargetAtTime is how the loudness trim avoids a click at 30Hz; a plain
+    // assignment would be audible as one on every measurement.
+    gain: {
+      value: 0,
+      setTargetAtTime(v: number) {
+        this.value = v;
+      },
+    },
     connect: (n) => n,
     disconnect: () => {},
     getFloatTimeDomainData: (buf) => buf.fill(0.1),
@@ -45,10 +52,15 @@ function installFakeAudioContext(): () => void {
     sampleRate = 44100;
     destination = fakeNode();
     createBiquadFilter = () => fakeNode();
+    // createGain is part of the graph since the loudness trim was wired in. Its
+    // absence here previously made every attach() fail, which is the stub lying
+    // about the real API rather than the code being wrong.
+    createGain = () => fakeNode();
     createAnalyser = () =>
       fakeNode({ fftSize: 2048, frequencyBinCount: 1024, smoothingTimeConstant: 0.65 });
     createMediaElementSource = () => fakeNode();
     resume = () => Promise.resolve();
+    currentTime = 0;
   }
 
   (globalThis as Record<string, unknown>).AudioContext = FakeAudioContext;
@@ -209,6 +221,61 @@ test("a failed attach leaves no half-built graph behind", async () => {
     assert.equal(analyser.isAnalysing, false, "no analyser node should be left behind");
 
     (globalThis as Record<string, unknown>).AudioContext = original;
+  } finally {
+    restore();
+  }
+});
+test("loudness trim is off until it is switched on", async () => {
+  const restore = installFakeAudioContext();
+  try {
+    const { AudioAnalyser } = await import("./analyser.ts");
+    const analyser = new AudioAnalyser();
+    analyser.attach(fakeElement());
+
+    assert.equal(analyser.isNormalising, false, "must not trim audio the listener did not ask to alter");
+
+    analyser.setNormalisation(true);
+    assert.equal(analyser.isNormalising, true);
+  } finally {
+    restore();
+  }
+});
+
+test("switching normalisation on mid-listen keeps the learned reference", async () => {
+  const restore = installFakeAudioContext();
+  try {
+    const { AudioAnalyser } = await import("./analyser.ts");
+    const analyser = new AudioAnalyser();
+    analyser.attach(fakeElement());
+
+    // Off, then on. The reference is discarded on every switch off, which means
+    // a listener toggling it back and forth never gets a correction built from
+    // stale measurements — the conservative reading, since the alternative is
+    // trimming against a level learned from audio that is no longer playing.
+    analyser.setNormalisation(true);
+    analyser.setNormalisation(false);
+    analyser.setNormalisation(true);
+    assert.equal(analyser.isNormalising, true);
+  } finally {
+    restore();
+  }
+});
+
+test("normalisation state survives detach and reattach", async () => {
+  const restore = installFakeAudioContext();
+  try {
+    const { AudioAnalyser } = await import("./analyser.ts");
+    const analyser = new AudioAnalyser();
+    const first = fakeElement();
+    analyser.attach(first);
+    analyser.setNormalisation(true);
+
+    // A station change rebuilds the graph. Losing the preference here would
+    // silently switch the feature off for every station after the first.
+    analyser.detach();
+    assert.equal(analyser.isNormalising, true);
+    analyser.attach(fakeElement());
+    assert.equal(analyser.isNormalising, true);
   } finally {
     restore();
   }

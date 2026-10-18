@@ -8,6 +8,8 @@ import type { EngineHandlers, PlaybackEngine } from "@/lib/engines/types";
 import { planSwitch } from "@/lib/engines/switch-plan";
 import { createYoutubeEngine } from "@/lib/engines/youtube-engine";
 import { registerEngineControl } from "@/lib/engines/control";
+import { getAnalyser } from "@/lib/audio/analyser";
+import { useLibrary } from "@/store/library-store";
 import { usePlayer } from "@/store/player-store";
 import { trackKey, type SourceId } from "@/lib/types";
 
@@ -210,6 +212,23 @@ export function PlayerHost() {
     });
     return () => registerEngineControl(null);
   }, []);
+
+  /*
+   * Loudness normalisation.
+   *
+   * Lives here rather than in the equalizer panel because it must apply to a
+   * station that is already playing, whether or not the listener has ever opened
+   * Settings.
+   *
+   * The engine deliberately does not read the setting itself: an engine that
+   * imports the store cannot be unit-tested without loading the whole app. This
+   * effect also covers the first station, since it runs on mount before any
+   * audio exists, and the analyser retains the preference across graph rebuilds.
+   */
+  const normaliseLoudness = useLibrary((s) => s.settings.normaliseLoudness);
+  useEffect(() => {
+    getAnalyser().setNormalisation(normaliseLoudness);
+  }, [normaliseLoudness]);
 
   return (
     <div aria-hidden className="pointer-events-none fixed -left-[9999px] top-0 h-0 w-0 overflow-hidden">

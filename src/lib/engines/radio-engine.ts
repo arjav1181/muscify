@@ -170,6 +170,11 @@ export function createRadioEngine(handlers: EngineHandlers): PlaybackEngine {
           // outputs silence and the equalizer would take the music with it.
           audio.crossOrigin = "anonymous";
           getAnalyser().attach(audio);
+          // The analyser keeps whatever normalisation preference was last set on
+          // it. Deliberately not read from the settings store here: an engine
+          // that imports the store cannot be unit-tested without pulling in the
+          // whole app, and PlayerHost applies the preference on mount and on
+          // every change, which covers the first station too.
         } else {
           audio.removeAttribute("crossorigin");
         }
