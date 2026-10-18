@@ -61,13 +61,22 @@ export function looksLikeArtistName(name: string): boolean {
 }
 
 /**
- * Filters raw channel results down to plausible artist pages.
+ * Filters raw channel results down to plausible artist pages, and ranks them.
  *
- * Also ranks, because a name that merely *contains* the query is weaker evidence
- * than one that equals it. "Pritam" ranks above "Only Mathematics (by Pritam)"
- * even though both are real.
+ * Ranking is in three tiers, strongest evidence first:
+ *
+ *  1. The channel name matches the query exactly.
+ *  2. Subscriber count, within that tier.
+ *  3. Shorter name.
+ *
+ * Tier 2 is what actually separates the results. "Pritam" and "PRITAM GAMER"
+ * both match the query exactly, so tier 1 cannot tell them apart — but the
+ * composer's channel has millions of subscribers and the gaming channel has
+ * hundreds, and that difference is objective. Before subscriber counts were
+ * fetched, this list came back as "Pritam, PRITAM GAMER, Pritam vlogs" in
+ * alphabetical accident.
  */
-export function filterArtistCandidates<T extends { title: string }>(
+export function filterArtistCandidates<T extends { title: string; followers?: number }>(
   channels: T[],
   query: string,
 ): T[] {
@@ -80,8 +89,11 @@ export function filterArtistCandidates<T extends { title: string }>(
       const aExact = stripDecoration(an) === wanted ? 0 : 1;
       const bExact = stripDecoration(bn) === wanted ? 0 : 1;
       if (aExact !== bExact) return aExact - bExact;
-      // Then shortest first: among near-matches, "Pritam" is likelier to be the
-      // artist than "Pritam Official Channel Live Sessions 2024".
+
+      const aFollowers = a.followers ?? 0;
+      const bFollowers = b.followers ?? 0;
+      if (aFollowers !== bFollowers) return bFollowers - aFollowers;
+
       return an.length - bn.length;
     });
 }

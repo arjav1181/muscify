@@ -133,3 +133,48 @@ test("filtering is stable and does not mutate the input", () => {
 test("an empty result set is not a crash", () => {
   assert.deepEqual(filterArtistCandidates([], "pritam"), []);
 });
+test("subscriber count separates an exact match that is the artist", () => {
+  // The two situations tier 1 cannot distinguish: both names equal the query.
+  // Before follower counts were fetched this returned them in alphabetical
+  // accident, putting "PRITAM GAMER" second for "pritam".
+  const filtered = filterArtistCandidates(
+    [
+      { title: "PRITAM GAMER", followers: 312 },
+      { title: "Pritam", followers: 4_800_000 },
+    ],
+    "pritam",
+  );
+  assert.equal(filtered[0]!.title, "Pritam");
+});
+
+test("followers break a tie only within the same match tier", () => {
+  const filtered = filterArtistCandidates(
+    [
+      { title: "Pritam Live Sessions", followers: 9_000_000 },
+      { title: "Pritam", followers: 100 },
+    ],
+    "pritam",
+  );
+  // The exact match still wins: a huge channel that merely contains the query
+  // is weaker evidence than a small one that equals it.
+  assert.equal(filtered[0]!.title, "Pritam");
+});
+
+test("a missing follower count does not throw and is treated as zero", () => {
+  const filtered = filterArtistCandidates(
+    [
+      { title: "Pritam And The Pals", followers: 900 },
+      { title: "Pritam And The Ensemble" },
+      { title: "Pritam And The Duo" },
+    ],
+    "pritam and the",
+  );
+  // All three tie on tier 1 — none equals the query — so follower count decides,
+  // and the two with no count must sort as zero rather than NaN, which would
+  // make every comparison false and leave the order up to chance. Lengths are
+  // deliberately different so the third tier is not a tie.
+  assert.equal(filtered.length, 3);
+  assert.equal(filtered[0]!.title, "Pritam And The Pals");
+  assert.equal(filtered[1]!.title, "Pritam And The Duo");
+  assert.equal(filtered[2]!.title, "Pritam And The Ensemble");
+});

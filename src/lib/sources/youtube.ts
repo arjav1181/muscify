@@ -284,31 +284,48 @@ function bestThumb(
 /**
  * Artist search.
  *
- * YouTube has no artist entity. The primary path below reads the credited
- * artist off music videos, which is trustworthy because YouTube populates it
- * from content identification rather than from the uploader.
+ * This has been rewritten twice against evidence and the honest answer is now
+ * known: YouTube has no artist entity, and the field that looked like one no
+ * longer comes back.
  *
- * That path is not guaranteed to answer. It returns nothing whenever YouTube has
- * not identified the videos it returns, and in production on the "pritam" query
- * it returned nothing — so the fallback is what listeners actually saw.
+ * What was tried, and what the API actually said (checked against a live key):
  *
- * The fallback is a raw channel search, and a raw channel search is not an
- * artist list: it surfaces "Pritam - Topic" (an auto-generated upload archive),
- * "Pritam Officeal61" (a typo'd impersonator) and "Pritam Bhartwan Official
- * Channel" (a different person). Those are filtered by
- * `filterArtistCandidates`, which is a heuristic and removes the clearly-wrong
- * rather than proving who is a musician — see that file for what it does not
- * catch.
+ *  - `videoType=music` — HTTP 400, invalid enum. So did `music_video`; this API
+ *    version accepts only `any`, `episode` and `movie`.
+ *  - `topicDetails.musicArtistName` on a plain `type=video` search — present in
+ *    the response schema, and `null` on every single result.
  *
- * `verified` reports whether the confirmed path answered. It is false whenever
- * the caller is looking at the filtered fallback, and the route uses that to
- * label the results instead of presenting them as equally trustworthy.
+ * So the "confirmed artist" path does not exist against this API. What remains
+ * is a channel search plus `filterArtistCandidates`, which drops the things
+ * that are demonstrably not artists:
+ *
+ *  - " - Topic" archives. YouTube creates one per song for the rights-holder's
+ *    catalogue. It is an upload archive, not an artist page, and it was the
+ *    first result on screen for "pritam".
+ *  - Trailing-counter handles ("Pritam Officeal61") and bare underscored
+ *    handles.
+ *
+ * An exact channel-name match is then ranked first, so "Pritam" beats
+ * "Only Mathematics (by Pritam)".
+ *
+ * What this cannot do: tell a person from a channel. "PRITAM GAMER" and
+ * "Pritam vlogs" survive, because no name-based rule separates them, and the
+ * route says so in its response rather than presenting these as confirmed
+ * artist records. Being honest about that is worth more than a list that looks
+ * authoritative and is not.
  */
 export async function searchArtists(
   query: string,
   max = 12,
 ): Promise<{ results: ChannelResult[]; verified: boolean }> {
   try {
+    // No `videoType` parameter: every value this API version accepts is either
+    // meaningless here or rejected outright, and a rejected search.list is a
+    // wasted quota unit as well as a thrown error.
+    //
+    // `topicDetails` is still read opportunistically. It costs nothing to look,
+    // and if YouTube ever populates it again this upgrades to real artist
+    // records with no further change.
     const data = await ytFetch<{
       items?: {
         snippet?: {
@@ -322,7 +339,6 @@ export async function searchArtists(
       {
         part: "snippet",
         type: "video",
-        videoType: "music",
         maxResults: String(Math.min(50, Math.max(max * 3, 15))),
         q: query,
       },
@@ -362,6 +378,12 @@ export async function searchArtists(
   }
 
   const channels = await searchChannels(query, Math.max(max, 25));
+
+  // Subscriber counts before filtering, because they are what separates an
+  // exact-name match that is the artist from one that is a same-named channel
+  // belonging to someone else. channels.list takes up to 50 ids for one unit.
+  await enrichChannels(channels);
+
   return { results: filterArtistCandidates(channels, query).slice(0, max), verified: false };
 }
 
