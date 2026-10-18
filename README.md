@@ -289,3 +289,9 @@ npm run build    # production build
 npm run start    # serve the build
 npm run lint     # eslint
 ```
+
+---
+
+## License
+
+[MIT](./LICENSE) © 2026 arjav1181
