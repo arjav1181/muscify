@@ -20,10 +20,10 @@ interface ShelfProps {
 
 function Skeleton() {
   return (
-    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
       {Array.from({ length: 5 }).map((_, i) => (
         <div key={i} className="animate-pulse">
-          <div className="mb-4 aspect-square rounded bg-highlight" />
+          <div className="mb-3 aspect-square rounded-card bg-elevated" />
           <div className="mb-2 h-3 w-4/5 rounded bg-highlight" />
           <div className="h-3 w-3/5 rounded bg-highlight" />
         </div>
@@ -50,7 +50,7 @@ export function Shelf({
     <section className="mb-10">
       <div className="mb-4 flex items-end justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight text-on">{title}</h2>
+          <h2 className="text-xl font-bold tracking-tight text-on">{title}</h2>
           {subtitle ? <p className="mt-1 text-sm text-sub">{subtitle}</p> : null}
         </div>
         {onPlayAll && tracks.length ? (
@@ -92,7 +92,7 @@ export function Shelf({
           aria-label={title}
           aria-rowcount={1}
           onKeyDown={onGridKeyDown}
-          className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+          className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
         >
           {tracks.map((track, i) => (
             <div

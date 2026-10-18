@@ -105,7 +105,7 @@ export function TrackCard({
         type="button"
         onClick={handle}
         aria-label={`${isCurrent && isPlaying ? "Pause" : "Play"} ${track.title}`}
-        className="relative mb-4 block aspect-square w-full overflow-hidden rounded shadow-lg"
+        className="relative mb-3 block aspect-square w-full overflow-hidden rounded-card shadow-lg"
         style={{ background: artFallback(track) }}
       >
         {track.cover ? (

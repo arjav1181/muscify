@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { Play } from "lucide-react";
 import { useBrowse } from "@/hooks/use-music";
 import { usePlayer } from "@/store/player-store";
 import { Shelf } from "@/components/shelf";
@@ -51,13 +52,28 @@ export function HomeView() {
       <h1 className="mb-6 text-3xl font-bold tracking-tight text-on">{greeting}</h1>
 
       {featured.length ? (
-        <div className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        /*
+         * Square tiles with the title over the artwork and a play button that
+         * appears on hover.
+         *
+         * These were wide 80px-high rows in a three-column grid, which is a
+         * different shape to every other surface in the app and made the top of
+         * the home page read as a list of search results rather than as
+         * something you browse. The artwork carries the tile, so it needs a
+         * scrim behind the label — a white title over a bright album cover is
+         * otherwise unreadable and the contrast is whatever the cover happened
+         * to be.
+         */
+        <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7">
           {featured.map((track) => (
             <button
               key={`${track.source}:${track.id}`}
               type="button"
               onClick={() => playTracks([track], 0, { kind: "single", id: track.id })}
-              className="group relative flex items-center overflow-hidden rounded-md bg-highlight text-left transition-colors hover:bg-[#3e3e3e]"
+              className="group relative block aspect-square w-full overflow-hidden rounded-card
+                bg-elevated text-left shadow-[0_4px_12px_rgba(0,0,0,0.3)] transition
+                hover:bg-highlight focus-visible:outline-2 focus-visible:outline-offset-2
+                focus-visible:outline-white"
             >
               {track.cover ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -65,13 +81,32 @@ export function HomeView() {
                   src={track.cover}
                   alt=""
                   loading="lazy"
-                  className="h-20 w-20 shrink-0 object-cover"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform
+                    duration-300 group-hover:scale-[1.04]"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
                   }}
                 />
               ) : null}
-              <span className="line-clamp-2 p-4 text-base font-bold text-on">{track.title}</span>
+
+              {/* Scrim, heavier at the bottom where the title sits. */}
+              <span
+                aria-hidden
+                className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent"
+              />
+
+              <span className="absolute right-2 bottom-2 flex h-10 w-10 items-center justify-center
+                rounded-full bg-spotify text-black opacity-0 shadow-lg transition
+                group-hover:opacity-100 group-focus-visible:opacity-100">
+                <Play size={18} fill="currentColor" className="translate-x-px" aria-hidden />
+              </span>
+
+              <span className="absolute right-0 bottom-0 left-0 line-clamp-2 p-3 text-sm font-bold text-white">
+                {track.title}
+              </span>
+              {/* The play button is decorative — the tile itself is the control
+                  and its accessible name is the track title. */}
+              <span className="sr-only">Play {track.title}</span>
             </button>
           ))}
         </div>
