@@ -46,11 +46,30 @@ export function Shelf({
   // leave a permanent empty section in the layout.
   if (!loading && tracks.length === 0 && !(errors && errors.length)) return null;
 
+  /*
+    Labelled by its own heading, which is what makes this a landmark rather than
+    just a group.
+
+    From the REA capture of open.spotify.com (docs/rea-findings.md §1.2): every
+    content shelf there is a `region` with an accessible name — "Trending songs",
+    "Popular artists", "Popular albums and singles", "Popular radio",
+    "Featured Charts". A region only surfaces in a screen reader's landmark list
+    when it is named, so those names are real navigation between shelves rather
+    than decorative headings. muscify rendered the same headings and grids with
+    no name, so its Home page had no landmark list at all.
+
+    The id is derived from the title rather than generated, so a re-render
+    cannot orphan the aria-labelledby reference.
+  */
+  const headingId = `shelf-${slug(title)}`;
+
   return (
-    <section className="mb-10">
+    <section aria-labelledby={headingId} className="mb-10">
       <div className="mb-4 flex items-end justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold tracking-tight text-on">{title}</h2>
+          <h2 id={headingId} className="text-xl font-bold tracking-tight text-on">
+            {title}
+          </h2>
           {subtitle ? <p className="mt-1 text-sm text-sub">{subtitle}</p> : null}
         </div>
         {onPlayAll && tracks.length ? (
@@ -174,4 +193,21 @@ function onGridKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     "button, a[href], [tabindex]:not([tabindex='-1'])",
   );
   (focusable ?? target).focus();
+}
+
+/**
+ * Turns a shelf title into a stable id fragment.
+ *
+ * Diacritics are folded so "90s throwbacks" and "Pop/Rock" cannot produce an id
+ * that differs only by an accented character, and anything unexpected collapses
+ * to a separator so the result is always a valid HTML id.
+ */
+function slug(text: string): string {
+  return text
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
 }
