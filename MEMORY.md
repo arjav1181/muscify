@@ -3,7 +3,7 @@
 Handoff document for muscify. Read this before doing anything else in this repo —
 it records decisions, verified state, and the traps that have already cost time.
 
-**Last updated:** after `405d87d` (deployed READY as `dpl_ByM5GRv4fr9hGHm3yaSTzUh7pVjA`).
+**Last updated:** after `88a6316` (deployed READY as `dpl_38jbwNmPib7nNv7QHnMqVTNaua`).
 **Live site:** https://muscify-pearl.vercel.app
 
 ---
@@ -65,7 +65,24 @@ bad=[(k,m.get('resolved')) for k,m in d['packages'].items()
 print('non-public:', bad if bad else 'none')"
 ```
 
-CI's first step enforces this, so it now fails the build rather than the deploy.
+**The build host is the only oracle.** A subtler version of this trap cost a
+deploy this session. Rewriting the proxied URLs with a sloppy `split('/npm/')`
+dropped the leading slash and produced:
+
+```
+https://registry.npmjs.orgpreact-render-to-string/-/preact-render-to-string-6.5.11.tgz
+```
+
+Fetching every tarball and hash-checking them all **passed** — because this
+sandbox resolves essentially any hostname through its package proxy, so the
+malformed host resolved anyway and served a byte-identical tarball. The URL was
+wrong; the content was right. Only a check that *parses* the URL can tell those
+apart, so the audit must use `urlparse` and require scheme, host **and** a path
+beginning with `/` — not a string prefix test and not a successful fetch.
+
+CI's first step enforces the non-proxied case, so it fails the build rather than
+the deploy. It does not catch a malformed-but-npmjs-prefixed URL; only the build
+host does.
 
 ### 3.2 `/tmp/opencode` is wiped periodically
 
@@ -150,7 +167,13 @@ dies with "Authentication failed".
 Only claim things on this list as working.
 
 ### Verified live on the deployed site
-- Home, Library, Radio, Podcasts, Settings all render; **zero console errors**
+- Home, Library, Radio, Podcasts, Settings all render; **zero JS errors**
+- Accounts, unconfigured: `/api/auth/session` → 404 (not 500), no dead `/signin`
+  link, Account row says accounts are not configured. The default deployment is
+  behaviourally unchanged.
+- Auth.js + Postgres verified against a **real Postgres 16**: 9 integration tests
+  covering the double-encoding guard, identity namespacing, no-email-merge, and
+  device/user table isolation. Run with `MUSCIFY_DATABASE_URL` set.
 - **Podcasts**: `/podcasts` → search returns 18 shows + episodes (MrBallen,
   Rotten Mango, Black Girl Gone, Crimes of Reddit, True Crime Retold)
 - **Artist search**: "pritam" → `Pritam` first at 1.46M followers; topic
@@ -166,7 +189,15 @@ Everything behind playback: lyrics, queue + reorder, EQ, loudness normalisation,
 sleep timer, ducking, crossfade, context menus, taste controls, sync.
 
 ### Tests
-**252 passing.** `node --test "src/**/*.test.ts"`. CI is green.
+**256 passing**, plus 9 Postgres integration tests. `node --test "src/**/*.test.ts"`.
+CI is green.
+
+### Built, not verified here
+Sign-in and sign-out themselves. They need real Google/GitHub OAuth credentials
+and a redirect URI registered with both providers; neither is configured on this
+deployment, so `/api/auth/[...nextauth]` correctly 404s. Everything around them
+— the identity mapping, the library scoping, adoption — is tested against a real
+database.
 
 ---
 
@@ -174,11 +205,10 @@ sleep timer, ducking, crossfade, context menus, taste controls, sync.
 
 Ordered by value.
 
-1. **B1 — Auth.js + Postgres schema we own.** Google/GitHub OAuth, any
-   Postgres by URL. Tables: accounts, library document, playlists, playlist
-   items, follows, play events + retention. The abandoned Supabase schema was
-   `supabase/schema.sql` (deleted) — its RLS reasoning and the `play_daily`
-   rollup + `prune_play_events()` retention plan are worth reusing.
+1. **Register the OAuth apps and set the env vars.** The last step of B1:
+   `AUTH_SECRET`, `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET`,
+   `GITHUB_ID`/`GITHUB_SECRET`, `MUSCIFY_DATABASE_URL`, then apply
+   `db/schema.sql`. Until someone does this, accounts are correctly inert.
 2. **Playlist folders** — spec §11. `grep -rni folder src/` returns nothing.
    Note `normalise()` in `src/lib/persistence/local.ts` rebuilds snapshots from
    named fields and **will silently drop any new field** — that exact trap
@@ -191,6 +221,10 @@ Ordered by value.
 7. **UI overhaul stages 3+** — player bar, now-playing view, search, library.
 8. **F4** resizable nav. **F5** reduce unnamed `generic` nodes — needs *our*
    baseline, not Spotify's 351.
+9. **Follows / social (B4).** REA observed no Messages, Jam, Blend or profiles
+   in the logged-out client, so do not assume they are simple. The
+   `muscify_play_daily` rollup and `muscify_accounts` table are already there to
+   build on.
 
 ---
 
@@ -198,6 +232,20 @@ Ordered by value.
 
 Each of these has already caused a real bug.
 
+- **`JSON.stringify(x)::jsonb` double-encodes.** postgres.js has already
+  JSON-encoded a string parameter by the time the cast applies, so the row is
+  stored as a JSON *string scalar* and reads back as a string — `snapshot.playlists`
+  is `undefined` and the library silently comes back empty. Pass the **object**.
+  This shipped in the Neon store and had never run, because no deployment has a
+  database. Both writes are fixed and both reads now parse defensively so rows
+  already written in the broken form self-heal on the next write.
+- **`URL ? {skip} : undefined` skips when the URL EXISTS.** The Postgres
+  integration suite was written this way and therefore never ran once, while
+  looking complete. Always confirm a "skipped" suite is skipped for the right
+  reason — `node --test` reports `suites 1, tests 0`, not an error.
+- **A Postgres URL in this sandbox points at another project.** `DATABASE_URL`
+  hosts `feedback`, `users`, `conversations`, `messages`, `overrides`. Give
+  muscify its own database; never point it at that.
 - **`normalise()` drops undeclared fields.** `updatedAt` was stripped, so sync
   silently never adopted anything while looking healthy. It is now a declared
   field on `LibrarySnapshot` with a regression test.
