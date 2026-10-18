@@ -113,6 +113,15 @@ export interface CatalogEntry {
 /** The full persisted shape of one install. */
 export interface LibrarySnapshot {
   version: number;
+  /**
+   * When this snapshot was last written, in epoch ms.
+   *
+   * Optional and defaults to 0. It is the conflict-resolution clock for the
+   * optional server sync, so it has to survive `normalise` — which rebuilds the
+   * snapshot from named fields and would otherwise drop it, making every pulled
+   * copy look older than whatever was already local.
+   */
+  updatedAt?: number;
   /** Track records keyed by `source:id`. */
   catalog: Record<string, CatalogEntry>;
   playlists: Playlist[];

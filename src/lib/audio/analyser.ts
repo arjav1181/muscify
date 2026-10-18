@@ -20,7 +20,7 @@
  * moods rather than measured values. See `corsAllowsTapping`.
  */
 
-import { TempoEstimator } from "./tempo";
+import { TempoEstimator } from "./tempo.ts";
 
 /** Rolling measurements for whatever is currently playing. */
 export interface AudioFeatures {
@@ -106,6 +106,17 @@ export class AudioAnalyser {
   private lastOnsetAt = 0;
 
   /**
+   * Band gains outlive the graph.
+   *
+   * `attach` rebuilds the biquad chain from scratch every time the media
+   * element changes, which is every station change. Reading the user's
+   * settings back off live nodes would silently flatten the equalizer to 0dB
+   * the moment a new track loaded, so the gains are held here instead and
+   * reapplied to each new node.
+   */
+  private gains: number[] = Array.from({ length: DEFAULT_EQ.length }, () => 0);
+
+  /**
    * Normalising references. Loudness is measured relative to what this source
    * has been doing, so a quiet station and a loud one both use the full range.
    */
@@ -135,11 +146,11 @@ export class AudioAnalyser {
         sources.set(el, this.input);
       }
 
-      this.eq = DEFAULT_EQ.map((band) => {
+      this.eq = DEFAULT_EQ.map((band, i) => {
         const node = this.ctx!.createBiquadFilter();
         node.type = band.type;
         node.frequency.value = band.frequency;
-        node.gain.value = band.gain;
+        node.gain.value = this.clampGain(this.gains[i] ?? 0);
         return node;
       });
 
@@ -202,10 +213,38 @@ export class AudioAnalyser {
     this.lastOnsetAt = 0;
   }
 
-  /** Sets one band's gain in dB. Index is 0..9, matching the default layout. */
+  /** Clamps a gain to the range the band nodes accept. */
+  private clampGain(db: number): number {
+    return Number.isFinite(db) ? Math.max(-12, Math.min(12, db)) : 0;
+  }
+
+  /**
+   * Sets one band's gain in dB. Index is 0..9, matching the default layout.
+   *
+   * Writes through to the remembered gains as well as the live node, so a
+   * station change does not flatten what the listener chose.
+   */
   setBandGain(index: number, gainDb: number): void {
+    if (index < 0 || index >= DEFAULT_EQ.length) return;
+    const gain = this.clampGain(gainDb);
+    this.gains[index] = gain;
     const band = this.eq[index];
-    if (band) band.gain.value = Math.max(-12, Math.min(12, gainDb));
+    if (band) band.gain.value = gain;
+  }
+
+  /**
+   * The current band gains in dB.
+   *
+   * Read by the equalizer panel so it opens showing what is actually applied
+   * rather than its own initial state.
+   */
+  get bandGains(): number[] {
+    return [...this.gains];
+  }
+
+  /** True when every band is flat, which the panel uses for its indicator. */
+  get isFlat(): boolean {
+    return this.gains.every((g) => g === 0);
   }
 
   /** Flattens every band. */

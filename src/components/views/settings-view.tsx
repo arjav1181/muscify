@@ -4,8 +4,12 @@ import { useState } from "react";
 import Link from "next/link";
 import {
   AlertTriangle,
+  CloudOff,
+  Cloudy,
   Download,
   Gauge,
+  HardDrive,
+  Loader2,
   Mic2,
   Music2,
   Palette,
@@ -149,6 +153,15 @@ export function SettingsView() {
   const settings = useLibrary((s) => s.settings);
   const update = useLibrary((s) => s.updateSettings);
   const durable = useLibrary((s) => s.durable);
+  const syncStatus = useLibrary((s) => s.syncStatus);
+  const syncState =
+    syncStatus === "syncing"
+      ? "syncing"
+      : syncStatus === "synced"
+        ? "synced"
+        : syncStatus === "off"
+          ? "off"
+          : "local";
   const reset = useLibrary((s) => s.reset);
   const taste = useLibrary((s) => s.taste);
   const searchHistory = useLibrary((s) => s.searchHistory);
@@ -387,6 +400,46 @@ export function SettingsView() {
             <AlertTriangle size={16} className="text-amber-400" aria-hidden />
           </Row>
         ) : null}
+
+        {/*
+          Sync has to be visible to be believable. A library that silently
+          failed to sync looks identical to one that works, and the listener
+          cannot tell which — so this reports what actually happened rather than
+          showing an optimistic "synced" that was never verified.
+        */}
+        <Row
+          label="Sync across devices"
+          hint={
+            syncState === "syncing"
+              ? "Checking the server for changes."
+              : syncState === "synced"
+                ? "Up to date. Your library follows you between browsers on this account-less device id."
+                : syncState === "off"
+                  ? "Not configured on this deployment. Your library is stored in this browser only, and clearing site data will lose it."
+                  : syncStatus === "unreachable"
+                    ? "The sync server did not answer, so changes are being kept in this browser only until it does."
+                    : "Storage only. Nothing has been sent anywhere."
+          }
+        >
+          {syncState === "syncing" ? (
+            <Loader2 size={15} className="animate-spin text-muted" aria-hidden />
+          ) : syncState === "synced" ? (
+            <Cloudy size={16} className="text-green-400" aria-hidden />
+          ) : syncState === "off" ? (
+            <CloudOff size={16} className="text-muted" aria-hidden />
+          ) : (
+            <HardDrive size={16} className="text-muted" aria-hidden />
+          )}
+          <span className="sr-only">
+            {syncState === "synced"
+              ? "Synced"
+              : syncState === "syncing"
+                ? "Syncing"
+                : syncState === "off"
+                  ? "Not configured"
+                  : "This browser only"}
+          </span>
+        </Row>
         <Row
           label="Delete everything"
           hint="Removes all playlists, likes, history and settings from this browser. This cannot be undone."

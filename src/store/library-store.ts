@@ -14,6 +14,7 @@ import {
   type Settings,
 } from "@/lib/persistence/types";
 import { LocalLibraryRepository } from "@/lib/persistence/local";
+import { createRepository, type SyncOutcome } from "@/lib/persistence/sync";
 import {
   applyTasteFilter,
   emptyTasteState,
@@ -50,6 +51,23 @@ interface LibraryState {
 
   init: (repo?: LibraryRepository) => Promise<void>;
   reset: () => Promise<void>;
+
+  /**
+   * Where the library is currently being kept.
+   *
+   * Surfaced in Settings. Sync that silently does nothing is indistinguishable
+   * from sync that is broken, so the outcome is reported rather than assumed.
+   */
+  syncStatus: "local" | "syncing" | "synced" | "off" | "unreachable";
+
+  /**
+   * Pulls the server copy after boot and adopts it when it is newer.
+   *
+   * Separate from `init` on purpose: the library must render from local storage
+   * immediately, and a network round trip must never sit between the listener
+   * and their own playlists.
+   */
+  sync: () => Promise<LibrarySnapshot | null>;
 
   /** Records a completed listen for stats and taste weighting. */
   notePlay: (track: Track, ms: number) => void;
@@ -155,6 +173,7 @@ export const useLibrary = create<LibraryState>((set, get) => {
   return {
     ready: false,
     durable: true,
+    syncStatus: "local",
     catalog: {},
     playlists: [],
     liked: [],
@@ -166,7 +185,7 @@ export const useLibrary = create<LibraryState>((set, get) => {
     searchHistory: [],
 
     init: async (custom) => {
-      repo = custom ?? new LocalLibraryRepository();
+      repo = custom ?? createRepository();
       const data = await repo.load();
       set({
         ready: true,
@@ -181,6 +200,55 @@ export const useLibrary = create<LibraryState>((set, get) => {
         taste: data.taste,
         searchHistory: data.searchHistory,
       });
+    },
+
+    /**
+     * Adopts a newer server copy, if there is one.
+     *
+     * `pull` is optional on the interface — local storage has nothing to pull —
+     * so a repository without it resolves immediately and costs nothing.
+     *
+     * The snapshot is applied through `set` rather than by reloading, so an
+     * adopted library does not send the user back through `ready` and a flash of
+     * empty views.
+     */
+    sync: async () => {
+      const pullable = repo as LibraryRepository & {
+        pull?: () => Promise<SyncOutcome>;
+      };
+      if (typeof pullable.pull !== "function") return null;
+
+      set({ syncStatus: "syncing" });
+      const outcome = await pullable.pull();
+
+      if (outcome.status !== "synced") {
+        set({
+          syncStatus: outcome.status,
+          durable: repo.durable,
+        });
+        return null;
+      }
+
+      const remote = outcome.snapshot;
+      if (!remote) {
+        set({ syncStatus: "synced", durable: repo.durable });
+        return null;
+      }
+
+      set({
+        catalog: remote.catalog,
+        playlists: remote.playlists,
+        liked: remote.liked,
+        recentlyPlayed: remote.recentlyPlayed,
+        followedArtists: remote.followedArtists,
+        followedPlaylists: remote.followedPlaylists,
+        settings: remote.settings,
+        taste: remote.taste,
+        searchHistory: remote.searchHistory,
+        durable: repo.durable,
+        syncStatus: "synced",
+      });
+      return remote;
     },
 
     reset: async () => {

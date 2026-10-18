@@ -10,8 +10,11 @@ import {
   type LibrarySnapshot,
   type LibraryRepository,
   type Settings,
-} from "./types";
-import { MAX_PLAY_EVENTS, pruneSnoozed, type TasteState } from "@/lib/taste/taste";
+} from "./types.ts";
+// Relative rather than via the `@/` alias: this module is imported by the
+// sync tests, which run under plain `node --test` and cannot resolve a bundler
+// alias.
+import { MAX_PLAY_EVENTS, pruneSnoozed, type TasteState } from "../taste/taste.ts";
 
 const KEY = "muscify:library:v1";
 
@@ -100,7 +103,7 @@ export class LocalLibraryRepository implements LibraryRepository {
  * filled in; only a payload from a *newer* unknown version is refused, because
  * interpreting it could corrupt data written by a later build.
  */
-function migrate(stored: LibrarySnapshot): LibrarySnapshot {
+export function migrate(stored: LibrarySnapshot): LibrarySnapshot {
   if (!stored || typeof stored !== "object") return emptySnapshot();
 
   const version = typeof stored.version === "number" ? stored.version : 1;
@@ -139,6 +142,12 @@ function normalise(snapshot: LibrarySnapshot): LibrarySnapshot {
 
   return {
     version: SNAPSHOT_VERSION,
+    // Carried through deliberately. This is the sync conflict clock, and
+    // dropping it here would make every server copy compare as older than the
+    // local one, so a pull would silently never adopt anything.
+    updatedAt: typeof snapshot.updatedAt === "number" && Number.isFinite(snapshot.updatedAt)
+      ? snapshot.updatedAt
+      : 0,
     catalog: snapshot.catalog ?? {},
     playlists: Array.isArray(snapshot.playlists) ? snapshot.playlists : [],
     liked: Array.isArray(snapshot.liked) ? snapshot.liked : [],

@@ -45,17 +45,23 @@ export function EqualizerPanel() {
   const close = useUi((s) => s.closeModal);
 
   const analyser = useMemo(() => getAnalyser(), []);
-  const [bands, setBands] = useState<number[]>(() => new Array(10).fill(0));
+  // Seeded from the analyser rather than from zeros. The analyser outlives the
+  // panel and every graph rebuild, so these are the gains actually applied —
+  // re-opening the dialog after setting a preset should show that preset.
+  const [bands, setBands] = useState<number[]>(() => analyser.bandGains);
+  const [flat, setFlat] = useState(() => analyser.isFlat);
 
   const setBand = (index: number, gain: number) => {
     const next = [...bands];
     next[index] = gain;
     setBands(next);
+    setFlat(next.every((g) => g === 0));
     analyser.setBandGain(index, gain);
   };
 
   const applyPreset = (gains: number[]) => {
     setBands(gains);
+    setFlat(gains.every((g) => g === 0));
     gains.forEach((g, i) => analyser.setBandGain(i, g));
   };
 
@@ -95,6 +101,7 @@ export function EqualizerPanel() {
         <button
           type="button"
           onClick={() => applyPreset(PRESETS.Flat!)}
+          aria-pressed={flat}
           className="rounded-full border border-line-strong px-3 py-1 text-xs text-muted transition hover:border-white/40 hover:text-on"
         >
           Reset
@@ -123,7 +130,7 @@ export function EqualizerPanel() {
       <p className="mt-4 text-xs text-muted">
         The analyser graph is attached to radio streams only. Tracks played from
         YouTube, Deezer and SoundCloud happen inside third-party frames whose
-        audio we cannot route into it.
+        audio we cannot route into it, so those play untouched by these bands.
       </p>
     </div>
   );
