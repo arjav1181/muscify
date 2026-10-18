@@ -167,13 +167,21 @@ function Playlists({
 
   if (!all.length) {
     return (
-      <EmptyState
-        icon={LibraryIcon}
-        headingLevel={2}
-        title="Your library is empty"
-        body="Create a playlist to start collecting the music you love."
-        action={{ label: "Create playlist", run: () => openModal({ kind: "create-playlist" }) }}
-      />
+      <>
+        {/* The bar is above the empty state, not below it. Folders before any
+            playlist exist is how people set them up -- grouping as you go -- and
+            hiding the control until there is something to group means the first
+            folder always arrives after the first playlist, which is the wrong
+            order. */}
+        <FolderBar active={folder} onChange={onFolderChange} />
+        <EmptyState
+          icon={LibraryIcon}
+          headingLevel={2}
+          title="Your library is empty"
+          body="Create a playlist to start collecting the music you love."
+          action={{ label: "Create playlist", run: () => openModal({ kind: "create-playlist" }) }}
+        />
+      </>
     );
   }
 

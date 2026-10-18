@@ -1,0 +1,29 @@
+{
+  "browser": {
+    "mode": "launch",
+    "executable_path": "/repl/tools/bin/chromium",
+    "headless": true
+  },
+  "environment": {
+    "viewport": { "width": 1440, "height": 900, "device_scale_factor": 1 },
+    "locale": "en-US",
+    "timezone": "UTC",
+    "color_scheme": "dark",
+    "reduced_motion": "no-preference",
+    "service_workers": "allow"
+  },
+  "start_url": { "url": "https://open.spotify.com/" },
+  "actions": [
+    {
+      "step_id": "shelves-rendered",
+      "action": "wait_for",
+      "locator": { "kind": "css", "selector": "[role='grid']" },
+      "state": "visible",
+      "timeout_ms": 30000
+    },
+    { "step_id": "settle", "action": "wait_for_timeout", "duration_ms": 6000 }
+  ],
+  "capture": {
+    "at_end": ["dom", "accessibility", "screenshot", "url"]
+  }
+}

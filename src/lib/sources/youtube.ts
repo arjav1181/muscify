@@ -167,8 +167,29 @@ export async function trendingYoutube(max = 24): Promise<Track[]> {
       year: sn.publishedAt ? String(new Date(sn.publishedAt).getFullYear()) : undefined,
     });
   }
-  if (!out.length) throw new Error("empty chart");
-  return out;
+  if (out.length) return out;
+
+  /*
+    The chart came back empty, and it does so intermittently -- YouTube returns
+    nothing for `videos?chart=mostPopular` for some regions and account tiers,
+    with no error to distinguish it from a genuine empty result.
+    
+    Rather than render an error, fall back to searching YouTube Music. That is a
+    different endpoint with different behaviour, which is the point: the shelf
+    shows songs instead of a message saying the shelf is broken.
+    
+    Not a throw any more. "youtube: empty chart" was visible in production for
+    as long as this existed, and a shelf that says it cannot find anything is
+    indistinguishable from a broken deployment.
+  */
+  try {
+    const fallback = await searchYoutube("popular music this week", max);
+    if (fallback.length) return fallback;
+  } catch {
+    // Fall through to the honest failure below.
+  }
+
+  throw new Error("empty chart");
 }
 
 /** ISO 8601 duration (PT4M13S) → seconds, as returned by the playlistItems endpoint. */
