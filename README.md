@@ -117,10 +117,12 @@ per source rather than thrown, so one dead provider never blanks a page.
 
 | Missing | What still works |
 |---|---|
-| `YOUTUBE_API_KEY` | All 213 radio stations, Deezer artist radio + similar artists, pasted links via oEmbed |
+| `YOUTUBE_API_KEY` | All 213 radio stations, Deezer artist radio + similar artists, pasted links via oEmbed, and YouTube search via YouTube's own public results page |
+| YouTube quota exhausted | Same public-page fallback; stale results served from cache rather than an empty tab |
 | Deezer (geo-blocked) | YouTube search + charts, all radio, pasted links |
 | SomaFM API unreachable | 12 built-in fallback stations |
 | Radio Browser unreachable | SomaFM directory still renders |
+| Sync backend | Everything, from `localStorage` alone — the client asks once, gets 501, and stops |
 
 **Pasted links always work with no key at all**, because every provider's oEmbed
 endpoint is unauthenticated. Search results, when a source fails, say so explicitly
@@ -137,6 +139,12 @@ These are real constraints, not oversights.
   such control. What `fadeOutSeconds` does is ramp the master volume down over the last
   N seconds and back up on the next track — which removes the dead silence, most of what
   people want, without pretending to overlap.
+- **The equalizer and the audio analysis only affect radio.** Web Audio cannot read the
+  audio of a third-party iframe, and YouTube, Deezer and SoundCloud all play inside one,
+  so those tracks are simply not in the graph. Radio is the one source playing through
+  an element we own — and SomaFM does send `Access-Control-Allow-Origin: *`, which is
+  what makes it measurable at all. The equalizer panel says so rather than implying
+  broader coverage.
 - **Deezer is discoverable but not playable.** Its player widget URL now 302-redirects to
   a placeholder and returns `X-Frame-Options: SAMEORIGIN`, so it cannot be framed from a
   third-party origin at all. The API's 30-second `preview` field has also been removed.
@@ -187,10 +195,53 @@ GET /api/music/playlist?id=
 GET /api/music/album?id=
 GET /api/music/artist?id=&source=deezer|youtube
 GET /api/music/recommend?mode=seeded|related|station|moods&...
+GET /api/music/quota
+GET|PUT|DELETE /api/library        (optional sync; see below)
 ```
 
 Every response is `{ results, errors }` — `errors` is populated per-source and the UI
 renders whatever did succeed.
+
+### Optional sync
+
+Your library lives in `localStorage` by default, which is enough for one browser and
+needs no account, no server and no configuration. With a backend configured it also
+mirrors to Postgres so your playlists follow you between browsers.
+
+Set **either** Supabase or Neon — see `.env.local.example` for the schema and the
+exact variable names:
+
+```
+MUSCIFY_SUPABASE_URL + MUSCIFY_SUPABASE_SERVICE_ROLE_KEY     # or
+MUSCIFY_DATABASE_URL
+```
+
+A bare `DATABASE_URL` is deliberately ignored. It is one of the most widely-used
+variable names there is — Vercel integrations, CI runners and local dev boxes all set
+it for a database that has nothing to do with this app — and reading it would mean
+muscify quietly creating a table inside somebody else's database. If you are using a
+Vercel-integrated Neon project, opt in explicitly with `MUSCIFY_SYNC_BACKEND=neon`.
+
+Design points worth knowing:
+
+- **Local is the source of truth.** Reads never touch the network, so the library
+  renders instantly and works offline. A failed upload costs cross-device sync, not
+  the change you just made.
+- **Anonymous by design.** There is no account, no email and no personal data. A
+  random device id generated in your browser is the only identifier — enough to carry
+  your own library between your own browsers, and deliberately not enough to identify
+  anyone. Because there is no account, clearing site data loses the library for good:
+  sync is a convenience, not a backup.
+- **Row-level security is on** and `anon` is never granted, so the table is
+  unreachable from the browser even if the anon key leaks. Only the server route
+  touches it, with the service-role key.
+- **Conflict resolution is last-write-wins on your device's clock.** No vector clock,
+  no revision history. That is the honest ceiling for an account-free backend; real
+  merge semantics need real identities, and should be added with accounts rather than
+  smuggled in here.
+- Settings → Data reports the actual outcome, distinguishing "not configured on this
+  deployment" from "the server did not answer". A feature that silently does nothing
+  looks identical to a feature that is broken.
 
 ---
 
