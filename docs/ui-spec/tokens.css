@@ -1,0 +1,129 @@
+/*
+ * muscify UI tokens — Spotify-derived, independently re-measured.
+ *
+ * STATUS: every value below is either MEASURED (computed style read off the
+ * rendered public web player at 1440x900, dark scheme) or explicitly labelled
+ * INFERRED. Do not promote an INFERRED value to fact without measuring it in
+ * muscify itself.
+ *
+ * Provenance and the exact capture commands live in ./evidence.md.
+ * The typeface, wordmark, logo and icon set are deliberately NOT taken —
+ * those are licensed/trademarked. muscify ships its own.
+ *
+ * ── Drop-in ────────────────────────────────────────────────────────────────
+ * Append to src/app/globals.css, or replace the existing @theme blocks with
+ * this one. Tailwind 4 is CSS-first: these become utilities automatically.
+ *   bg-surface, text-sub, rounded-card, text-title, ease-brand, …
+ */
+
+/* ── 1. Elevation ─────────────────────────────────────────────────────────
+ * Monotonically lighter as things come forward. Cards must RISE off the page;
+ * a "highlight" darker than "surface" is the single most common way a dark UI
+ * ends up looking broken. */
+@theme {
+  --color-base: #000000;      /* MEASURED  top bar, sidebar, hover plate      */
+  --color-surface: #121212;   /* MEASURED  html + content background         */
+  --color-elevated: #1f1f1f;  /* MEASURED  search field, secondary buttons    */
+  --color-highlight: #292929; /* MEASURED  tertiary button hover              */
+  --color-hover: #3b3b3b;     /* MEASURED  resizer / scrollbar track          */
+}
+
+/* ── 2. Accent ────────────────────────────────────────────────────────────
+ * The measured accent is rgb(30,215,96). Note this is NOT the older
+ * #1db954 — the brand colour changed, and #1db954 reads visibly duller at
+ * 12-14px. Use the current value. */
+@theme {
+  --color-accent: #1ed760;        /* MEASURED  55 elements, primary buttons     */
+  --color-accent-press: #17b354;  /* INFERRED  muscify's existing press tone    */
+  --color-accent-tint: #1ed7601f; /* MEASURED  12% alpha, active nav row        */
+}
+
+/* ── 3. Text ──────────────────────────────────────────────────────────────
+ * Measured body colour is #b3b3b3, not #aaa and not #ccc. */
+@theme {
+  --color-on: #ffffff;    /* MEASURED  card titles, headings, filled buttons  */
+  --color-sub: #b3b3b3;   /* MEASURED  body, nav links, footer links          */
+  --color-dim: #767676;   /* MEASURED  (2 uses) disabled/tertiary            */
+  --color-muted: #8c8c8c; /* INFERRED  kept from muscify for WCAG AA          */
+}
+
+/* ── 4. Lines ─────────────────────────────────────────────────────────────
+ * The reference uses a 1px inset light line rather than a border on dark
+ * surfaces — cheaper to render and it does not shift layout. */
+@theme {
+  --color-line: #ffffff1a;       /* MEASURED  10% white, hairline dividers    */
+  --color-line-strong: #ffffff33; /* INFERRED 20% white, active dividers       */
+  --color-line-inset: #7c7c7c;   /* MEASURED  1px inset on inputs             */
+}
+
+/* ── 5. Radii ────────────────────────────────────────────────────────────
+ * Measured distribution across the whole page:
+ *   6px   x146   artwork + cards      <-- the signature
+ *   9999px x136   pill buttons
+ *   500px  x55    search field
+ *   50%    x35    circular icon buttons
+ *   8px    x9     panels, large media
+ *   2px/4px       small controls, chips
+ * Note artwork is 6px on THIS build. Spotify's published guideline says 4px
+ * small / 8px large; the shipped web player uses 6px throughout. Match the
+ * measurement, not the guideline, or the two will disagree. */
+@theme {
+  --radius-card: 6px;    /* MEASURED  artwork, grid cells                   */
+  --radius-control: 4px; /* MEASURED  small controls, focus ring            */
+  --radius-panel: 8px;   /* MEASURED  sidebar, panels                      */
+  --radius-field: 500px; /* MEASURED  search field pill                    */
+  --radius-pill: 9999px; /* MEASURED  pill buttons                         */
+  --radius-round: 50%;   /* MEASURED  circular icon buttons                */
+}
+
+/* ── 6. Type ramp ────────────────────────────────────────────────────────
+ * Measured in use on the home page — 12 / 14 / 16 / 24px at weights 400/700.
+ * There is no 18px and no 20px step; do not invent one. */
+@theme {
+  --text-micro: 0.75rem;  /* 12px  MEASURED  footer/legal links              */
+  --text-body: 0.8333rem; /* 13.33px INFERRED dense rows (kept from muscify)  */
+  --text-label: 0.875rem; /* 14px  MEASURED  card subtitle, CTA buttons      */
+  --text-read: 1rem;      /* 16px  MEASURED  card title, base body, search    */
+  --text-title: 1.5rem;   /* 24px  MEASURED  shelf + page headings          */
+}
+
+/* ── 7. Motion ───────────────────────────────────────────────────────────
+ * The single most valuable thing in this file. The reference uses ONE easing
+ * curve everywhere: cubic-bezier(0.3, 0, 0, 1) — fast out of the gate, long
+ * settle. It is what makes hover feels feel "expensive" rather than "webby".
+ * Measured off the card play button: transition: background-color, transform
+ * 150ms cubic-bezier(0.3, 0, 0, 1).
+ *
+ * Standard Tailwind ease-out (cubic-bezier(0,0,0.2,1)) does NOT reproduce it.
+ * Use ease-brand for anything interactive. */
+@theme {
+  --ease-brand: cubic-bezier(0.3, 0, 0, 1);
+  --ease-brand-in: cubic-bezier(0.7, 0, 1, 0.5);
+
+  --duration-fast: 150ms;   /* MEASURED  hover, colour + transform           */
+  --duration-base: 280ms;   /* INFERRED  panels, sheets                      */
+}
+
+/* ── 8. Shadow ───────────────────────────────────────────────────────────
+ * Measured. Note these are tight and small — 8px blur, low alpha. Dark UIs
+ * break when they use large soft shadows. */
+@theme {
+  --shadow-dropdown: 0 8px 8px rgb(0 0 0 / 0.3);    /* MEASURED  menus        */
+  --shadow-modal: 0 8px 24px rgb(0 0 0 / 0.5);     /* MEASURED  dialogs      */
+  --shadow-raise: 0 8px 24px rgb(0 0 0 / 0.5);     /* INFERRED  card hover   */
+}
+
+/* ── 9. Layout constants ─────────────────────────────────────────────────
+ * All MEASURED at 1440x900. See shell.md for how these combine and for the
+ * responsive behaviour. */
+:root {
+  --topbar-height: 4rem;        /* 64px  MEASURED  full-bleed, bg base       */
+  --sidebar-width: 20.6875rem;  /* 331px MEASURED  rail, radius 8px          */
+  --sidebar-width-sm: 20rem;    /* 320px MEASURED  at 768px viewport         */
+  --gutter: 0.5rem;             /* 8px   MEASURED  shell outer margin        */
+  --shell-pad: 1.75rem;         /* 28px  MEASURED  shelf grid padding-left   */
+
+  --card-track: 11.107rem;      /* 177.72px MEASURED <=1280px viewport       */
+  --card-track-lg: 12.21875rem; /* 195.5px  MEASURED >=1440px viewport      */
+  --card-inset: 0.75rem;        /* 12px  DERIVED  track - artwork = 24px      */
+}

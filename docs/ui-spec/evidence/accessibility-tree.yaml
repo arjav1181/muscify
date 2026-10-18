@@ -1,0 +1,863 @@
+- document:
+  - link "Skip to main content":
+    - /url: "#main-view"
+  - link "Spotify":
+    - /url: /
+    - img "Spotify"
+  - button "Home"
+  - search:
+    - button "Search"
+    - combobox "What do you want to play?"
+    - status
+    - button "Browse"
+  - button "Premium"
+  - button "Support"
+  - button "Download"
+  - link "Install App":
+    - /url: /download
+  - button "Sign up"
+  - button "Log in"
+  - navigation "Main":
+    - heading "Your Library" [level=1]
+    - button "Create"
+    - text: Create your first playlist It's easy, we'll help you
+    - button "Create playlist"
+    - text: Let's find some podcasts to follow We'll keep you updated on new episodes
+    - link "Browse podcasts":
+      - /url: /genre/podcasts-web
+    - grid "Your Library":
+      - row
+      - row
+    - list:
+      - listitem:
+        - link "Legal":
+          - /url: https://www.spotify.com/in-en/legal/
+      - listitem:
+        - link "Safety & Privacy Center":
+          - /url: https://www.spotify.com/in-en/safetyandprivacy/
+      - listitem:
+        - link "Privacy Policy":
+          - /url: https://www.spotify.com/in-en/legal/privacy-policy/
+      - listitem:
+        - link "Cookies":
+          - /url: https://www.spotify.com/in-en/legal/cookies-policy/
+      - listitem:
+        - link "About Ads":
+          - /url: https://www.spotify.com/in-en/legal/privacy-policy/#s3
+      - listitem:
+        - link "Accessibility":
+          - /url: https://www.spotify.com/in-en/accessibility/
+    - link "Cookies":
+      - /url: https://www.spotify.com/legal/cookies-policy/
+    - button "English"
+  - text: Resize main navigation
+  - slider "Resize main navigation": "330"
+  - complementary "Now playing bar":
+    - paragraph: Preview of Spotify
+    - paragraph: Sign up to get unlimited songs and podcasts with occasional ads. No credit card needed.
+    - button "Sign up free"
+    - button "Enable shuffle" [disabled]
+    - button "Previous" [disabled]
+    - button "Pause" [disabled]
+    - button "Next" [disabled]
+    - checkbox "Disable repeat" [disabled]
+    - text: "-:-- Change progress"
+    - slider "Change progress" [disabled]: "0"
+    - text: "-:--"
+    - button "Mute"
+    - text: Change volume
+    - slider "Change volume": "1"
+  - 'main "Spotify - Web Player: Listen to Music, Podcasts, and Audiobooks Online"':
+    - heading "Home" [level=1]
+    - region "Trending songs":
+      - group:
+        - link "Show all":
+          - /url: /section/0JQ5DB5E8N831KzFzsBBQ2
+      - grid "Trending songs":
+        - row "Ala Bolelo":
+          - gridcell "Ala Bolelo":
+            - listitem "Ala Bolelo":
+              - button "Ala Bolelo Anirudh Ravichander, Arunraja Kamaraj"
+              - img
+              - button "Play Ala Bolelo"
+              - link "Ala Bolelo":
+                - /url: /album/1uwOU5ZjczJJozQkhzrGJr?highlight=spotify:track:2mrFZyyfPr5hFUoeJD8GqZ
+                - paragraph: Ala Bolelo
+              - link "Anirudh Ravichander":
+                - /url: /artist/4zCH9qm4R2DADamUHMCa6O
+              - text: ","
+              - link "Arunraja Kamaraj":
+                - /url: /artist/3jw6WnDlhrKkNjgcp8JGQe
+        - row "Chalre chalre jaan":
+          - gridcell "Chalre chalre jaan":
+            - listitem "Chalre chalre jaan":
+              - button "Chalre chalre jaan Inderpal sodha"
+              - img
+              - button "Play Chalre chalre jaan"
+              - link "Chalre chalre jaan":
+                - /url: /album/22TvLRwFOpngNHW9ChXvnB?highlight=spotify:track:4vCkaSqBSNDbJCarUienrj
+                - paragraph: Chalre chalre jaan
+              - link "Inderpal sodha":
+                - /url: /artist/7CsDtYlz0Sj4wS9sLpdWjc
+        - row "Kaali Hoodie":
+          - gridcell "Kaali Hoodie":
+            - listitem "Kaali Hoodie":
+              - button "Kaali Hoodie Sidhu Moose Wala, Bohemia, The Kidd"
+              - img
+              - button "Play Kaali Hoodie"
+              - link "Kaali Hoodie":
+                - /url: /album/3sv5hVQYu4FB7kOPQrgZPc?highlight=spotify:track:6dMtF9R8tWQlGVUm5d9ObP
+                - paragraph: Kaali Hoodie
+              - link "Sidhu Moose Wala":
+                - /url: /artist/4PULA4EFzYTrxYvOVlwpiQ
+              - text: ","
+              - link "Bohemia":
+                - /url: /artist/0SWOtgI95g7oVrP9halrmP
+              - text: ","
+              - link "The Kidd":
+                - /url: /artist/1yLUeehqCm7X7QLRuUfZ1A
+        - row "Rathinamo - Female Version":
+          - gridcell "Rathinamo - Female Version":
+            - listitem "Rathinamo - Female Version":
+              - button "Rathinamo - Female Version Saurav Srisan, Tanisha Gnanavel"
+              - img
+              - button "Play Rathinamo - Female Version"
+              - link "Rathinamo - Female Version":
+                - /url: /album/45Q1OXnKdOS2B7TkinNudO?highlight=spotify:track:5DM9FesTYD1piLenjk4WBL
+                - paragraph: Rathinamo - Female Version
+              - link "Saurav Srisan":
+                - /url: /artist/0MHTfH9CyrPzeUlvtd9lup
+              - text: ","
+              - link "Tanisha Gnanavel":
+                - /url: /artist/0wGXc8RUsfIm6xBTfrRBtt
+        - row "Alfaaz":
+          - gridcell "Alfaaz":
+            - listitem "Alfaaz":
+              - button "Alfaaz Hamza Malik, Zain Zohaib"
+              - img
+              - button "Play Alfaaz"
+              - link "Alfaaz":
+                - /url: /album/41jcM2Nk286Rghi16VGTax?highlight=spotify:track:0tW2gwaRzFQQrgr2UCO56G
+                - paragraph: Alfaaz
+              - link "Hamza Malik":
+                - /url: /artist/1GE8jiWTAhX18vP7Wqxig9
+              - text: ","
+              - link "Zain Zohaib":
+                - /url: /artist/0M4wzwZKh9SSHkOXYNvQlP
+        - row "Guzarish":
+          - gridcell "Guzarish":
+            - listitem "Guzarish":
+              - button "Guzarish Satinder Sartaaj"
+              - img
+              - button "Play Guzarish"
+              - link "Guzarish":
+                - /url: /album/2YeoLVaz3FRi1RvQmyVhMN?highlight=spotify:track:45Gi7lLR8VI4hFyPeJpxH3
+                - paragraph: Guzarish
+              - link "Satinder Sartaaj":
+                - /url: /artist/4rgw8A5vcYinpZLDKHrEdV
+        - row "Pesamale":
+          - gridcell "Pesamale":
+            - listitem "Pesamale":
+              - button "Pesamale Siri Xander, Arra Aria Khayal"
+              - img
+              - button "Play Pesamale"
+              - link "Pesamale":
+                - /url: /album/0ZgVl0ncJxwGTys1izl3iQ?highlight=spotify:track:2lo95sXI2RkrXLOYTXpZwe
+                - paragraph: Pesamale
+              - link "Siri Xander":
+                - /url: /artist/1YN9DIwQxOUnAzfgOWWiNR
+              - text: ","
+              - link "Arra Aria Khayal":
+                - /url: /artist/3ktOCDucYtvRTm3UZosG93
+        - row "Filam":
+          - gridcell "Filam":
+            - listitem "Filam":
+              - button "Filam Duryodhan Rana, Jaiveer Thakur, Prodbysoundscape"
+              - img
+              - button "Play Filam"
+              - link "Filam":
+                - /url: /album/5SR7vvLbGcOZfUXrZY9xZO?highlight=spotify:track:6bCuGyX5h5f1gr5Ugdd1c2
+                - paragraph: Filam
+              - link "Duryodhan Rana":
+                - /url: /artist/0nwH3VdpmJakhuISQ0i9jX
+              - text: ","
+              - link "Jaiveer Thakur":
+                - /url: /artist/2Vmf5DEq86fJlbk9piZ19g
+              - text: ","
+              - link "Prodbysoundscape":
+                - /url: /artist/43ttS6rFRzusm2okv9LDqX
+        - row "Radhimaa - From \"Think Indie\"":
+          - gridcell "Radhimaa - From \"Think Indie\"":
+            - listitem "Radhimaa - From \"Think Indie\"":
+              - button "Radhimaa - From \"Think Indie\" Sai Abhyankkar, Nargis Teji, Asma Teji, Vivek"
+              - img
+              - button "Play Radhimaa - From \"Think Indie\""
+              - link "Radhimaa - From \"Think Indie\"":
+                - /url: /album/7hgwwDIBJe548XPBJ0zIuq?highlight=spotify:track:6jJHYbJReFfR2ieGzRP5bq
+                - paragraph: Radhimaa - From "Think Indie"
+              - link "Sai Abhyankkar":
+                - /url: /artist/5jJrJU7VVmxQQLcLAmmxXc
+              - text: ","
+              - link "Nargis Teji":
+                - /url: /artist/6rgek99Mjy548jM7aQpBnd
+              - text: ","
+              - link "Asma Teji":
+                - /url: /artist/4nTgmp4xA89rC3gKhHwrWg
+              - text: ","
+              - link "Vivek":
+                - /url: /artist/25Pa1Vz1ZuTHmXPiYeMcgx
+        - row "Jhumka Patola - From \"Yeh Prem Mol Liya\"":
+          - gridcell "Jhumka Patola - From \"Yeh Prem Mol Liya\"":
+            - listitem "Jhumka Patola - From \"Yeh Prem Mol Liya\"":
+              - button "Jhumka Patola - From \"Yeh Prem Mol Liya\" Himesh Reshammiya, Shreya Ghoshal, Sonia Kapoor Reshammiya"
+              - img
+              - button "Play Jhumka Patola - From \"Yeh Prem Mol Liya\""
+              - link "Jhumka Patola - From \"Yeh Prem Mol Liya\"":
+                - /url: /album/7fmBRUhfRUJAXWOiTCIXXf?highlight=spotify:track:4utW1J8xYXo0aF0sHN5b0z
+                - paragraph: Jhumka Patola - From "Yeh Prem Mol Liya"
+              - link "Himesh Reshammiya":
+                - /url: /artist/0sSxphmGskGCKlwB9xa6WU
+              - text: ","
+              - link "Shreya Ghoshal":
+                - /url: /artist/0oOet2f43PA68X5RxKobEy
+              - text: ","
+              - link "Sonia Kapoor Reshammiya":
+                - /url: /artist/5vvJy2gxIOIdbiMvM8lj7F
+        - row "Basinga Balaalu":
+          - gridcell "Basinga Balaalu":
+            - listitem "Basinga Balaalu":
+              - button "Basinga Balaalu Swamy Naresh, Srinidhi Nerella, Kalyan Keys"
+              - img
+              - button "Play Basinga Balaalu"
+              - link "Basinga Balaalu":
+                - /url: /album/6LNsqUJ0iEpXj8IqB9ZbW0?highlight=spotify:track:5aAm4h5bLg4hV5wQAi5MGx
+                - paragraph: Basinga Balaalu
+              - link "Swamy Naresh":
+                - /url: /artist/1dbakjEIXSXVZyq1j4iaLx
+              - text: ","
+              - link "Srinidhi Nerella":
+                - /url: /artist/1m9l2bsj6oYndpc8LF4lUn
+              - text: ","
+              - link "Kalyan Keys":
+                - /url: /artist/5Mw67hZobK1bXgPK31v2tN
+        - row "Naal Naal Ve":
+          - gridcell "Naal Naal Ve":
+            - listitem "Naal Naal Ve":
+              - button "Naal Naal Ve Darshan Raval, Suvarna Tiwari"
+              - img
+              - button "Play Naal Naal Ve"
+              - link "Naal Naal Ve":
+                - /url: /album/6hS0LHNH8te8zHRD67IWSe?highlight=spotify:track:2TFbVOp5TlWXjYYordWhC6
+                - paragraph: Naal Naal Ve
+              - link "Darshan Raval":
+                - /url: /artist/2GoeZ0qOTt6kjsWW4eA6LS
+              - text: ","
+              - link "Suvarna Tiwari":
+                - /url: /artist/1Uy4rDTdXHBBSAjDTOKoRC
+        - row "Endhayya Saami (From \"Ranabaali\")":
+          - gridcell "Endhayya Saami (From \"Ranabaali\")":
+            - listitem "Endhayya Saami (From \"Ranabaali\")":
+              - button "Endhayya Saami (From \"Ranabaali\") Ajay-Atul, Ajay Gogavale, Shweta Mohan, Ramajogayya Sastry"
+              - img
+              - button "Play Endhayya Saami (From \"Ranabaali\")"
+              - link "Endhayya Saami (From \"Ranabaali\")":
+                - /url: /album/0rP6tTyF90zUSqIgXLNGZk?highlight=spotify:track:0HG0q1rtcVe1kXlreHz9Kf
+                - paragraph: Endhayya Saami (From "Ranabaali")
+              - link "Ajay-Atul":
+                - /url: /artist/5fvTHKKzW44A9867nPDocM
+              - text: ","
+              - link "Ajay Gogavale":
+                - /url: /artist/0vkpFzbSTmwPuGGnhsblFI
+              - text: ","
+              - link "Shweta Mohan":
+                - /url: /artist/1rdQOMFFtoskDXXUVjiGo9
+              - text: ","
+              - link "Ramajogayya Sastry":
+                - /url: /artist/4GISoVSxo2LkF5EyorXs9W
+        - row "Sammi Meri Waar (Acoustic)":
+          - gridcell "Sammi Meri Waar (Acoustic)":
+            - listitem "Sammi Meri Waar (Acoustic)":
+              - button "Sammi Meri Waar (Acoustic) Harrykahanhai"
+              - img
+              - button "Play Sammi Meri Waar (Acoustic)"
+              - link "Sammi Meri Waar (Acoustic)":
+                - /url: /album/58Jb38iMeZxE3tDyfIiHwz?highlight=spotify:track:0GHcTKELZ8i9TNX44dDbET
+                - paragraph: Sammi Meri Waar (Acoustic)
+              - link "Harrykahanhai":
+                - /url: /artist/46aKqTxrSund2Ccj4oPRsq
+        - row "Humsafar":
+          - gridcell "Humsafar":
+            - listitem "Humsafar":
+              - button "Humsafar Vishal Mishra, Ritik Chouhan, Paras Mehta"
+              - img
+              - button "Play Humsafar"
+              - link "Humsafar":
+                - /url: /album/7yYuN0kra1xK0BSWeF5NK6?highlight=spotify:track:5itzeDCqPHpEV2Rnj2ulxT
+                - paragraph: Humsafar
+              - link "Vishal Mishra":
+                - /url: /artist/5wJ1H6ud777odtZl5gG507
+              - text: ","
+              - link "Ritik Chouhan":
+                - /url: /artist/5hyECL6ndOKwrsCmeGFIkv
+              - text: ","
+              - link "Paras Mehta":
+                - /url: /artist/76nhsMxXOkpzJp6YAG50qD
+        - row "BREEZY":
+          - gridcell "BREEZY":
+            - listitem "BREEZY":
+              - button "BREEZY Gur Sidhu, Kaptaan"
+              - img
+              - button "Play BREEZY"
+              - link "BREEZY":
+                - /url: /album/0MMY5flz23tDZV1kRs1PgM?highlight=spotify:track:7653nDajUiDbQjYorXirUY
+                - paragraph: BREEZY
+              - link "Gur Sidhu":
+                - /url: /artist/0QntOArZgiNHoemAzwJPu5
+              - text: ","
+              - link "Kaptaan":
+                - /url: /artist/0F4kRjMBP6NrjpEBEoL0Xb
+        - row "Othaiyadi Pathayila":
+          - gridcell "Othaiyadi Pathayila":
+            - listitem "Othaiyadi Pathayila":
+              - button "Othaiyadi Pathayila Dhibu Ninan Thomas, Anirudh Ravichander, Arunraja Kamaraj"
+              - img
+              - button "Play Othaiyadi Pathayila"
+              - link "Othaiyadi Pathayila":
+                - /url: /album/5MqnE5fKbjWn25aA091gd0?highlight=spotify:track:09Z6o1yu596HJAwWZxTz4m
+                - paragraph: Othaiyadi Pathayila
+              - link "Dhibu Ninan Thomas":
+                - /url: /artist/1QHr8p3h0ayWLaaYK0X6bi
+              - text: ","
+              - link "Anirudh Ravichander":
+                - /url: /artist/4zCH9qm4R2DADamUHMCa6O
+              - text: ","
+              - link "Arunraja Kamaraj":
+                - /url: /artist/3jw6WnDlhrKkNjgcp8JGQe
+        - row "Chann (From \"Udta Teer\")":
+          - gridcell "Chann (From \"Udta Teer\")":
+            - listitem "Chann (From \"Udta Teer\")":
+              - button "Chann (From \"Udta Teer\") Sachin-Jigar, Arijit Singh, Amitabh Bhattacharya"
+              - img
+              - button "Play Chann (From \"Udta Teer\")"
+              - link "Chann (From \"Udta Teer\")":
+                - /url: /album/5w8BWgvkabp4eWuP0YgR3A?highlight=spotify:track:2oxJR1QaLRhLMDVZGhf2y2
+                - paragraph: Chann (From "Udta Teer")
+              - link "Sachin-Jigar":
+                - /url: /artist/1mBydYMVBECdDmMfE2sEUO
+              - text: ","
+              - link "Arijit Singh":
+                - /url: /artist/4YRxDV8wJFPHPTeXepOstw
+              - text: ","
+              - link "Amitabh Bhattacharya":
+                - /url: /artist/2fMqTqiTxUDlmcOEPaQSsx
+        - row "Mental Manadhil":
+          - gridcell "Mental Manadhil":
+            - listitem "Mental Manadhil":
+              - button "Mental Manadhil A.R. Rahman, Jonita Gandhi, Mani Ratnam"
+              - img
+              - button "Play Mental Manadhil"
+              - link "Mental Manadhil":
+                - /url: /album/6XBC9UsX48MzHICIr9m0hj?highlight=spotify:track:4mOmWSdTmf6fSAibGWCKp7
+                - paragraph: Mental Manadhil
+              - link "A.R. Rahman":
+                - /url: /artist/1mYsTxnqsietFxj1OgoGbG
+              - text: ","
+              - link "Jonita Gandhi":
+                - /url: /artist/00sCATpEvwH48ays7PlQFU
+              - text: ","
+              - link "Mani Ratnam":
+                - /url: /artist/4jBJ5ImDZhpeEzBNueAMB1
+        - row "Punchiri":
+          - gridcell "Punchiri":
+            - listitem "Punchiri":
+              - button "Punchiri Eechuu, Suhas, Chris Wayne"
+              - img
+              - button "Play Punchiri"
+              - link "Punchiri":
+                - /url: /album/3dqZQWkJ9uOvWIoz4TK2UY?highlight=spotify:track:1CJOj6Bs5OIasNTROmfWFJ
+                - paragraph: Punchiri
+              - link "Eechuu":
+                - /url: /artist/4CB5jLRM1EUNK2y6l7kixx
+              - text: ","
+              - link "Suhas":
+                - /url: /artist/4p2Sm00Hqt9ICdLO7ASkcO
+              - text: ","
+              - link "Chris Wayne":
+                - /url: /artist/5GkVAEDUPPeV3INTYATuzc
+    - region "Popular artists":
+      - group:
+        - link "Show all":
+          - /url: /section/0JQ5DAnM3wGh0gz1MXnu3C
+      - grid "Popular artists":
+        - row "Pritam":
+          - gridcell "Pritam":
+            - listitem "Pritam":
+              - button "Pritam Artist"
+              - img
+              - button "Play Pritam"
+              - link "Pritam":
+                - /url: /artist/1wRPtKGflJrBx9BmLsSwlU
+                - paragraph: Pritam
+              - text: Artist
+        - row "A.R. Rahman":
+          - gridcell "A.R. Rahman":
+            - listitem "A.R. Rahman":
+              - button "A.R. Rahman Artist"
+              - img
+              - button "Play A.R. Rahman"
+              - link "A.R. Rahman":
+                - /url: /artist/1mYsTxnqsietFxj1OgoGbG
+                - paragraph: A.R. Rahman
+              - text: Artist
+        - row "Arijit Singh":
+          - gridcell "Arijit Singh":
+            - listitem "Arijit Singh":
+              - button "Arijit Singh Artist"
+              - img
+              - button "Play Arijit Singh"
+              - link "Arijit Singh":
+                - /url: /artist/4YRxDV8wJFPHPTeXepOstw
+                - paragraph: Arijit Singh
+              - text: Artist
+        - row "Sachin-Jigar":
+          - gridcell "Sachin-Jigar":
+            - listitem "Sachin-Jigar":
+              - button "Sachin-Jigar Artist"
+              - img
+              - button "Play Sachin-Jigar"
+              - link "Sachin-Jigar":
+                - /url: /artist/1mBydYMVBECdDmMfE2sEUO
+                - paragraph: Sachin-Jigar
+              - text: Artist
+        - row "Vishal-Shekhar":
+          - gridcell "Vishal-Shekhar":
+            - listitem "Vishal-Shekhar":
+              - button "Vishal-Shekhar Artist"
+              - img
+              - button "Play Vishal-Shekhar"
+              - link "Vishal-Shekhar":
+                - /url: /artist/6Mv8GjQa7LKUGCAqa9qqdb
+                - paragraph: Vishal-Shekhar
+              - text: Artist
+        - row "Atif Aslam":
+          - gridcell "Atif Aslam":
+            - listitem "Atif Aslam":
+              - button "Atif Aslam Artist"
+              - img
+              - button "Play Atif Aslam"
+              - link "Atif Aslam":
+                - /url: /artist/2oSONSC9zQ4UonDKnLqksx
+                - paragraph: Atif Aslam
+              - text: Artist
+        - row "Anirudh Ravichander":
+          - gridcell "Anirudh Ravichander":
+            - listitem "Anirudh Ravichander":
+              - button "Anirudh Ravichander Artist"
+              - img
+              - button "Play Anirudh Ravichander"
+              - link "Anirudh Ravichander":
+                - /url: /artist/4zCH9qm4R2DADamUHMCa6O
+                - paragraph: Anirudh Ravichander
+              - text: Artist
+        - row "Udit Narayan":
+          - gridcell "Udit Narayan":
+            - listitem "Udit Narayan":
+              - button "Udit Narayan Artist"
+              - img
+              - button "Play Udit Narayan"
+              - link "Udit Narayan":
+                - /url: /artist/70B80Lwx2sxti0M1Ng9e8K
+                - paragraph: Udit Narayan
+              - text: Artist
+        - row "Yo Yo Honey Singh":
+          - gridcell "Yo Yo Honey Singh":
+            - listitem "Yo Yo Honey Singh":
+              - button "Yo Yo Honey Singh Artist"
+              - img
+              - button "Play Yo Yo Honey Singh"
+              - link "Yo Yo Honey Singh":
+                - /url: /artist/7uIbLdzzSEqnX0Pkrb56cR
+                - paragraph: Yo Yo Honey Singh
+              - text: Artist
+        - row "Shankar-Ehsaan-Loy":
+          - gridcell "Shankar-Ehsaan-Loy":
+            - listitem "Shankar-Ehsaan-Loy":
+              - button "Shankar-Ehsaan-Loy Artist"
+              - img
+              - button "Play Shankar-Ehsaan-Loy"
+              - link "Shankar-Ehsaan-Loy":
+                - /url: /artist/0L5GV6LN8SWWUWIdBbTLTZ
+                - paragraph: Shankar-Ehsaan-Loy
+              - text: Artist
+    - region "Popular albums and singles":
+      - group:
+        - link "Show all":
+          - /url: /section/0JQ5DAnM3wGh0gz1MXnu3B
+      - grid "Popular albums and singles":
+        - row "Aashiqui 2":
+          - gridcell "Aashiqui 2":
+            - listitem "Aashiqui 2":
+              - button "Aashiqui 2 Mithoon, Ankit Tiwari, Jeet Gannguli"
+              - img
+              - button "Play Aashiqui 2 by Mithoon, Ankit Tiwari, Jeet Gannguli"
+              - link "Aashiqui 2":
+                - /url: /album/0Rkv5iqjF2uenfL0OVB8hg
+                - paragraph: Aashiqui 2
+              - link "Mithoon":
+                - /url: /artist/09UmIX92EUH9hAK4bxvHx6
+              - text: ","
+              - link "Ankit Tiwari":
+                - /url: /artist/0E02VcvA5p1ndkLdqWD5JB
+              - text: ","
+              - link "Jeet Gannguli":
+                - /url: /artist/2kkQthS9OLpK4UqNWYqoVl
+        - row "Yeh Jawaani Hai Deewani":
+          - gridcell "Yeh Jawaani Hai Deewani":
+            - listitem "Yeh Jawaani Hai Deewani":
+              - button "Yeh Jawaani Hai Deewani Pritam"
+              - img
+              - button "Play Yeh Jawaani Hai Deewani by Pritam"
+              - link "Yeh Jawaani Hai Deewani":
+                - /url: /album/2Lxoc72vRTGdQfMvj7Ovi1
+                - paragraph: Yeh Jawaani Hai Deewani
+              - link "Pritam":
+                - /url: /artist/1wRPtKGflJrBx9BmLsSwlU
+        - row "Sanam Teri Kasam (Original Motion Picture Soundtrack)":
+          - gridcell "Sanam Teri Kasam (Original Motion Picture Soundtrack)":
+            - listitem "Sanam Teri Kasam (Original Motion Picture Soundtrack)":
+              - button "Sanam Teri Kasam (Original Motion Picture Soundtrack) Himesh Reshammiya, Sameer Anjaan, Subrat Sinha, Shabbir Ahmed"
+              - img
+              - button "Play Sanam Teri Kasam (Original Motion Picture Soundtrack) by Himesh Reshammiya, Sameer Anjaan, Subrat Sinha, Shabbir Ahmed"
+              - link "Sanam Teri Kasam (Original Motion Picture Soundtrack)":
+                - /url: /album/2yYfIOq25JQWvUQ9AR172D
+                - paragraph: Sanam Teri Kasam (Original Motion Picture Soundtrack)
+              - link "Himesh Reshammiya":
+                - /url: /artist/0sSxphmGskGCKlwB9xa6WU
+              - text: ","
+              - link "Sameer Anjaan":
+                - /url: /artist/5sifufajls8Q6k04Y4F8mH
+              - text: ","
+              - link "Subrat Sinha":
+                - /url: /artist/1fa3hB3ASX4xLLThg7ISjs
+              - text: ","
+              - link "Shabbir Ahmed":
+                - /url: /artist/6KZ6c43Dnjm6STHZ6avQU1
+        - row "Finding Her":
+          - gridcell "Finding Her":
+            - listitem "Finding Her":
+              - button "Finding Her Kushagra, Bharath, Saaheal"
+              - img
+              - button "Play Finding Her by Kushagra, Bharath, Saaheal"
+              - link "Finding Her":
+                - /url: /album/69xcXWqK1aN73KgVA2i3Zq
+                - paragraph: Finding Her
+              - link "Kushagra":
+                - /url: /artist/2IKfr1JgPRXmXKAWwrABc6
+              - text: ","
+              - link "Bharath":
+                - /url: /artist/1zD9gVg8wPOmVfYxTjMHaT
+              - text: ","
+              - link "Saaheal":
+                - /url: /artist/29S4JzoFUP1MCyMgKd83zM
+        - row "Young G.O.A.T":
+          - gridcell "Young G.O.A.T":
+            - listitem "Young G.O.A.T":
+              - button "Young G.O.A.T Cheema Y, Gur Sidhu"
+              - img
+              - button "Play Young G.O.A.T by Cheema Y, Gur Sidhu"
+              - link "Young G.O.A.T":
+                - /url: /album/4Qhs9M8b7MafoxTPhfG6Hq
+                - paragraph: Young G.O.A.T
+              - link "Cheema Y":
+                - /url: /artist/0uOUeC51AxGnP6hB8gurwt
+              - text: ","
+              - link "Gur Sidhu":
+                - /url: /artist/0QntOArZgiNHoemAzwJPu5
+        - row "Raanjhan (From \"Do Patti\")":
+          - gridcell "Raanjhan (From \"Do Patti\")":
+            - listitem "Raanjhan (From \"Do Patti\")":
+              - button "Raanjhan (From \"Do Patti\") Sachet-Parampara, Parampara Tandon, Kausar Munir"
+              - img
+              - button "Play Raanjhan (From \"Do Patti\") by Sachet-Parampara, Parampara Tandon, Kausar Munir"
+              - link "Raanjhan (From \"Do Patti\")":
+                - /url: /album/1poClftP5T3zRcqpsxPPfW
+                - paragraph: Raanjhan (From "Do Patti")
+              - link "Sachet-Parampara":
+                - /url: /artist/1SyKki7JI1AZNKwgNMkn25
+              - text: ","
+              - link "Parampara Tandon":
+                - /url: /artist/1E6arsXf5Fgsnv9YpSzjpE
+              - text: ","
+              - link "Kausar Munir":
+                - /url: /artist/3GBSge8pq7mpezUQl0GAOA
+        - row "Ultimate Love Songs - Arijit Singh":
+          - gridcell "Ultimate Love Songs - Arijit Singh":
+            - listitem "Ultimate Love Songs - Arijit Singh":
+              - button "Ultimate Love Songs - Arijit Singh Arijit Singh"
+              - img
+              - button "Play Ultimate Love Songs - Arijit Singh by Arijit Singh"
+              - link "Ultimate Love Songs - Arijit Singh":
+                - /url: /album/1WwkojG9sjMSrFVz4D51W0
+                - paragraph: Ultimate Love Songs - Arijit Singh
+              - link "Arijit Singh":
+                - /url: /artist/4YRxDV8wJFPHPTeXepOstw
+        - row "Making Memories":
+          - gridcell "Making Memories":
+            - listitem "Making Memories":
+              - button "Making Memories Karan Aujla, Ikky"
+              - img
+              - button "Play Making Memories by Karan Aujla, Ikky"
+              - link "Making Memories":
+                - /url: /album/3BGU0BqGwBkYDHpfCWFm7I
+                - paragraph: Making Memories
+              - link "Karan Aujla":
+                - /url: /artist/6DARBhWbfcS9E4yJzcliqQ
+              - text: ","
+              - link "Ikky":
+                - /url: /artist/3nqS8jzqmsPKFJTp0BOIel
+        - row:
+          - gridcell:
+            - listitem:
+              - button "Various Artists"
+              - button "Play by Various Artists"
+              - link:
+                - /url: /album/45ZIondgVoMB84MQQaUo9T
+                - paragraph
+              - text: Various Artists
+        - row "Sicario":
+          - gridcell "Sicario":
+            - listitem "Sicario":
+              - button "Sicario Shubh"
+              - img
+              - button "Play Sicario by Shubh"
+              - link "Sicario":
+                - /url: /album/2JpU8VtlJR0XFkkLeHjNzl
+                - paragraph: Sicario
+              - link "Shubh":
+                - /url: /artist/5r3wPya2PpeTTsXsGhQU8O
+    - region "Popular radio":
+      - group:
+        - link "Show all":
+          - /url: /section/0JQ5DAnM3wGh0gz1MXnu4h
+      - grid "Popular radio":
+        - row "Arijit Singh Radio":
+          - gridcell "Arijit Singh Radio":
+            - listitem "Arijit Singh Radio":
+              - button "Arijit Singh Radio With Jeet Gannguli, Pritam, Shaarib Toshi and more"
+              - img
+              - button "Play Arijit Singh Radio"
+              - link "Arijit Singh Radio":
+                - /url: /playlist/37i9dQZF1E4oJSdHZrVjxD
+                - paragraph: Arijit Singh Radio
+              - text: With Jeet Gannguli, Pritam, Shaarib Toshi and more
+        - row "KK Radio":
+          - gridcell "KK Radio":
+            - listitem "KK Radio":
+              - button "KK Radio With Pritam, Shankar-Ehsaan-Loy, Vishal Mishra and more"
+              - img
+              - button "Play KK Radio"
+              - link "KK Radio":
+                - /url: /playlist/37i9dQZF1E4xzuMPqbCJfm
+                - paragraph: KK Radio
+              - text: With Pritam, Shankar-Ehsaan-Loy, Vishal Mishra and more
+        - row "Shreya Ghoshal Radio":
+          - gridcell "Shreya Ghoshal Radio":
+            - listitem "Shreya Ghoshal Radio":
+              - button "Shreya Ghoshal Radio With Vishal-Shekhar, Sachin-Jigar, A.R. Rahman and more"
+              - img
+              - button "Play Shreya Ghoshal Radio"
+              - link "Shreya Ghoshal Radio":
+                - /url: /playlist/37i9dQZF1E4vqXjPu7Hg0z
+                - paragraph: Shreya Ghoshal Radio
+              - text: With Vishal-Shekhar, Sachin-Jigar, A.R. Rahman and more
+        - row "Alka Yagnik Radio":
+          - gridcell "Alka Yagnik Radio":
+            - listitem "Alka Yagnik Radio":
+              - button "Alka Yagnik Radio With Vinod Rathod, Kumar Sanu, Udit Narayan and more"
+              - img
+              - button "Play Alka Yagnik Radio"
+              - link "Alka Yagnik Radio":
+                - /url: /playlist/37i9dQZF1E4o4r1QjBVOk3
+                - paragraph: Alka Yagnik Radio
+              - text: With Vinod Rathod, Kumar Sanu, Udit Narayan and more
+        - row "Diljit Dosanjh Radio":
+          - gridcell "Diljit Dosanjh Radio":
+            - listitem "Diljit Dosanjh Radio":
+              - button "Diljit Dosanjh Radio With Karan Aujla, AP Dhillon, Harrdy Sandhu and more"
+              - img
+              - button "Play Diljit Dosanjh Radio"
+              - link "Diljit Dosanjh Radio":
+                - /url: /playlist/37i9dQZF1E4AnYVmEEo8ws
+                - paragraph: Diljit Dosanjh Radio
+              - text: With Karan Aujla, AP Dhillon, Harrdy Sandhu and more
+        - row "A.R. Rahman Radio":
+          - gridcell "A.R. Rahman Radio":
+            - listitem "A.R. Rahman Radio":
+              - button "A.R. Rahman Radio With Hariharan, Anirudh Ravichander, Yuvan Shankar Raja and more"
+              - img
+              - button "Play A.R. Rahman Radio"
+              - link "A.R. Rahman Radio":
+                - /url: /playlist/37i9dQZF1E4mZvA09hvuJo
+                - paragraph: A.R. Rahman Radio
+              - text: With Hariharan, Anirudh Ravichander, Yuvan Shankar Raja and more
+        - row "Yo Yo Honey Singh Radio":
+          - gridcell "Yo Yo Honey Singh Radio":
+            - listitem "Yo Yo Honey Singh Radio":
+              - button "Yo Yo Honey Singh Radio With Guru Randhawa, Himesh Reshammiya, Harrdy Sandhu and more"
+              - img
+              - button "Play Yo Yo Honey Singh Radio"
+              - link "Yo Yo Honey Singh Radio":
+                - /url: /playlist/37i9dQZF1E4BklxwcWYhxG
+                - paragraph: Yo Yo Honey Singh Radio
+              - text: With Guru Randhawa, Himesh Reshammiya, Harrdy Sandhu and more
+        - row "Sidhu Moose Wala Radio":
+          - gridcell "Sidhu Moose Wala Radio":
+            - listitem "Sidhu Moose Wala Radio":
+              - button "Sidhu Moose Wala Radio With Shubh, Sharry Mann, Jxggi and more"
+              - img
+              - button "Play Sidhu Moose Wala Radio"
+              - link "Sidhu Moose Wala Radio":
+                - /url: /playlist/37i9dQZF1E4y2lYBEyU5jq
+                - paragraph: Sidhu Moose Wala Radio
+              - text: With Shubh, Sharry Mann, Jxggi and more
+        - row "Kishore Kumar Radio":
+          - gridcell "Kishore Kumar Radio":
+            - listitem "Kishore Kumar Radio":
+              - button "Kishore Kumar Radio With Mukesh, Hemant Kumar, Kalyanji-Anandji and more"
+              - img
+              - button "Play Kishore Kumar Radio"
+              - link "Kishore Kumar Radio":
+                - /url: /playlist/37i9dQZF1E4ES9yDEP9j0Y
+                - paragraph: Kishore Kumar Radio
+              - text: With Mukesh, Hemant Kumar, Kalyanji-Anandji and more
+        - row "Kumar Sanu Radio":
+          - gridcell "Kumar Sanu Radio":
+            - listitem "Kumar Sanu Radio":
+              - button "Kumar Sanu Radio With Anuradha Paudwal, Asha Bhosle, Jatin-Lalit and more"
+              - img
+              - button "Play Kumar Sanu Radio"
+              - link "Kumar Sanu Radio":
+                - /url: /playlist/37i9dQZF1E4wrEODYq2x5q
+                - paragraph: Kumar Sanu Radio
+              - text: With Anuradha Paudwal, Asha Bhosle, Jatin-Lalit and more
+    - region "Featured Charts":
+      - group:
+        - link "Show all":
+          - /url: /section/0JQ5DAzQHECxDlYNI6xD1g
+      - grid "Featured Charts":
+        - row "Top Songs - Global":
+          - gridcell "Top Songs - Global":
+            - listitem "Top Songs - Global":
+              - button "Top Songs - Global Your weekly update of the most played tracks right now - Global."
+              - img
+              - button "Play Top Songs - Global"
+              - link "Top Songs - Global":
+                - /url: /playlist/37i9dQZEVXbNG2KDcFcKOF
+                - paragraph: Top Songs - Global
+              - text: Your weekly update of the most played tracks right now - Global.
+        - row "Top Songs - India":
+          - gridcell "Top Songs - India":
+            - listitem "Top Songs - India":
+              - button "Top Songs - India Your weekly update of the most played tracks right now - India."
+              - img
+              - button "Play Top Songs - India"
+              - link "Top Songs - India":
+                - /url: /playlist/37i9dQZEVXbMWDif5SCBJq
+                - paragraph: Top Songs - India
+              - text: Your weekly update of the most played tracks right now - India.
+        - row "Top 50 - Global":
+          - gridcell "Top 50 - Global":
+            - listitem "Top 50 - Global":
+              - button "Top 50 - Global Your daily update of the most played tracks right now - Global."
+              - img
+              - button "Play Top 50 - Global"
+              - link "Top 50 - Global":
+                - /url: /playlist/37i9dQZEVXbMDoHDwVN2tF
+                - paragraph: Top 50 - Global
+              - text: Your daily update of the most played tracks right now - Global.
+        - row "Top 50 - India":
+          - gridcell "Top 50 - India":
+            - listitem "Top 50 - India":
+              - button "Top 50 - India Your daily update of the most played tracks right now - India."
+              - img
+              - button "Play Top 50 - India"
+              - link "Top 50 - India":
+                - /url: /playlist/37i9dQZEVXbLZ52XmnySJg
+                - paragraph: Top 50 - India
+              - text: Your daily update of the most played tracks right now - India.
+    - separator
+    - navigation:
+      - heading "Company" [level=4]
+      - list:
+        - listitem:
+          - link "About":
+            - /url: https://www.spotify.com/in-en/about-us/contact/
+        - listitem:
+          - link "Jobs":
+            - /url: https://www.lifeatspotify.com/
+        - listitem:
+          - link "For the Record":
+            - /url: https://newsroom.spotify.com/
+      - heading "Communities" [level=4]
+      - list:
+        - listitem:
+          - link "For Artists":
+            - /url: https://artists.spotify.com/
+        - listitem:
+          - link "For Creators":
+            - /url: https://creators.spotify.com/
+        - listitem:
+          - link "For Authors":
+            - /url: https://authors.spotify.com/
+        - listitem:
+          - link "Developers":
+            - /url: https://developer.spotify.com/
+        - listitem:
+          - link "Advertising":
+            - /url: https://ads.spotify.com/
+        - listitem:
+          - link "Investors":
+            - /url: https://investors.spotify.com/
+        - listitem:
+          - link "Vendors":
+            - /url: https://spotifyforvendors.com/
+      - heading "Useful links" [level=4]
+      - list:
+        - listitem:
+          - link "Support":
+            - /url: https://support.spotify.com/
+        - listitem:
+          - link "Free Mobile App":
+            - /url: https://www.spotify.com/in-en/free/
+        - listitem:
+          - link "Popular by Country":
+            - /url: /popular-in/in
+        - listitem:
+          - link "Top Song Lyrics":
+            - /url: https://open.spotify.com/playlist/37i9dQZF1CLcTo7UzL0sYK
+        - listitem:
+          - link "Import your music":
+            - /url: https://www.spotify.com/in-en/import-music/
+      - heading "Spotify Plans" [level=4]
+      - list:
+        - listitem:
+          - link "Premium Standard":
+            - /url: https://www.spotify.com/in-en/premium/#plans
+        - listitem:
+          - link "Premium Platinum":
+            - /url: https://www.spotify.com/in-en/platinum/#ref=spotifycom_footer_platinum
+        - listitem:
+          - link "Premium Student":
+            - /url: https://www.spotify.com/in-en/student/#ref=spotifycom_footer_premium_student
+        - listitem:
+          - link "Spotify Free":
+            - /url: https://www.spotify.com/in-en/free/#ref=spotifycom_footer_free
+      - link "Instagram":
+        - /url: https://instagram.com/spotify
+      - link "X":
+        - /url: https://x.com/spotify
+      - link "Facebook":
+        - /url: https://www.facebook.com/Spotify
+      - separator
+      - text: © 2026 Spotify AB
+  - button "Show Now Playing view"

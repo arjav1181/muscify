@@ -16,6 +16,7 @@ import {
 import Link from "next/link";
 import { artFallback } from "@/lib/art";
 import type { Track } from "@/lib/types";
+import { FolderBar, moveToFolderItems } from "@/components/folder-bar";
 import { useLibrary } from "@/store/library-store";
 import { usePlayer } from "@/store/player-store";
 import { useUi } from "@/store/ui-store";
@@ -25,7 +26,7 @@ import {
   sortPlaylists,
   type LibrarySort,
 } from "@/lib/library-sort";
-import { ArrowDownAZ, Clock3, Search } from "lucide-react";
+import { ArrowDownAZ, Clock3, MoreHorizontal, Search } from "lucide-react";
 import { PlaylistArt } from "@/components/track-card";
 import { TrackList } from "@/components/track-row";
 
@@ -43,6 +44,9 @@ export function LibraryView() {
   const [filter, setFilter] = useState<Filter>("playlists");
   const [sort, setSort] = useState<LibrarySort>("recently-added");
   const [query, setQuery] = useState("");
+  // null = every playlist. Folders filter the grid rather than replacing it, so
+  // switching is one click and the tiles stay where they were.
+  const [folder, setFolder] = useState<string | null>(null);
 
   return (
     <div className="animate-fade-up pt-6">
@@ -112,7 +116,14 @@ export function LibraryView() {
         </label>
       </div>
 
-      {filter === "playlists" ? <Playlists sort={sort} query={query} /> : null}
+      {filter === "playlists" ? (
+        <Playlists
+          sort={sort}
+          query={query}
+          folder={folder}
+          onFolderChange={setFolder}
+        />
+      ) : null}
       {filter === "liked" ? <Liked /> : null}
       {filter === "artists" ? <Artists /> : null}
       {filter === "albums" ? <Albums /> : null}
@@ -130,15 +141,29 @@ function useTracksFor(keys: string[]): Track[] {
   );
 }
 
-function Playlists({ sort, query }: { sort: LibrarySort; query: string }) {
+function Playlists({
+  sort,
+  query,
+  folder,
+  onFolderChange,
+}: {
+  sort: LibrarySort;
+  query: string;
+  folder: string | null;
+  onFolderChange: (id: string | null) => void;
+}) {
   const all = useLibrary((s) => s.playlists);
   const openModal = useUi((s) => s.openModal);
   const playTracks = usePlayer((s) => s.playTracks);
 
-  const playlists = useMemo(
-    () => sortPlaylists(filterPlaylists(all, query), sort),
-    [all, query, sort],
-  );
+  // Folder filtering happens after search and sorting, so a folder shows the
+  // playlists inside it in the order the listener chose rather than in a
+  // different order that would make the shelf look inconsistent.
+  const playlists = useMemo(() => {
+    const searched = filterPlaylists(all, query);
+    const scoped = folder ? searched.filter((p) => p.folderId === folder) : searched;
+    return sortPlaylists(scoped, sort);
+  }, [all, query, sort, folder]);
 
   if (!all.length) {
     return (
@@ -153,19 +178,41 @@ function Playlists({ sort, query }: { sort: LibrarySort; query: string }) {
   }
 
   if (!playlists.length) {
+    // Distinguished on purpose: an empty folder is not an empty library, and
+    // telling someone their library is empty when it holds thirty playlists
+    // because a chip is selected is just wrong.
+    const inFolder = folder ? all.filter((p) => p.folderId === folder).length : 0;
     return (
-      <p className="py-8 text-sm text-muted">
-        No playlist matches “{query.trim()}”.
-      </p>
+      <div className="py-8">
+        <p className="text-sm text-muted">
+          {query.trim()
+            ? `No playlist matches “${query.trim()}”.`
+            : folder && inFolder === 0
+              ? "This folder is empty. Move a playlist into it from its ⋯ menu."
+              : "No playlists here yet."}
+        </p>
+        {folder ? (
+          <button
+            type="button"
+            onClick={() => onFolderChange(null)}
+            className="mt-3 text-sm font-semibold text-on underline underline-offset-4 hover:text-spotify"
+          >
+            Show all playlists
+          </button>
+        ) : null}
+      </div>
     );
   }
 
   return (
+    <>
+      <FolderBar active={folder} onChange={onFolderChange} />
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       {playlists.map((p) => (
         <PlaylistTile key={p.id} playlist={p} onPlay={() => playTracks([], 0)} />
       ))}
     </div>
+    </>
   );
 }
 
@@ -191,6 +238,23 @@ function PlaylistTile({
         <span className="absolute right-2 bottom-2 flex h-11 w-11 translate-y-2 items-center justify-center rounded-full bg-spotify text-black opacity-0 shadow-xl transition-all group-hover:translate-y-0 group-hover:opacity-100">
           <Play size={16} fill="currentColor" className="translate-x-[1px]" />
         </span>
+        {/* The play button and the menu occupy the same corner, so the menu is
+            the fallback revealed when there is no cover to play from, and a
+            hover-revealed control otherwise. */}
+        <button
+          type="button"
+          aria-label={`Options for ${playlist.name}`}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            useUi.getState().openContextMenu(e.clientX, e.clientY, [
+              ...moveToFolderItems(playlist.id),
+            ]);
+          }}
+          className="absolute top-2 right-2 flex size-7 items-center justify-center rounded-full bg-black/60 text-on opacity-0 transition group-hover:opacity-100 focus-visible:opacity-100 hover:bg-black/80"
+        >
+          <MoreHorizontal size={15} aria-hidden />
+        </button>
       </div>
       <h3 className="truncate text-sm font-semibold text-on">{playlist.name}</h3>
       <p className="mt-1 line-clamp-2 text-xs text-sub">

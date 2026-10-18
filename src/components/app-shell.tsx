@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { usePathname } from "next/navigation";
 import { PlayerHost } from "@/components/player/player-host";
 import { PlayerBar } from "@/components/player/player-bar";
+import { NavResizer, useNavWidth } from "@/components/nav-resizer";
 import { Sidebar } from "@/components/sidebar";
 import { TopBar } from "@/components/top-bar";
 import { ContextMenu } from "@/components/context-menu";
@@ -28,6 +29,7 @@ import { useUi } from "@/store/ui-store";
 export function AppShell({ children }: { children: React.ReactNode }) {
   const lyricsOpen = useUi((s) => s.lyricsOpen);
   const ready = useLibrary((s) => s.ready);
+  const [navWidth, setNavWidth] = useNavWidth();
 
   return (
     <>
@@ -60,10 +62,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </div>
 
       <div className="flex min-h-0 flex-1 gap-2 overflow-hidden p-2">
-        <div className="hidden shrink-0 md:block">
-          <Suspense fallback={<div className="h-full w-[240px] rounded-lg bg-surface" />}>
-            <Sidebar />
-          </Suspense>
+        <div className="hidden shrink-0 items-stretch md:flex">
+          <div style={{ width: navWidth }} className="min-w-0">
+            <Suspense fallback={<div className="h-full w-[240px] rounded-lg bg-surface" />}>
+              <Sidebar />
+            </Suspense>
+          </div>
+          <NavResizer width={navWidth} onChange={setNavWidth} />
         </div>
 
         <main

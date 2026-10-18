@@ -126,6 +126,13 @@ export function migrate(stored: LibrarySnapshot): LibrarySnapshot {
     normalised.searchHistory = [];
   }
 
+  // v2 -> v3: library folders did not exist. `normalise` has already defaulted
+  // them to [], so there is nothing to build -- but it is named here so the
+  // version bump is a documented step rather than an unexplained number.
+  if (version < 3) {
+    normalised.folders = [];
+  }
+
   return normalised;
 }
 
@@ -150,6 +157,12 @@ function normalise(snapshot: LibrarySnapshot): LibrarySnapshot {
       : 0,
     catalog: snapshot.catalog ?? {},
     playlists: Array.isArray(snapshot.playlists) ? snapshot.playlists : [],
+    // Listed explicitly because this function rebuilds the snapshot from named
+    // fields. A field missing here does not warn -- it is silently dropped on
+    // every single load, which is how `updatedAt` once stopped surviving.
+    folders: Array.isArray(snapshot.folders)
+      ? snapshot.folders.filter((f) => typeof f?.id === "string" && f.id.length > 0)
+      : [],
     liked: Array.isArray(snapshot.liked) ? snapshot.liked : [],
     recentlyPlayed: Array.isArray(snapshot.recentlyPlayed) ? snapshot.recentlyPlayed : [],
     followedArtists: Array.isArray(snapshot.followedArtists) ? snapshot.followedArtists : [],

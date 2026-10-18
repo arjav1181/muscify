@@ -1,0 +1,1059 @@
+{
+  "url": "https://open.spotify.com/",
+  "viewport": {
+    "w": 1440,
+    "h": 900
+  },
+  "capturedAt": "2026-10-18T17:49:17.884Z",
+  "title": "Spotify - Web Player: Listen to Music, Podcasts, and Audiobooks Online",
+  "rootStyle": {
+    "htmlBg": "#121212",
+    "bodyBg": "#000000 / 0",
+    "bodyColor": "#b3b3b3",
+    "bodyFont": "SpotifyMixUI, CircularSp-Arab, CircularSp-Hebr, CircularSp-Cyrl, CircularSp-Grek",
+    "bodyFontSize": "16px",
+    "bodyLineHeight": "normal",
+    "bodyLetterSpacing": "normal"
+  },
+  "shell": [
+    {
+      "label": "nav/sidebar",
+      "selector": "nav",
+      "rect": {
+        "x": 8,
+        "y": 64,
+        "w": 331,
+        "h": 754
+      },
+      "style": {
+        "width": "331",
+        "height": "754",
+        "padding": "0px",
+        "margin": "0px",
+        "gap": "8px",
+        "backgroundColor": "#000000 / 0",
+        "backgroundImage": "none",
+        "borderRadius": "0px",
+        "position": "static",
+        "overflow": "visible",
+        "flexDirection": "column",
+        "gridTemplateColumns": "none",
+        "boxShadow": "none",
+        "zIndex": "auto"
+      },
+      "aria": "Main",
+      "role": null
+    },
+    {
+      "label": "top bar",
+      "selector": "header",
+      "rect": {
+        "x": 8,
+        "y": 64,
+        "w": 331,
+        "h": 59
+      },
+      "style": {
+        "width": "331",
+        "height": "59",
+        "padding": "16px 16px 8px",
+        "margin": "0px",
+        "gap": "8px",
+        "backgroundColor": "#000000 / 0",
+        "backgroundImage": "none",
+        "borderRadius": "0px",
+        "position": "relative",
+        "overflow": "visible",
+        "flexDirection": "column",
+        "gridTemplateColumns": "none",
+        "boxShadow": "none",
+        "zIndex": "1"
+      },
+      "aria": null,
+      "role": null
+    },
+    {
+      "label": "main content",
+      "selector": "main",
+      "rect": {
+        "x": 347,
+        "y": 64,
+        "w": 1045,
+        "h": 754
+      },
+      "style": {
+        "width": "1045",
+        "height": "754",
+        "padding": "0px",
+        "margin": "0px",
+        "gap": "normal",
+        "backgroundColor": "#000000 / 0",
+        "backgroundImage": "none",
+        "borderRadius": "0px",
+        "position": "static",
+        "overflow": "visible",
+        "flexDirection": "row",
+        "gridTemplateColumns": "none",
+        "boxShadow": "none",
+        "zIndex": "auto"
+      },
+      "aria": "Spotify - Web Player: Listen to Music, Podcasts, and Audiobooks Online",
+      "role": null
+    },
+    {
+      "label": "player bar",
+      "selector": "footer",
+      "rect": {
+        "x": 347,
+        "y": 1825,
+        "w": 1045,
+        "h": 421
+      },
+      "style": {
+        "width": "1045",
+        "height": "421",
+        "padding": "0px",
+        "margin": "0px",
+        "gap": "normal",
+        "backgroundColor": "#000000 / 0",
+        "backgroundImage": "none",
+        "borderRadius": "0px",
+        "position": "static",
+        "overflow": "visible",
+        "flexDirection": "row",
+        "gridTemplateColumns": "none",
+        "boxShadow": "none",
+        "zIndex": "auto"
+      },
+      "aria": null,
+      "role": null
+    },
+    {
+      "label": "shelf grid",
+      "selector": "[role=\"grid\"]",
+      "rect": {
+        "x": 16,
+        "y": 463,
+        "w": 315,
+        "h": 0
+      },
+      "style": {
+        "width": "315",
+        "height": "0",
+        "padding": "0px",
+        "margin": "0px",
+        "gap": "normal",
+        "backgroundColor": "#000000 / 0",
+        "backgroundImage": "none",
+        "borderRadius": "0px",
+        "position": "static",
+        "overflow": "visible",
+        "flexDirection": "row",
+        "gridTemplateColumns": "none",
+        "boxShadow": "none",
+        "zIndex": "auto"
+      },
+      "aria": "Your Library",
+      "role": "grid"
+    },
+    {
+      "label": "shelf row",
+      "selector": "[role=\"row\"]",
+      "rect": {
+        "x": 16,
+        "y": 463,
+        "w": 315,
+        "h": 0
+      },
+      "style": {
+        "width": "315",
+        "height": "0",
+        "padding": "0px",
+        "margin": "0px",
+        "gap": "normal",
+        "backgroundColor": "#000000 / 0",
+        "backgroundImage": "url(\"https://open.spotifycdn.com/cdn/images/ylx-row-placeholder.ea7b0f5d.webp\")",
+        "borderRadius": "0px",
+        "position": "static",
+        "overflow": "visible",
+        "flexDirection": "row",
+        "gridTemplateColumns": "none",
+        "boxShadow": "none",
+        "zIndex": "auto"
+      },
+      "aria": null,
+      "role": "row"
+    },
+    {
+      "label": "shelf cell",
+      "selector": "[role=\"gridcell\"]",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "style": {
+        "width": "auto",
+        "height": "auto",
+        "padding": "0px",
+        "margin": "0px",
+        "gap": "normal",
+        "backgroundColor": "#000000 / 0",
+        "backgroundImage": "none",
+        "borderRadius": "0px",
+        "position": "static",
+        "overflow": "visible",
+        "flexDirection": "row",
+        "gridTemplateColumns": "none",
+        "boxShadow": "none",
+        "zIndex": "auto"
+      },
+      "aria": null,
+      "role": "gridcell"
+    }
+  ],
+  "cardDetail": {
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0
+    },
+    "cellStyle": {
+      "padding": "0px",
+      "borderRadius": "0px",
+      "backgroundColor": "#000000 / 0",
+      "transition": "all"
+    },
+    "artwork": {
+      "width": "171.5",
+      "height": "171.5",
+      "borderRadius": "6px",
+      "objectFit": "cover",
+      "boxShadow": "none"
+    },
+    "lines": [
+      {
+        "text": "Ala Bolelo",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "normal",
+        "color": "#ffffff",
+        "display": "inline",
+        "webkitLineClamp": "none",
+        "overflow": "visible",
+        "textOverflow": "clip",
+        "whiteSpace": "normal"
+      }
+    ]
+  },
+  "hover": {
+    "transitionProperty": "all",
+    "transitionDuration": "0s",
+    "transitionTimingFunction": "ease",
+    "willChange": "auto",
+    "cursor": "auto"
+  },
+  "typeScale": [
+    {
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "lineHeight": "normal",
+      "letterSpacing": "normal",
+      "fontFamily": "SpotifyMixUI, CircularSp-Arab, CircularSp-Hebr, CircularSp-C",
+      "color": "#000000",
+      "count": 228,
+      "samples": [
+        "Skip to main content",
+        "Spotify",
+        "Resize main navigation",
+        "Sign up to get unlimited songs and podca",
+        "Change progress"
+      ],
+      "tags": [
+        "div",
+        "title",
+        "label",
+        "p",
+        "h1"
+      ]
+    },
+    {
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "lineHeight": "38px",
+      "letterSpacing": "normal",
+      "fontFamily": "SpotifyMixUI, CircularSp-Arab, CircularSp-Hebr, CircularSp-C",
+      "color": "#ffffff",
+      "count": 184,
+      "samples": [
+        "Albania",
+        "Algeria",
+        "Andorra",
+        "Angola",
+        "Antigua and Barbuda"
+      ],
+      "tags": [
+        "a"
+      ]
+    },
+    {
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "lineHeight": "normal",
+      "letterSpacing": "normal",
+      "fontFamily": "SpotifyMixUI, CircularSp-Arab, CircularSp-Hebr, CircularSp-C",
+      "color": "#ffffff",
+      "count": 121,
+      "samples": [
+        "It's easy, we'll help you",
+        "We'll keep you updated on new episodes",
+        "Anirudh Ravichander, Arunraja Kamaraj",
+        "Anirudh Ravichander",
+        "Arunraja Kamaraj"
+      ],
+      "tags": [
+        "span",
+        "a",
+        "div"
+      ]
+    },
+    {
+      "fontSize": "16px",
+      "fontWeight": "700",
+      "lineHeight": "normal",
+      "letterSpacing": "normal",
+      "fontFamily": "SpotifyMixUI, CircularSp-Arab, CircularSp-Hebr, CircularSp-C",
+      "color": "#b3b3b3",
+      "count": 13,
+      "samples": [
+        "Premium",
+        "Support",
+        "Download",
+        "Log in",
+        "Your Library"
+      ],
+      "tags": [
+        "button",
+        "span",
+        "h1",
+        "h4",
+        "h3"
+      ]
+    },
+    {
+      "fontSize": "14px",
+      "fontWeight": "700",
+      "lineHeight": "normal",
+      "letterSpacing": "normal",
+      "fontFamily": "SpotifyMixUI, CircularSp-Arab, CircularSp-Hebr, CircularSp-C",
+      "color": "#b3b3b3",
+      "count": 12,
+      "samples": [
+        "Install App",
+        "Sign up",
+        "Create playlist",
+        "Browse podcasts",
+        "English"
+      ],
+      "tags": [
+        "span",
+        "button",
+        "p"
+      ]
+    },
+    {
+      "fontSize": "12px",
+      "fontWeight": "400",
+      "lineHeight": "normal",
+      "letterSpacing": "normal",
+      "fontFamily": "SpotifyMixUI, CircularSp-Arab, CircularSp-Hebr, CircularSp-C",
+      "color": "#b3b3b3",
+      "count": 9,
+      "samples": [
+        "Legal",
+        "Safety & Privacy Center",
+        "Privacy Policy",
+        "Cookies",
+        "About Ads"
+      ],
+      "tags": [
+        "a",
+        "span"
+      ]
+    },
+    {
+      "fontSize": "24px",
+      "fontWeight": "700",
+      "lineHeight": "normal",
+      "letterSpacing": "normal",
+      "fontFamily": "SpotifyMixUITitle, CircularSp-Arab, CircularSp-Hebr, Circula",
+      "color": "#ffffff",
+      "count": 7,
+      "samples": [
+        "Trending songs",
+        "Popular artists",
+        "Popular albums and singles",
+        "Popular radio",
+        "Featured Charts"
+      ],
+      "tags": [
+        "a",
+        "span",
+        "h2"
+      ]
+    },
+    {
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "lineHeight": "24px",
+      "letterSpacing": "normal",
+      "fontFamily": "SpotifyMixUI, CircularSp-Arab, CircularSp-Hebr, CircularSp-C",
+      "color": "#b3b3b3",
+      "count": 3,
+      "samples": [
+        "Ctrl",
+        "Shift",
+        "L"
+      ],
+      "tags": [
+        "kbd"
+      ]
+    }
+  ],
+  "colours": [
+    {
+      "hex": "#1ed760",
+      "count": 55,
+      "samples": [
+        "e-10860-overflow-wrap-anywhere e-10860-button-prim",
+        "e-10860-overflow-wrap-anywhere e-10860-button-prim",
+        "e-10860-overflow-wrap-anywhere e-10860-button-prim",
+        "e-10860-overflow-wrap-anywhere e-10860-button-prim"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#1f1f1f",
+      "count": 15,
+      "samples": [
+        "e-10860-legacy-button e-10860-legacy-button-tertia",
+        "e-10860-form-input e-10860-form-control encore-tex",
+        "dZNfb0mZDpDrIXvZhjHQ T7biCaQwVKFT6OV90pK_ jlbuNXVJ",
+        "EbBfzmYEum9xEhH6q866 T7biCaQwVKFT6OV90pK_ jlbuNXVJ"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#121212",
+      "count": 11,
+      "samples": [
+        "encore-dark-theme encore-layout-themes no-focus-ou",
+        "yAneh8mS1FolwrgwEr9D U8pWs66XaNepy9_eLqLk",
+        "z6ZLhF0EmhEF2bN197k5 YourLibraryX",
+        "BPRPH_jrStQIw2m2qfDl"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#ffffff",
+      "count": 9,
+      "samples": [
+        "e-10860-skip-link encore-inverted-set",
+        "gROMaEzyLAvsOzVEwzSY",
+        "e-10860-overflow-wrap-anywhere e-10860-button-prim",
+        "e-10860-overflow-wrap-anywhere e-10860-button-prim"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#000000",
+      "count": 4,
+      "samples": [
+        "PbMBx95owTmQYYdfnp3j",
+        "EmXZMILXH0bP7U461Va6 _DcYszEgDV5s7JPGo0gQ NwW7HCOa",
+        "nWqHVdNL4CdxyvxYNFI8",
+        "G0r21Xb5HbCgpzJwqiev"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#292929",
+      "count": 3,
+      "samples": [
+        "e-10860-legacy-button e-10860-legacy-button-tertia",
+        "e-10860-legacy-button e-10860-legacy-button-tertia",
+        "e-10860-legacy-button e-10860-legacy-button-tertia"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#3b3b3b",
+      "count": 2,
+      "samples": [
+        "LayoutResizer__input",
+        "INPUT"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#ffffff / 0.3",
+      "count": 2,
+      "samples": [
+        "CJNV1IIT3eMUTjFyxFku",
+        "CJNV1IIT3eMUTjFyxFku"
+      ],
+      "alpha": 0.3
+    },
+    {
+      "hex": "#767676",
+      "count": 2,
+      "samples": [
+        "Xiae2jn2eol8jyVewKUD",
+        "Xiae2jn2eol8jyVewKUD"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#777777",
+      "count": 2,
+      "samples": [
+        "Xiae2jn2eol8jyVewKUD tkaaEBl7rCDlFdPtFbTg",
+        "Xiae2jn2eol8jyVewKUD tkaaEBl7rCDlFdPtFbTg"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#4f7f77",
+      "count": 2,
+      "samples": [
+        "Xiae2jn2eol8jyVewKUD",
+        "Xiae2jn2eol8jyVewKUD"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#535353",
+      "count": 1,
+      "samples": [
+        "h1AjDPMDbQn9UTUl6owY"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#a82010",
+      "count": 1,
+      "samples": [
+        "Xiae2jn2eol8jyVewKUD"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#89760a",
+      "count": 1,
+      "samples": [
+        "Xiae2jn2eol8jyVewKUD"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#a02008",
+      "count": 1,
+      "samples": [
+        "Xiae2jn2eol8jyVewKUD"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#c0555c",
+      "count": 1,
+      "samples": [
+        "Xiae2jn2eol8jyVewKUD"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#b85810",
+      "count": 1,
+      "samples": [
+        "Xiae2jn2eol8jyVewKUD"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#801018",
+      "count": 1,
+      "samples": [
+        "Xiae2jn2eol8jyVewKUD"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#a81810",
+      "count": 1,
+      "samples": [
+        "Xiae2jn2eol8jyVewKUD"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#601010",
+      "count": 1,
+      "samples": [
+        "Xiae2jn2eol8jyVewKUD"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#501008",
+      "count": 1,
+      "samples": [
+        "Xiae2jn2eol8jyVewKUD"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#084838",
+      "count": 1,
+      "samples": [
+        "Xiae2jn2eol8jyVewKUD"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#b04810",
+      "count": 1,
+      "samples": [
+        "Xiae2jn2eol8jyVewKUD"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#647f3c",
+      "count": 1,
+      "samples": [
+        "Xiae2jn2eol8jyVewKUD"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#0838b8",
+      "count": 1,
+      "samples": [
+        "Xiae2jn2eol8jyVewKUD"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#b03828",
+      "count": 1,
+      "samples": [
+        "Xiae2jn2eol8jyVewKUD"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#683028",
+      "count": 1,
+      "samples": [
+        "Xiae2jn2eol8jyVewKUD"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#0e80a4",
+      "count": 1,
+      "samples": [
+        "Xiae2jn2eol8jyVewKUD"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#a04050",
+      "count": 1,
+      "samples": [
+        "Xiae2jn2eol8jyVewKUD"
+      ],
+      "alpha": 1
+    },
+    {
+      "hex": "#c81010",
+      "count": 1,
+      "samples": [
+        "Xiae2jn2eol8jyVewKUD"
+      ],
+      "alpha": 1
+    }
+  ],
+  "radii": [
+    {
+      "radius": "6px",
+      "count": 146,
+      "samples": [
+        "e-10860-legacy-box e-10860-legacy-box--naked e-108",
+        "e-10860-legacy-box e-10860-legacy-box--naked e-108",
+        "Xiae2jn2eol8jyVewKUD",
+        "L6IwYSgXPAr7UR5vlZSa D8HBNHpyhCpooM3VbkCG x6M1ibmx"
+      ]
+    },
+    {
+      "radius": "9999px",
+      "count": 136,
+      "samples": [
+        "e-10860-legacy-button e-10860-legacy-button-tertia",
+        "e-10860-legacy-button e-10860-legacy-button-tertia",
+        "e-10860-legacy-button e-10860-legacy-button-tertia",
+        "e-10860-legacy-button e-10860-legacy-button-tertia"
+      ]
+    },
+    {
+      "radius": "500px",
+      "count": 55,
+      "samples": [
+        "e-10860-form-input e-10860-form-control encore-tex",
+        "Fsmfu0OPeDuZT7x2AmOA",
+        "Fsmfu0OPeDuZT7x2AmOA",
+        "Fsmfu0OPeDuZT7x2AmOA"
+      ]
+    },
+    {
+      "radius": "50%",
+      "count": 35,
+      "samples": [
+        "e-10860-legacy-button e-10860-legacy-button-tertia",
+        "e-10860-legacy-button e-10860-legacy-button-tertia",
+        "KkoKagblq35EIplRGT6A vGpxjnF_bZ6Xi8mzBYnq",
+        "KkoKagblq35EIplRGT6A mx6swOSBlCZuITf21jhz"
+      ]
+    },
+    {
+      "radius": "8px",
+      "count": 9,
+      "samples": [
+        "nWqHVdNL4CdxyvxYNFI8",
+        "yAneh8mS1FolwrgwEr9D U8pWs66XaNepy9_eLqLk",
+        "EbBfzmYEum9xEhH6q866 T7biCaQwVKFT6OV90pK_ jlbuNXVJ",
+        "EbBfzmYEum9xEhH6q866 T7biCaQwVKFT6OV90pK_ jlbuNXVJ"
+      ]
+    },
+    {
+      "radius": "2px",
+      "count": 9,
+      "samples": [
+        "CJNV1IIT3eMUTjFyxFku",
+        "IArn70r67O47a5w2VPr9",
+        "IArn70r67O47a5w2VPr9",
+        "C_oPDLKHmOSABQwEKgMs"
+      ]
+    },
+    {
+      "radius": "4px",
+      "count": 4,
+      "samples": [
+        "e-10860-text encore-text-body-medium HpGH116HSclOM",
+        "e-10860-text encore-text-body-medium HpGH116HSclOM",
+        "e-10860-text encore-text-body-medium HpGH116HSclOM",
+        "e-10860-form-input e-10860-form-control encore-tex"
+      ]
+    },
+    {
+      "radius": "32px",
+      "count": 1,
+      "samples": [
+        "zDXEbl_9rGs8BaOUz9gB"
+      ]
+    }
+  ],
+  "shadows": [
+    {
+      "shadow": "rgb(18, 18, 18) 0px 1px 0px 0px, rgb(124, 124, 124) 0px 0px 0px 1px inset",
+      "count": 1,
+      "samples": [
+        "e-10860-text encore-text-body-medium HpGH116HSclOM"
+      ]
+    },
+    {
+      "shadow": "rgba(0, 0, 0, 0.5) 0px 8px 24px 0px",
+      "count": 1,
+      "samples": [
+        "Xiae2jn2eol8jyVewKUD"
+      ]
+    },
+    {
+      "shadow": "rgba(0, 0, 0, 0.3) 0px 8px 8px 0px",
+      "count": 1,
+      "samples": [
+        "Fsmfu0OPeDuZT7x2AmOA"
+      ]
+    },
+    {
+      "shadow": "rgb(124, 124, 124) 0px 0px 0px 1px inset",
+      "count": 1,
+      "samples": [
+        "e-10860-form-input e-10860-form-control encore-tex"
+      ]
+    }
+  ],
+  "buttons": [
+    {
+      "label": "Home",
+      "bg": "#1f1f1f",
+      "color": "#ffffff",
+      "radius": "50%",
+      "padding": "12px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "transition": "background-color, color 0.2s, 0.2s ease-in-out, ease-in-out",
+      "hit": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    {
+      "label": "Search",
+      "bg": "#000000 / 0",
+      "color": "#b3b3b3",
+      "radius": "9999px",
+      "padding": "12px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "transition": "color 0.22s ease-in",
+      "hit": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    {
+      "label": "Clear search field",
+      "bg": "#000000 / 0",
+      "color": "#b3b3b3",
+      "radius": "9999px",
+      "padding": "0px 12px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "transition": "color, transform 0.15s cubic-bezier(0.3, 0, 0, 1)",
+      "hit": {
+        "w": 0,
+        "h": 0
+      }
+    },
+    {
+      "label": "Browse",
+      "bg": "#000000 / 0",
+      "color": "#b3b3b3",
+      "radius": "9999px",
+      "padding": "0px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "transition": "color, transform 0.15s cubic-bezier(0.3, 0, 0, 1)",
+      "hit": {
+        "w": 24,
+        "h": 24
+      }
+    },
+    {
+      "label": "Premium",
+      "bg": "#000000 / 0",
+      "color": "#b3b3b3",
+      "radius": "9999px",
+      "padding": "8px 0px",
+      "fontSize": "16px",
+      "fontWeight": "700",
+      "transition": "color, transform 0.15s cubic-bezier(0.3, 0, 0, 1)",
+      "hit": {
+        "w": 67,
+        "h": 48
+      }
+    },
+    {
+      "label": "Sign up",
+      "bg": "#000000 / 0",
+      "color": "#b3b3b3",
+      "radius": "9999px",
+      "padding": "4px 16px 4px 8px",
+      "fontSize": "14px",
+      "fontWeight": "700",
+      "transition": "color, transform 0.15s cubic-bezier(0.3, 0, 0, 1)",
+      "hit": {
+        "w": 72,
+        "h": 32
+      }
+    },
+    {
+      "label": "Create",
+      "bg": "#1f1f1f",
+      "color": "#b3b3b3",
+      "radius": "9999px",
+      "padding": "8px",
+      "fontSize": "13.3333px",
+      "fontWeight": "400",
+      "transition": "background-color 0.2s ease-out",
+      "hit": {
+        "w": 35,
+        "h": 35
+      }
+    },
+    {
+      "label": "English",
+      "bg": "#000000 / 0",
+      "color": "#ffffff",
+      "radius": "9999px",
+      "padding": "4px 16px 4px 36px",
+      "fontSize": "14px",
+      "fontWeight": "700",
+      "transition": "border-color, transform 0.15s cubic-bezier(0.3, 0, 0, 1)",
+      "hit": {
+        "w": 101,
+        "h": 32
+      }
+    },
+    {
+      "label": "Enable shuffle",
+      "bg": "#000000 / 0",
+      "color": "#b3b3b3",
+      "radius": "9999px",
+      "padding": "8px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "transition": "color, transform 0.15s cubic-bezier(0.3, 0, 0, 1)",
+      "hit": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "label": "Mute",
+      "bg": "#000000 / 0",
+      "color": "#b3b3b3",
+      "radius": "50%",
+      "padding": "8px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "transition": "color, transform 0.15s cubic-bezier(0.3, 0, 0, 1)",
+      "hit": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "label": "Search",
+      "bg": "#000000 / 0",
+      "color": "#ffffff / 0.7",
+      "radius": "9999px",
+      "padding": "0px",
+      "fontSize": "14px",
+      "fontWeight": "700",
+      "transition": "background-color, transform 0.15s cubic-bezier(0.3, 0, 0, 1)",
+      "hit": {
+        "w": 76,
+        "h": 32
+      }
+    },
+    {
+      "label": "",
+      "bg": "#000000 / 0.7",
+      "color": "#ffffff / 0.7",
+      "radius": "32px",
+      "padding": "0px",
+      "fontSize": "13.3333px",
+      "fontWeight": "400",
+      "transition": "all 0s ease",
+      "hit": {
+        "w": 0,
+        "h": 0
+      }
+    },
+    {
+      "label": "EnglishEnglish",
+      "bg": "#000000 / 0",
+      "color": "#b3b3b3",
+      "radius": "0px",
+      "padding": "16px",
+      "fontSize": "13.3333px",
+      "fontWeight": "400",
+      "transition": "all 0s ease",
+      "hit": {
+        "w": 0,
+        "h": 0
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "placeholder": "What do you want to play?",
+      "ariaLabel": "What do you want to play?",
+      "role": "combobox",
+      "fontSize": "16px",
+      "height": 48,
+      "padding": "12px 96px 12px 48px",
+      "color": "#ffffff",
+      "background": "#1f1f1f",
+      "wrapperBg": "#000000 / 0",
+      "wrapperRadius": "0px",
+      "wrapperPadding": "0px",
+      "wrapperHeight": 48,
+      "border": "0px none rgb(255, 255, 255)"
+    },
+    {
+      "placeholder": null,
+      "ariaLabel": null,
+      "role": null,
+      "fontSize": "13.3333px",
+      "height": 16,
+      "padding": "0px",
+      "color": "#9d968e",
+      "background": "#3b3b3b",
+      "wrapperBg": "#000000 / 0",
+      "wrapperRadius": "0px",
+      "wrapperPadding": "0px",
+      "wrapperHeight": 1,
+      "border": "0px none rgb(157, 150, 142)"
+    },
+    {
+      "placeholder": null,
+      "ariaLabel": null,
+      "role": null,
+      "fontSize": "13.3333px",
+      "height": 16,
+      "padding": "0px",
+      "color": "#c5c5c5",
+      "background": "#000000 / 0",
+      "wrapperBg": "#000000 / 0",
+      "wrapperRadius": "0px",
+      "wrapperPadding": "0px",
+      "wrapperHeight": 1,
+      "border": "0px none rgba(118, 118, 118, 0.3)"
+    },
+    {
+      "placeholder": null,
+      "ariaLabel": null,
+      "role": null,
+      "fontSize": "13.3333px",
+      "height": 16,
+      "padding": "0px",
+      "color": "#9d968e",
+      "background": "#3b3b3b",
+      "wrapperBg": "#000000 / 0",
+      "wrapperRadius": "0px",
+      "wrapperPadding": "0px",
+      "wrapperHeight": 1,
+      "border": "0px none rgb(157, 150, 142)"
+    },
+    {
+      "placeholder": "Search locations",
+      "ariaLabel": null,
+      "role": null,
+      "fontSize": "16px",
+      "height": "auto",
+      "padding": "12px 12px 12px 48px",
+      "color": "#ffffff",
+      "background": "#121212",
+      "wrapperBg": "#000000 / 0",
+      "wrapperRadius": "0px",
+      "wrapperPadding": "0px",
+      "wrapperHeight": "auto",
+      "border": "0px none rgb(255, 255, 255)"
+    }
+  ]
+}

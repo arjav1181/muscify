@@ -23,6 +23,22 @@ export interface SearchEntry {
  * entry to re-fetch.
  */
 
+/**
+ * A folder groups playlists in the library.
+ *
+ * Playlists carry `folderId` rather than folders carrying playlist ids, so a
+ * playlist is in at most one folder and moving it is a single field write.
+ * Deleting a folder therefore cannot orphan anything: the playlists it held
+ * simply come back to the uncategorised shelf, which is what Spotify does and
+ * what people expect when they delete a folder.
+ */
+export interface Folder {
+  id: string;
+  name: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
 export interface Playlist {
   id: string;
   name: string;
@@ -34,6 +50,8 @@ export interface Playlist {
   /** Primary artwork — a track key, falling back to a hue derived from the id. */
   coverKey?: string;
   collaborative?: boolean;
+  /** The folder this playlist sits in. Absent means uncategorised. */
+  folderId?: string;
 }
 
 export interface LikedEntry {
@@ -133,6 +151,15 @@ export interface LibrarySnapshot {
   /** Track records keyed by `source:id`. */
   catalog: Record<string, CatalogEntry>;
   playlists: Playlist[];
+  /**
+   * Library folders.
+   *
+   * Additive, and defaulted to `[]` by `normalise` — but it MUST be listed
+   * there or every load silently drops it, because `normalise` rebuilds the
+   * snapshot from named fields. That is the same trap that made the sync
+   * conflict clock disappear once already.
+   */
+  folders: Folder[];
   liked: LikedEntry[];
   recentlyPlayed: RecentlyPlayed[];
   followedArtists: string[];
@@ -144,7 +171,7 @@ export interface LibrarySnapshot {
   searchHistory: SearchEntry[];
 }
 
-export const SNAPSHOT_VERSION = 2;
+export const SNAPSHOT_VERSION = 3;
 
 /** Keeps the search drop-down bounded. */
 export const MAX_SEARCH_HISTORY = 12;
@@ -154,6 +181,7 @@ export function emptySnapshot(): LibrarySnapshot {
     version: SNAPSHOT_VERSION,
     catalog: {},
     playlists: [],
+    folders: [],
     liked: [],
     recentlyPlayed: [],
     followedArtists: [],

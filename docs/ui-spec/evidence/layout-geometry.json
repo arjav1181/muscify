@@ -1,0 +1,1277 @@
+{
+  "url": "https://open.spotify.com/",
+  "capturedAt": "2026-10-18T17:52:17.342Z",
+  "widths": {
+    "768": {
+      "viewport": {
+        "w": 768,
+        "h": 900
+      },
+      "sidebar": {
+        "rect": {
+          "x": 8,
+          "y": 64,
+          "w": 320,
+          "h": 734
+        },
+        "cls": "nWqHVdNL4CdxyvxYNFI8",
+        "style": {
+          "bg": "#000000",
+          "bgImage": "none",
+          "padding": "0px",
+          "gap": "normal",
+          "position": "relative",
+          "overflowY": "visible",
+          "overflowX": "visible",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "zIndex": "4",
+          "display": "flex",
+          "flexDirection": "column",
+          "borderRadius": "8px"
+        }
+      },
+      "topbar": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 800,
+          "h": 64
+        },
+        "cls": "EmXZMILXH0bP7U461Va6 _DcYszEgDV5s7JPGo0gQ NwW7HCOazJ4_FZbHInHd searchI",
+        "style": {
+          "bg": "#000000",
+          "bgImage": "none",
+          "padding": "8px",
+          "gap": "normal",
+          "position": "relative",
+          "overflowY": "visible",
+          "overflowX": "visible",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "zIndex": "auto",
+          "display": "flex",
+          "flexDirection": "row",
+          "borderRadius": "0px"
+        }
+      },
+      "search": {
+        "rect": {
+          "x": 144,
+          "y": 8,
+          "w": 48,
+          "h": 48
+        },
+        "role": "combobox",
+        "name": "What do you want to play?",
+        "placeholder": "What do you want to play?",
+        "style": {
+          "fontSize": "16px",
+          "padding": "12px 0px 12px 48px",
+          "bg": "#1f1f1f",
+          "radius": "500px",
+          "color": "#000000 / 0"
+        }
+      },
+      "arrows": [
+        {
+          "label": "Previous",
+          "rect": {
+            "x": 336,
+            "y": 900,
+            "w": 32,
+            "h": 32
+          },
+          "radius": "9999px"
+        },
+        {
+          "label": "Next",
+          "rect": {
+            "x": 432,
+            "y": 900,
+            "w": 32,
+            "h": 32
+          },
+          "radius": "9999px"
+        }
+      ],
+      "detail": {
+        "grid": {
+          "rect": {
+            "x": 336,
+            "y": 124,
+            "w": 3630,
+            "h": 277
+          },
+          "cls": "MAzXXol8EWK_N1YMCqiZ QGcOPYEa9lHAwKBgCDcV",
+          "style": {
+            "bg": "#000000 / 0",
+            "bgImage": "none",
+            "padding": "0px 0px 0px 28px",
+            "gap": "normal",
+            "position": "static",
+            "overflowY": "visible",
+            "overflowX": "visible",
+            "borderRight": "0px none rgb(179, 179, 179)",
+            "zIndex": "auto",
+            "display": "grid",
+            "flexDirection": "row",
+            "borderRadius": "0px"
+          }
+        },
+        "row": {
+          "rect": {
+            "x": 364,
+            "y": 124,
+            "w": 178,
+            "h": 277
+          },
+          "cls": "oQSngkUbhn6QbAKe2WBX",
+          "style": {
+            "bg": "#000000 / 0",
+            "bgImage": "none",
+            "padding": "0px",
+            "gap": "normal",
+            "position": "static",
+            "overflowY": "hidden",
+            "overflowX": "hidden",
+            "borderRight": "0px none rgb(179, 179, 179)",
+            "zIndex": "auto",
+            "display": "block",
+            "flexDirection": "row",
+            "borderRadius": "0px"
+          }
+        },
+        "scroller": {
+          "rect": {
+            "x": 336,
+            "y": 64,
+            "w": 416,
+            "h": 734
+          },
+          "cls": "",
+          "style": {
+            "bg": "#000000 / 0",
+            "bgImage": "none",
+            "padding": "0px",
+            "gap": "normal",
+            "position": "relative",
+            "overflowY": "scroll",
+            "overflowX": "hidden",
+            "borderRight": "0px none rgb(179, 179, 179)",
+            "zIndex": "0",
+            "display": "block",
+            "flexDirection": "row",
+            "borderRadius": "0px"
+          }
+        },
+        "gridAria": "Trending songs",
+        "cellCount": 1,
+        "cellWidths": [
+          0
+        ],
+        "gaps": [],
+        "cell": null,
+        "artwork": null,
+        "header": null,
+        "showAll": null,
+        "cardControls": []
+      },
+      "scrollbar": {
+        "clientWidth": 768,
+        "offsetWidth": 768,
+        "gutter": 0
+      }
+    },
+    "900": {
+      "viewport": {
+        "w": 900,
+        "h": 900
+      },
+      "sidebar": {
+        "rect": {
+          "x": 8,
+          "y": 64,
+          "w": 331,
+          "h": 754
+        },
+        "cls": "nWqHVdNL4CdxyvxYNFI8",
+        "style": {
+          "bg": "#000000",
+          "bgImage": "none",
+          "padding": "0px",
+          "gap": "normal",
+          "position": "relative",
+          "overflowY": "visible",
+          "overflowX": "visible",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "zIndex": "4",
+          "display": "flex",
+          "flexDirection": "column",
+          "borderRadius": "8px"
+        }
+      },
+      "topbar": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 900,
+          "h": 64
+        },
+        "cls": "EmXZMILXH0bP7U461Va6 _DcYszEgDV5s7JPGo0gQ NwW7HCOazJ4_FZbHInHd searchI",
+        "style": {
+          "bg": "#000000",
+          "bgImage": "none",
+          "padding": "8px",
+          "gap": "normal",
+          "position": "relative",
+          "overflowY": "visible",
+          "overflowX": "visible",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "zIndex": "auto",
+          "display": "flex",
+          "flexDirection": "row",
+          "borderRadius": "0px"
+        }
+      },
+      "search": {
+        "rect": {
+          "x": 144,
+          "y": 8,
+          "w": 48,
+          "h": 48
+        },
+        "role": "combobox",
+        "name": "What do you want to play?",
+        "placeholder": "What do you want to play?",
+        "style": {
+          "fontSize": "16px",
+          "padding": "12px 0px 12px 48px",
+          "bg": "#1f1f1f",
+          "radius": "500px",
+          "color": "#000000 / 0"
+        }
+      },
+      "arrows": [
+        {
+          "label": "Previous",
+          "rect": {
+            "x": 386,
+            "y": 900,
+            "w": 32,
+            "h": 32
+          },
+          "radius": "9999px"
+        },
+        {
+          "label": "Next",
+          "rect": {
+            "x": 482,
+            "y": 900,
+            "w": 32,
+            "h": 32
+          },
+          "radius": "9999px"
+        }
+      ],
+      "detail": {
+        "grid": {
+          "rect": {
+            "x": 347,
+            "y": 124,
+            "w": 3630,
+            "h": 277
+          },
+          "cls": "MAzXXol8EWK_N1YMCqiZ QGcOPYEa9lHAwKBgCDcV",
+          "style": {
+            "bg": "#000000 / 0",
+            "bgImage": "none",
+            "padding": "0px 0px 0px 28px",
+            "gap": "normal",
+            "position": "static",
+            "overflowY": "visible",
+            "overflowX": "visible",
+            "borderRight": "0px none rgb(179, 179, 179)",
+            "zIndex": "auto",
+            "display": "grid",
+            "flexDirection": "row",
+            "borderRadius": "0px"
+          }
+        },
+        "row": {
+          "rect": {
+            "x": 375,
+            "y": 124,
+            "w": 178,
+            "h": 277
+          },
+          "cls": "oQSngkUbhn6QbAKe2WBX",
+          "style": {
+            "bg": "#000000 / 0",
+            "bgImage": "none",
+            "padding": "0px",
+            "gap": "normal",
+            "position": "static",
+            "overflowY": "hidden",
+            "overflowX": "hidden",
+            "borderRight": "0px none rgb(179, 179, 179)",
+            "zIndex": "auto",
+            "display": "block",
+            "flexDirection": "row",
+            "borderRadius": "0px"
+          }
+        },
+        "scroller": {
+          "rect": {
+            "x": 347,
+            "y": 64,
+            "w": 505,
+            "h": 754
+          },
+          "cls": "",
+          "style": {
+            "bg": "#000000 / 0",
+            "bgImage": "none",
+            "padding": "0px",
+            "gap": "normal",
+            "position": "relative",
+            "overflowY": "scroll",
+            "overflowX": "hidden",
+            "borderRight": "0px none rgb(179, 179, 179)",
+            "zIndex": "0",
+            "display": "block",
+            "flexDirection": "row",
+            "borderRadius": "0px"
+          }
+        },
+        "gridAria": "Trending songs",
+        "cellCount": 1,
+        "cellWidths": [
+          0
+        ],
+        "gaps": [],
+        "cell": null,
+        "artwork": null,
+        "header": null,
+        "showAll": null,
+        "cardControls": []
+      },
+      "scrollbar": {
+        "clientWidth": 900,
+        "offsetWidth": 900,
+        "gutter": 0
+      }
+    },
+    "1100": {
+      "viewport": {
+        "w": 1100,
+        "h": 900
+      },
+      "sidebar": {
+        "rect": {
+          "x": 8,
+          "y": 64,
+          "w": 331,
+          "h": 754
+        },
+        "cls": "nWqHVdNL4CdxyvxYNFI8",
+        "style": {
+          "bg": "#000000",
+          "bgImage": "none",
+          "padding": "0px",
+          "gap": "normal",
+          "position": "relative",
+          "overflowY": "visible",
+          "overflowX": "visible",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "zIndex": "4",
+          "display": "flex",
+          "flexDirection": "column",
+          "borderRadius": "8px"
+        }
+      },
+      "topbar": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 1100,
+          "h": 64
+        },
+        "cls": "EmXZMILXH0bP7U461Va6 _DcYszEgDV5s7JPGo0gQ NwW7HCOazJ4_FZbHInHd FyyrQRr",
+        "style": {
+          "bg": "#000000",
+          "bgImage": "none",
+          "padding": "8px",
+          "gap": "normal",
+          "position": "relative",
+          "overflowY": "visible",
+          "overflowX": "visible",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "zIndex": "auto",
+          "display": "flex",
+          "flexDirection": "row",
+          "borderRadius": "0px"
+        }
+      },
+      "search": {
+        "rect": {
+          "x": 144,
+          "y": 8,
+          "w": 360,
+          "h": 48
+        },
+        "role": "combobox",
+        "name": "What do you want to play?",
+        "placeholder": "What do you want to play?",
+        "style": {
+          "fontSize": "16px",
+          "padding": "12px 96px 12px 48px",
+          "bg": "#1f1f1f",
+          "radius": "500px",
+          "color": "#ffffff"
+        }
+      },
+      "arrows": [
+        {
+          "label": "Previous",
+          "rect": {
+            "x": 486,
+            "y": 900,
+            "w": 32,
+            "h": 32
+          },
+          "radius": "9999px"
+        },
+        {
+          "label": "Next",
+          "rect": {
+            "x": 582,
+            "y": 900,
+            "w": 32,
+            "h": 32
+          },
+          "radius": "9999px"
+        }
+      ],
+      "detail": {
+        "grid": {
+          "rect": {
+            "x": 347,
+            "y": 124,
+            "w": 3630,
+            "h": 277
+          },
+          "cls": "MAzXXol8EWK_N1YMCqiZ QGcOPYEa9lHAwKBgCDcV",
+          "style": {
+            "bg": "#000000 / 0",
+            "bgImage": "none",
+            "padding": "0px 0px 0px 28px",
+            "gap": "normal",
+            "position": "static",
+            "overflowY": "visible",
+            "overflowX": "visible",
+            "borderRight": "0px none rgb(179, 179, 179)",
+            "zIndex": "auto",
+            "display": "grid",
+            "flexDirection": "row",
+            "borderRadius": "0px"
+          }
+        },
+        "row": {
+          "rect": {
+            "x": 375,
+            "y": 124,
+            "w": 178,
+            "h": 277
+          },
+          "cls": "oQSngkUbhn6QbAKe2WBX",
+          "style": {
+            "bg": "#000000 / 0",
+            "bgImage": "none",
+            "padding": "0px",
+            "gap": "normal",
+            "position": "static",
+            "overflowY": "hidden",
+            "overflowX": "hidden",
+            "borderRight": "0px none rgb(179, 179, 179)",
+            "zIndex": "auto",
+            "display": "block",
+            "flexDirection": "row",
+            "borderRadius": "0px"
+          }
+        },
+        "scroller": {
+          "rect": {
+            "x": 347,
+            "y": 64,
+            "w": 705,
+            "h": 754
+          },
+          "cls": "",
+          "style": {
+            "bg": "#000000 / 0",
+            "bgImage": "none",
+            "padding": "0px",
+            "gap": "normal",
+            "position": "relative",
+            "overflowY": "scroll",
+            "overflowX": "hidden",
+            "borderRight": "0px none rgb(179, 179, 179)",
+            "zIndex": "0",
+            "display": "block",
+            "flexDirection": "row",
+            "borderRadius": "0px"
+          }
+        },
+        "gridAria": "Trending songs",
+        "cellCount": 1,
+        "cellWidths": [
+          0
+        ],
+        "gaps": [],
+        "cell": null,
+        "artwork": null,
+        "header": null,
+        "showAll": null,
+        "cardControls": []
+      },
+      "scrollbar": {
+        "clientWidth": 1100,
+        "offsetWidth": 1100,
+        "gutter": 0
+      }
+    },
+    "1280": {
+      "viewport": {
+        "w": 1280,
+        "h": 900
+      },
+      "sidebar": {
+        "rect": {
+          "x": 8,
+          "y": 64,
+          "w": 331,
+          "h": 754
+        },
+        "cls": "nWqHVdNL4CdxyvxYNFI8",
+        "style": {
+          "bg": "#000000",
+          "bgImage": "none",
+          "padding": "0px",
+          "gap": "normal",
+          "position": "relative",
+          "overflowY": "visible",
+          "overflowX": "visible",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "zIndex": "4",
+          "display": "flex",
+          "flexDirection": "column",
+          "borderRadius": "8px"
+        }
+      },
+      "topbar": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 64
+        },
+        "cls": "EmXZMILXH0bP7U461Va6 _DcYszEgDV5s7JPGo0gQ NwW7HCOazJ4_FZbHInHd FyyrQRr",
+        "style": {
+          "bg": "#000000",
+          "bgImage": "none",
+          "padding": "8px",
+          "gap": "normal",
+          "position": "relative",
+          "overflowY": "visible",
+          "overflowX": "visible",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "zIndex": "auto",
+          "display": "flex",
+          "flexDirection": "row",
+          "borderRadius": "0px"
+        }
+      },
+      "search": {
+        "rect": {
+          "x": 144,
+          "y": 8,
+          "w": 474,
+          "h": 48
+        },
+        "role": "combobox",
+        "name": "What do you want to play?",
+        "placeholder": "What do you want to play?",
+        "style": {
+          "fontSize": "16px",
+          "padding": "12px 96px 12px 48px",
+          "bg": "#1f1f1f",
+          "radius": "500px",
+          "color": "#ffffff"
+        }
+      },
+      "arrows": [
+        {
+          "label": "Previous",
+          "rect": {
+            "x": 576,
+            "y": 900,
+            "w": 32,
+            "h": 32
+          },
+          "radius": "9999px"
+        },
+        {
+          "label": "Next",
+          "rect": {
+            "x": 672,
+            "y": 900,
+            "w": 32,
+            "h": 32
+          },
+          "radius": "9999px"
+        }
+      ],
+      "detail": {
+        "grid": {
+          "rect": {
+            "x": 347,
+            "y": 124,
+            "w": 3630,
+            "h": 277
+          },
+          "cls": "MAzXXol8EWK_N1YMCqiZ QGcOPYEa9lHAwKBgCDcV",
+          "style": {
+            "bg": "#000000 / 0",
+            "bgImage": "none",
+            "padding": "0px 0px 0px 28px",
+            "gap": "normal",
+            "position": "static",
+            "overflowY": "visible",
+            "overflowX": "visible",
+            "borderRight": "0px none rgb(179, 179, 179)",
+            "zIndex": "auto",
+            "display": "grid",
+            "flexDirection": "row",
+            "borderRadius": "0px"
+          }
+        },
+        "row": {
+          "rect": {
+            "x": 375,
+            "y": 124,
+            "w": 178,
+            "h": 277
+          },
+          "cls": "oQSngkUbhn6QbAKe2WBX",
+          "style": {
+            "bg": "#000000 / 0",
+            "bgImage": "none",
+            "padding": "0px",
+            "gap": "normal",
+            "position": "static",
+            "overflowY": "hidden",
+            "overflowX": "hidden",
+            "borderRight": "0px none rgb(179, 179, 179)",
+            "zIndex": "auto",
+            "display": "block",
+            "flexDirection": "row",
+            "borderRadius": "0px"
+          }
+        },
+        "scroller": {
+          "rect": {
+            "x": 347,
+            "y": 64,
+            "w": 885,
+            "h": 754
+          },
+          "cls": "",
+          "style": {
+            "bg": "#000000 / 0",
+            "bgImage": "none",
+            "padding": "0px",
+            "gap": "normal",
+            "position": "relative",
+            "overflowY": "scroll",
+            "overflowX": "hidden",
+            "borderRight": "0px none rgb(179, 179, 179)",
+            "zIndex": "0",
+            "display": "block",
+            "flexDirection": "row",
+            "borderRadius": "0px"
+          }
+        },
+        "gridAria": "Trending songs",
+        "cellCount": 1,
+        "cellWidths": [
+          0
+        ],
+        "gaps": [],
+        "cell": null,
+        "artwork": null,
+        "header": null,
+        "showAll": null,
+        "cardControls": []
+      },
+      "scrollbar": {
+        "clientWidth": 1280,
+        "offsetWidth": 1280,
+        "gutter": 0
+      }
+    },
+    "1440": {
+      "viewport": {
+        "w": 1440,
+        "h": 900
+      },
+      "sidebar": {
+        "rect": {
+          "x": 8,
+          "y": 64,
+          "w": 331,
+          "h": 754
+        },
+        "cls": "nWqHVdNL4CdxyvxYNFI8",
+        "style": {
+          "bg": "#000000",
+          "bgImage": "none",
+          "padding": "0px",
+          "gap": "normal",
+          "position": "relative",
+          "overflowY": "visible",
+          "overflowX": "visible",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "zIndex": "4",
+          "display": "flex",
+          "flexDirection": "column",
+          "borderRadius": "8px"
+        }
+      },
+      "topbar": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 1440,
+          "h": 64
+        },
+        "cls": "EmXZMILXH0bP7U461Va6 _DcYszEgDV5s7JPGo0gQ NwW7HCOazJ4_FZbHInHd FyyrQRr",
+        "style": {
+          "bg": "#000000",
+          "bgImage": "none",
+          "padding": "8px",
+          "gap": "normal",
+          "position": "relative",
+          "overflowY": "visible",
+          "overflowX": "visible",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "zIndex": "auto",
+          "display": "flex",
+          "flexDirection": "row",
+          "borderRadius": "0px"
+        }
+      },
+      "search": {
+        "rect": {
+          "x": 144,
+          "y": 8,
+          "w": 474,
+          "h": 48
+        },
+        "role": "combobox",
+        "name": "What do you want to play?",
+        "placeholder": "What do you want to play?",
+        "style": {
+          "fontSize": "16px",
+          "padding": "12px 96px 12px 48px",
+          "bg": "#1f1f1f",
+          "radius": "500px",
+          "color": "#ffffff"
+        }
+      },
+      "arrows": [
+        {
+          "label": "Previous",
+          "rect": {
+            "x": 656,
+            "y": 900,
+            "w": 32,
+            "h": 32
+          },
+          "radius": "9999px"
+        },
+        {
+          "label": "Next",
+          "rect": {
+            "x": 752,
+            "y": 900,
+            "w": 32,
+            "h": 32
+          },
+          "radius": "9999px"
+        }
+      ],
+      "detail": {
+        "grid": {
+          "rect": {
+            "x": 347,
+            "y": 124,
+            "w": 3986,
+            "h": 295
+          },
+          "cls": "MAzXXol8EWK_N1YMCqiZ QGcOPYEa9lHAwKBgCDcV",
+          "style": {
+            "bg": "#000000 / 0",
+            "bgImage": "none",
+            "padding": "0px 0px 0px 28px",
+            "gap": "normal",
+            "position": "static",
+            "overflowY": "visible",
+            "overflowX": "visible",
+            "borderRight": "0px none rgb(179, 179, 179)",
+            "zIndex": "auto",
+            "display": "grid",
+            "flexDirection": "row",
+            "borderRadius": "0px"
+          }
+        },
+        "row": {
+          "rect": {
+            "x": 375,
+            "y": 124,
+            "w": 196,
+            "h": 295
+          },
+          "cls": "oQSngkUbhn6QbAKe2WBX",
+          "style": {
+            "bg": "#000000 / 0",
+            "bgImage": "none",
+            "padding": "0px",
+            "gap": "normal",
+            "position": "static",
+            "overflowY": "hidden",
+            "overflowX": "hidden",
+            "borderRight": "0px none rgb(179, 179, 179)",
+            "zIndex": "auto",
+            "display": "block",
+            "flexDirection": "row",
+            "borderRadius": "0px"
+          }
+        },
+        "scroller": {
+          "rect": {
+            "x": 347,
+            "y": 64,
+            "w": 1045,
+            "h": 754
+          },
+          "cls": "",
+          "style": {
+            "bg": "#000000 / 0",
+            "bgImage": "none",
+            "padding": "0px",
+            "gap": "normal",
+            "position": "relative",
+            "overflowY": "scroll",
+            "overflowX": "hidden",
+            "borderRight": "0px none rgb(179, 179, 179)",
+            "zIndex": "0",
+            "display": "block",
+            "flexDirection": "row",
+            "borderRadius": "0px"
+          }
+        },
+        "gridAria": "Trending songs",
+        "cellCount": 1,
+        "cellWidths": [
+          0
+        ],
+        "gaps": [],
+        "cell": null,
+        "artwork": null,
+        "header": null,
+        "showAll": null,
+        "cardControls": []
+      },
+      "scrollbar": {
+        "clientWidth": 1440,
+        "offsetWidth": 1440,
+        "gutter": 0
+      }
+    },
+    "1600": {
+      "viewport": {
+        "w": 1600,
+        "h": 900
+      },
+      "sidebar": {
+        "rect": {
+          "x": 8,
+          "y": 64,
+          "w": 331,
+          "h": 754
+        },
+        "cls": "nWqHVdNL4CdxyvxYNFI8",
+        "style": {
+          "bg": "#000000",
+          "bgImage": "none",
+          "padding": "0px",
+          "gap": "normal",
+          "position": "relative",
+          "overflowY": "visible",
+          "overflowX": "visible",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "zIndex": "4",
+          "display": "flex",
+          "flexDirection": "column",
+          "borderRadius": "8px"
+        }
+      },
+      "topbar": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 1600,
+          "h": 64
+        },
+        "cls": "EmXZMILXH0bP7U461Va6 _DcYszEgDV5s7JPGo0gQ NwW7HCOazJ4_FZbHInHd FyyrQRr",
+        "style": {
+          "bg": "#000000",
+          "bgImage": "none",
+          "padding": "8px",
+          "gap": "normal",
+          "position": "relative",
+          "overflowY": "visible",
+          "overflowX": "visible",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "zIndex": "auto",
+          "display": "flex",
+          "flexDirection": "row",
+          "borderRadius": "0px"
+        }
+      },
+      "search": {
+        "rect": {
+          "x": 144,
+          "y": 8,
+          "w": 474,
+          "h": 48
+        },
+        "role": "combobox",
+        "name": "What do you want to play?",
+        "placeholder": "What do you want to play?",
+        "style": {
+          "fontSize": "16px",
+          "padding": "12px 96px 12px 48px",
+          "bg": "#1f1f1f",
+          "radius": "500px",
+          "color": "#ffffff"
+        }
+      },
+      "arrows": [
+        {
+          "label": "Previous",
+          "rect": {
+            "x": 736,
+            "y": 900,
+            "w": 32,
+            "h": 32
+          },
+          "radius": "9999px"
+        },
+        {
+          "label": "Next",
+          "rect": {
+            "x": 832,
+            "y": 900,
+            "w": 32,
+            "h": 32
+          },
+          "radius": "9999px"
+        }
+      ],
+      "detail": {
+        "grid": {
+          "rect": {
+            "x": 347,
+            "y": 124,
+            "w": 3986,
+            "h": 295
+          },
+          "cls": "MAzXXol8EWK_N1YMCqiZ QGcOPYEa9lHAwKBgCDcV",
+          "style": {
+            "bg": "#000000 / 0",
+            "bgImage": "none",
+            "padding": "0px 0px 0px 28px",
+            "gap": "normal",
+            "position": "static",
+            "overflowY": "visible",
+            "overflowX": "visible",
+            "borderRight": "0px none rgb(179, 179, 179)",
+            "zIndex": "auto",
+            "display": "grid",
+            "flexDirection": "row",
+            "borderRadius": "0px"
+          }
+        },
+        "row": {
+          "rect": {
+            "x": 375,
+            "y": 124,
+            "w": 196,
+            "h": 295
+          },
+          "cls": "oQSngkUbhn6QbAKe2WBX",
+          "style": {
+            "bg": "#000000 / 0",
+            "bgImage": "none",
+            "padding": "0px",
+            "gap": "normal",
+            "position": "static",
+            "overflowY": "hidden",
+            "overflowX": "hidden",
+            "borderRight": "0px none rgb(179, 179, 179)",
+            "zIndex": "auto",
+            "display": "block",
+            "flexDirection": "row",
+            "borderRadius": "0px"
+          }
+        },
+        "scroller": {
+          "rect": {
+            "x": 347,
+            "y": 64,
+            "w": 1205,
+            "h": 754
+          },
+          "cls": "",
+          "style": {
+            "bg": "#000000 / 0",
+            "bgImage": "none",
+            "padding": "0px",
+            "gap": "normal",
+            "position": "relative",
+            "overflowY": "scroll",
+            "overflowX": "hidden",
+            "borderRight": "0px none rgb(179, 179, 179)",
+            "zIndex": "0",
+            "display": "block",
+            "flexDirection": "row",
+            "borderRadius": "0px"
+          }
+        },
+        "gridAria": "Trending songs",
+        "cellCount": 1,
+        "cellWidths": [
+          0
+        ],
+        "gaps": [],
+        "cell": null,
+        "artwork": null,
+        "header": null,
+        "showAll": null,
+        "cardControls": []
+      },
+      "scrollbar": {
+        "clientWidth": 1600,
+        "offsetWidth": 1600,
+        "gutter": 0
+      }
+    },
+    "1920": {
+      "viewport": {
+        "w": 1920,
+        "h": 900
+      },
+      "sidebar": {
+        "rect": {
+          "x": 8,
+          "y": 64,
+          "w": 331,
+          "h": 754
+        },
+        "cls": "nWqHVdNL4CdxyvxYNFI8",
+        "style": {
+          "bg": "#000000",
+          "bgImage": "none",
+          "padding": "0px",
+          "gap": "normal",
+          "position": "relative",
+          "overflowY": "visible",
+          "overflowX": "visible",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "zIndex": "4",
+          "display": "flex",
+          "flexDirection": "column",
+          "borderRadius": "8px"
+        }
+      },
+      "topbar": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 64
+        },
+        "cls": "EmXZMILXH0bP7U461Va6 _DcYszEgDV5s7JPGo0gQ FyyrQRrOaAFNukXPE6sg",
+        "style": {
+          "bg": "#000000",
+          "bgImage": "none",
+          "padding": "8px",
+          "gap": "normal",
+          "position": "relative",
+          "overflowY": "visible",
+          "overflowX": "visible",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "zIndex": "auto",
+          "display": "flex",
+          "flexDirection": "row",
+          "borderRadius": "0px"
+        }
+      },
+      "search": {
+        "rect": {
+          "x": 751,
+          "y": 8,
+          "w": 474,
+          "h": 48
+        },
+        "role": "combobox",
+        "name": "What do you want to play?",
+        "placeholder": "What do you want to play?",
+        "style": {
+          "fontSize": "16px",
+          "padding": "12px 96px 12px 48px",
+          "bg": "#1f1f1f",
+          "radius": "500px",
+          "color": "#ffffff"
+        }
+      },
+      "arrows": [
+        {
+          "label": "Previous",
+          "rect": {
+            "x": 896,
+            "y": 900,
+            "w": 32,
+            "h": 32
+          },
+          "radius": "9999px"
+        },
+        {
+          "label": "Next",
+          "rect": {
+            "x": 992,
+            "y": 900,
+            "w": 32,
+            "h": 32
+          },
+          "radius": "9999px"
+        }
+      ],
+      "detail": {
+        "grid": {
+          "rect": {
+            "x": 347,
+            "y": 124,
+            "w": 3986,
+            "h": 295
+          },
+          "cls": "MAzXXol8EWK_N1YMCqiZ QGcOPYEa9lHAwKBgCDcV",
+          "style": {
+            "bg": "#000000 / 0",
+            "bgImage": "none",
+            "padding": "0px 0px 0px 28px",
+            "gap": "normal",
+            "position": "static",
+            "overflowY": "visible",
+            "overflowX": "visible",
+            "borderRight": "0px none rgb(179, 179, 179)",
+            "zIndex": "auto",
+            "display": "grid",
+            "flexDirection": "row",
+            "borderRadius": "0px"
+          }
+        },
+        "row": {
+          "rect": {
+            "x": 375,
+            "y": 124,
+            "w": 196,
+            "h": 295
+          },
+          "cls": "oQSngkUbhn6QbAKe2WBX",
+          "style": {
+            "bg": "#000000 / 0",
+            "bgImage": "none",
+            "padding": "0px",
+            "gap": "normal",
+            "position": "static",
+            "overflowY": "hidden",
+            "overflowX": "hidden",
+            "borderRight": "0px none rgb(179, 179, 179)",
+            "zIndex": "auto",
+            "display": "block",
+            "flexDirection": "row",
+            "borderRadius": "0px"
+          }
+        },
+        "scroller": {
+          "rect": {
+            "x": 347,
+            "y": 64,
+            "w": 1525,
+            "h": 754
+          },
+          "cls": "",
+          "style": {
+            "bg": "#000000 / 0",
+            "bgImage": "none",
+            "padding": "0px",
+            "gap": "normal",
+            "position": "relative",
+            "overflowY": "scroll",
+            "overflowX": "hidden",
+            "borderRight": "0px none rgb(179, 179, 179)",
+            "zIndex": "0",
+            "display": "block",
+            "flexDirection": "row",
+            "borderRadius": "0px"
+          }
+        },
+        "gridAria": "Trending songs",
+        "cellCount": 1,
+        "cellWidths": [
+          0
+        ],
+        "gaps": [],
+        "cell": null,
+        "artwork": null,
+        "header": null,
+        "showAll": null,
+        "cardControls": []
+      },
+      "scrollbar": {
+        "clientWidth": 1920,
+        "offsetWidth": 1920,
+        "gutter": 0
+      }
+    }
+  },
+  "hover": {
+    "cellBg": "#000000",
+    "cellShadow": "none",
+    "cellTransform": "none",
+    "cellRadius": "0px",
+    "cellPadding": "0px",
+    "artworkShadow": "none",
+    "artworkFilter": "none",
+    "playButton": {
+      "label": "Play Chalre chalre jaan",
+      "bg": "#000000",
+      "color": "#b3b3b3",
+      "radius": "9999px",
+      "transitionProperty": "background-color, transform",
+      "transitionDuration": "0.15s",
+      "transitionTimingFunction": "cubic-bezier(0.3, 0, 0, 1)"
+    }
+  }
+}

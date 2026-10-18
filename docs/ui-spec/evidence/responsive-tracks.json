@@ -1,0 +1,872 @@
+{
+  "url": "https://open.spotify.com/",
+  "capturedAt": "2026-10-18T17:50:25.688Z",
+  "widths": {
+    "480": {
+      "viewport": {
+        "w": 480,
+        "h": 900
+      },
+      "rail": {
+        "rect": {
+          "x": 8,
+          "y": 64,
+          "w": 320,
+          "h": 736
+        },
+        "style": {
+          "backgroundColor": "rgb(0, 0, 0)",
+          "backgroundImage": "none",
+          "padding": "0px",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "borderTop": "0px none rgb(179, 179, 179)",
+          "position": "relative",
+          "overflow": "visible",
+          "gap": "normal"
+        }
+      },
+      "topbar": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 800,
+          "h": 64
+        },
+        "style": {
+          "backgroundColor": "rgb(0, 0, 0)",
+          "backgroundImage": "none",
+          "padding": "8px",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "borderTop": "0px none rgb(179, 179, 179)",
+          "position": "relative",
+          "overflow": "visible",
+          "gap": "normal"
+        }
+      },
+      "content": {
+        "rect": {
+          "x": 336,
+          "y": 64,
+          "w": 416,
+          "h": 736
+        },
+        "style": {
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "backgroundImage": "none",
+          "padding": "0px",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "borderTop": "0px none rgb(179, 179, 179)",
+          "position": "static",
+          "overflow": "visible",
+          "gap": "normal"
+        }
+      },
+      "bottomBar": null,
+      "shelf": {
+        "gridRect": {
+          "x": 336,
+          "y": 124,
+          "w": 3630,
+          "h": 273
+        },
+        "rowRect": {
+          "x": 364,
+          "y": 124,
+          "w": 178,
+          "h": 273
+        },
+        "cellCount": 1,
+        "distinctCellWidths": [
+          0
+        ],
+        "horizontalGaps": [],
+        "gridStyle": {
+          "display": "grid",
+          "gap": "normal",
+          "gridAutoFlow": "column",
+          "gridTemplateColumns": "177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 225.719px",
+          "overflowX": "visible",
+          "scrollSnapType": "none",
+          "padding": "0px 0px 0px 28px"
+        },
+        "rowStyle": {
+          "display": "block",
+          "gap": "normal",
+          "flexWrap": "nowrap",
+          "padding": "0px"
+        },
+        "heading": null,
+        "shelfTops": [
+          124,
+          469,
+          771,
+          1113,
+          1397
+        ],
+        "shelfGaps": [
+          345,
+          302,
+          342,
+          284
+        ],
+        "showAll": null
+      },
+      "hasPlayerBar": false,
+      "railSections": [
+        {
+          "tag": "nav",
+          "aria": "Main",
+          "rect": {
+            "x": 8,
+            "y": 64,
+            "w": 320,
+            "h": 736
+          }
+        },
+        {
+          "tag": "section",
+          "aria": null,
+          "rect": {
+            "x": 16,
+            "y": 155,
+            "w": 304,
+            "h": 132
+          }
+        },
+        {
+          "tag": "section",
+          "aria": null,
+          "rect": {
+            "x": 16,
+            "y": 311,
+            "w": 304,
+            "h": 132
+          }
+        },
+        {
+          "tag": "ul",
+          "aria": null,
+          "rect": {
+            "x": 32,
+            "y": 636,
+            "w": 272,
+            "h": 46
+          }
+        }
+      ]
+    },
+    "768": {
+      "viewport": {
+        "w": 768,
+        "h": 900
+      },
+      "rail": {
+        "rect": {
+          "x": 8,
+          "y": 64,
+          "w": 320,
+          "h": 734
+        },
+        "style": {
+          "backgroundColor": "rgb(0, 0, 0)",
+          "backgroundImage": "none",
+          "padding": "0px",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "borderTop": "0px none rgb(179, 179, 179)",
+          "position": "relative",
+          "overflow": "visible",
+          "gap": "normal"
+        }
+      },
+      "topbar": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 800,
+          "h": 64
+        },
+        "style": {
+          "backgroundColor": "rgb(0, 0, 0)",
+          "backgroundImage": "none",
+          "padding": "8px",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "borderTop": "0px none rgb(179, 179, 179)",
+          "position": "relative",
+          "overflow": "visible",
+          "gap": "normal"
+        }
+      },
+      "content": {
+        "rect": {
+          "x": 336,
+          "y": 64,
+          "w": 416,
+          "h": 734
+        },
+        "style": {
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "backgroundImage": "none",
+          "padding": "0px",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "borderTop": "0px none rgb(179, 179, 179)",
+          "position": "static",
+          "overflow": "visible",
+          "gap": "normal"
+        }
+      },
+      "bottomBar": null,
+      "shelf": {
+        "gridRect": {
+          "x": 336,
+          "y": 124,
+          "w": 3630,
+          "h": 277
+        },
+        "rowRect": {
+          "x": 364,
+          "y": 124,
+          "w": 178,
+          "h": 277
+        },
+        "cellCount": 1,
+        "distinctCellWidths": [
+          0
+        ],
+        "horizontalGaps": [],
+        "gridStyle": {
+          "display": "grid",
+          "gap": "normal",
+          "gridAutoFlow": "column",
+          "gridTemplateColumns": "177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 225.719px",
+          "overflowX": "visible",
+          "scrollSnapType": "none",
+          "padding": "0px 0px 0px 28px"
+        },
+        "rowStyle": {
+          "display": "block",
+          "gap": "normal",
+          "flexWrap": "nowrap",
+          "padding": "0px"
+        },
+        "heading": null,
+        "shelfTops": [
+          124,
+          473,
+          777,
+          1122,
+          1406
+        ],
+        "shelfGaps": [
+          349,
+          304,
+          345,
+          284
+        ],
+        "showAll": null
+      },
+      "hasPlayerBar": false,
+      "railSections": [
+        {
+          "tag": "nav",
+          "aria": "Main",
+          "rect": {
+            "x": 8,
+            "y": 64,
+            "w": 320,
+            "h": 734
+          }
+        },
+        {
+          "tag": "section",
+          "aria": null,
+          "rect": {
+            "x": 16,
+            "y": 155,
+            "w": 304,
+            "h": 134
+          }
+        },
+        {
+          "tag": "section",
+          "aria": null,
+          "rect": {
+            "x": 16,
+            "y": 313,
+            "w": 304,
+            "h": 134
+          }
+        },
+        {
+          "tag": "ul",
+          "aria": null,
+          "rect": {
+            "x": 32,
+            "y": 605,
+            "w": 272,
+            "h": 75
+          }
+        }
+      ]
+    },
+    "900": {
+      "viewport": {
+        "w": 900,
+        "h": 900
+      },
+      "rail": {
+        "rect": {
+          "x": 8,
+          "y": 16,
+          "w": 884,
+          "h": 876
+        },
+        "style": {
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "backgroundImage": "none",
+          "padding": "0px",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "borderTop": "0px none rgb(179, 179, 179)",
+          "position": "relative",
+          "overflow": "visible",
+          "gap": "normal"
+        }
+      },
+      "topbar": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 900,
+          "h": 64
+        },
+        "style": {
+          "backgroundColor": "rgb(0, 0, 0)",
+          "backgroundImage": "none",
+          "padding": "8px",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "borderTop": "0px none rgb(179, 179, 179)",
+          "position": "relative",
+          "overflow": "visible",
+          "gap": "normal"
+        }
+      },
+      "content": {
+        "rect": {
+          "x": 347,
+          "y": 64,
+          "w": 505,
+          "h": 754
+        },
+        "style": {
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "backgroundImage": "none",
+          "padding": "0px",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "borderTop": "0px none rgb(179, 179, 179)",
+          "position": "static",
+          "overflow": "visible",
+          "gap": "normal"
+        }
+      },
+      "bottomBar": null,
+      "shelf": {
+        "gridRect": {
+          "x": 347,
+          "y": 124,
+          "w": 3630,
+          "h": 277
+        },
+        "rowRect": {
+          "x": 375,
+          "y": 124,
+          "w": 178,
+          "h": 277
+        },
+        "cellCount": 1,
+        "distinctCellWidths": [
+          0
+        ],
+        "horizontalGaps": [],
+        "gridStyle": {
+          "display": "grid",
+          "gap": "normal",
+          "gridAutoFlow": "column",
+          "gridTemplateColumns": "177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 225.719px",
+          "overflowX": "visible",
+          "scrollSnapType": "none",
+          "padding": "0px 0px 0px 28px"
+        },
+        "rowStyle": {
+          "display": "block",
+          "gap": "normal",
+          "flexWrap": "nowrap",
+          "padding": "0px"
+        },
+        "heading": null,
+        "shelfTops": [
+          124,
+          473,
+          777,
+          1122,
+          1406
+        ],
+        "shelfGaps": [
+          349,
+          304,
+          345,
+          284
+        ],
+        "showAll": null
+      },
+      "hasPlayerBar": false,
+      "railSections": []
+    },
+    "1024": {
+      "viewport": {
+        "w": 1024,
+        "h": 900
+      },
+      "rail": {
+        "rect": {
+          "x": 8,
+          "y": 16,
+          "w": 1008,
+          "h": 876
+        },
+        "style": {
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "backgroundImage": "none",
+          "padding": "0px",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "borderTop": "0px none rgb(179, 179, 179)",
+          "position": "relative",
+          "overflow": "visible",
+          "gap": "normal"
+        }
+      },
+      "topbar": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 1024,
+          "h": 64
+        },
+        "style": {
+          "backgroundColor": "rgb(0, 0, 0)",
+          "backgroundImage": "none",
+          "padding": "8px",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "borderTop": "0px none rgb(179, 179, 179)",
+          "position": "relative",
+          "overflow": "visible",
+          "gap": "normal"
+        }
+      },
+      "content": {
+        "rect": {
+          "x": 347,
+          "y": 64,
+          "w": 629,
+          "h": 754
+        },
+        "style": {
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "backgroundImage": "none",
+          "padding": "0px",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "borderTop": "0px none rgb(179, 179, 179)",
+          "position": "static",
+          "overflow": "visible",
+          "gap": "normal"
+        }
+      },
+      "bottomBar": null,
+      "shelf": {
+        "gridRect": {
+          "x": 347,
+          "y": 124,
+          "w": 3630,
+          "h": 277
+        },
+        "rowRect": {
+          "x": 375,
+          "y": 124,
+          "w": 178,
+          "h": 277
+        },
+        "cellCount": 1,
+        "distinctCellWidths": [
+          0
+        ],
+        "horizontalGaps": [],
+        "gridStyle": {
+          "display": "grid",
+          "gap": "normal",
+          "gridAutoFlow": "column",
+          "gridTemplateColumns": "177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 225.719px",
+          "overflowX": "visible",
+          "scrollSnapType": "none",
+          "padding": "0px 0px 0px 28px"
+        },
+        "rowStyle": {
+          "display": "block",
+          "gap": "normal",
+          "flexWrap": "nowrap",
+          "padding": "0px"
+        },
+        "heading": null,
+        "shelfTops": [
+          124,
+          473,
+          777,
+          1122,
+          1406
+        ],
+        "shelfGaps": [
+          349,
+          304,
+          345,
+          284
+        ],
+        "showAll": null
+      },
+      "hasPlayerBar": false,
+      "railSections": []
+    },
+    "1280": {
+      "viewport": {
+        "w": 1280,
+        "h": 900
+      },
+      "rail": {
+        "rect": {
+          "x": 8,
+          "y": 16,
+          "w": 1264,
+          "h": 876
+        },
+        "style": {
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "backgroundImage": "none",
+          "padding": "0px",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "borderTop": "0px none rgb(179, 179, 179)",
+          "position": "relative",
+          "overflow": "visible",
+          "gap": "normal"
+        }
+      },
+      "topbar": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 1280,
+          "h": 64
+        },
+        "style": {
+          "backgroundColor": "rgb(0, 0, 0)",
+          "backgroundImage": "none",
+          "padding": "8px",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "borderTop": "0px none rgb(179, 179, 179)",
+          "position": "relative",
+          "overflow": "visible",
+          "gap": "normal"
+        }
+      },
+      "content": {
+        "rect": {
+          "x": 347,
+          "y": 64,
+          "w": 885,
+          "h": 754
+        },
+        "style": {
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "backgroundImage": "none",
+          "padding": "0px",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "borderTop": "0px none rgb(179, 179, 179)",
+          "position": "static",
+          "overflow": "visible",
+          "gap": "normal"
+        }
+      },
+      "bottomBar": null,
+      "shelf": {
+        "gridRect": {
+          "x": 347,
+          "y": 124,
+          "w": 3630,
+          "h": 277
+        },
+        "rowRect": {
+          "x": 375,
+          "y": 124,
+          "w": 178,
+          "h": 277
+        },
+        "cellCount": 1,
+        "distinctCellWidths": [
+          0
+        ],
+        "horizontalGaps": [],
+        "gridStyle": {
+          "display": "grid",
+          "gap": "normal",
+          "gridAutoFlow": "column",
+          "gridTemplateColumns": "177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 177.719px 225.719px",
+          "overflowX": "visible",
+          "scrollSnapType": "none",
+          "padding": "0px 0px 0px 28px"
+        },
+        "rowStyle": {
+          "display": "block",
+          "gap": "normal",
+          "flexWrap": "nowrap",
+          "padding": "0px"
+        },
+        "heading": null,
+        "shelfTops": [
+          124,
+          473,
+          777,
+          1122,
+          1406
+        ],
+        "shelfGaps": [
+          349,
+          304,
+          345,
+          284
+        ],
+        "showAll": null
+      },
+      "hasPlayerBar": false,
+      "railSections": []
+    },
+    "1440": {
+      "viewport": {
+        "w": 1440,
+        "h": 900
+      },
+      "rail": {
+        "rect": {
+          "x": 8,
+          "y": 16,
+          "w": 1424,
+          "h": 876
+        },
+        "style": {
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "backgroundImage": "none",
+          "padding": "0px",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "borderTop": "0px none rgb(179, 179, 179)",
+          "position": "relative",
+          "overflow": "visible",
+          "gap": "normal"
+        }
+      },
+      "topbar": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 1440,
+          "h": 64
+        },
+        "style": {
+          "backgroundColor": "rgb(0, 0, 0)",
+          "backgroundImage": "none",
+          "padding": "8px",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "borderTop": "0px none rgb(179, 179, 179)",
+          "position": "relative",
+          "overflow": "visible",
+          "gap": "normal"
+        }
+      },
+      "content": {
+        "rect": {
+          "x": 347,
+          "y": 64,
+          "w": 1045,
+          "h": 754
+        },
+        "style": {
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "backgroundImage": "none",
+          "padding": "0px",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "borderTop": "0px none rgb(179, 179, 179)",
+          "position": "static",
+          "overflow": "visible",
+          "gap": "normal"
+        }
+      },
+      "bottomBar": null,
+      "shelf": {
+        "gridRect": {
+          "x": 347,
+          "y": 124,
+          "w": 3986,
+          "h": 295
+        },
+        "rowRect": {
+          "x": 375,
+          "y": 124,
+          "w": 196,
+          "h": 295
+        },
+        "cellCount": 1,
+        "distinctCellWidths": [
+          0
+        ],
+        "horizontalGaps": [],
+        "gridStyle": {
+          "display": "grid",
+          "gap": "normal",
+          "gridAutoFlow": "column",
+          "gridTemplateColumns": "195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 243.5px",
+          "overflowX": "visible",
+          "scrollSnapType": "none",
+          "padding": "0px 0px 0px 28px"
+        },
+        "rowStyle": {
+          "display": "block",
+          "gap": "normal",
+          "flexWrap": "nowrap",
+          "padding": "0px"
+        },
+        "heading": null,
+        "shelfTops": [
+          124,
+          499,
+          828,
+          1200,
+          1492
+        ],
+        "shelfGaps": [
+          375,
+          329,
+          372,
+          292
+        ],
+        "showAll": null
+      },
+      "hasPlayerBar": false,
+      "railSections": []
+    },
+    "1920": {
+      "viewport": {
+        "w": 1920,
+        "h": 900
+      },
+      "rail": {
+        "rect": {
+          "x": 8,
+          "y": 16,
+          "w": 1904,
+          "h": 876
+        },
+        "style": {
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "backgroundImage": "none",
+          "padding": "0px",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "borderTop": "0px none rgb(179, 179, 179)",
+          "position": "relative",
+          "overflow": "visible",
+          "gap": "normal"
+        }
+      },
+      "topbar": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 64
+        },
+        "style": {
+          "backgroundColor": "rgb(0, 0, 0)",
+          "backgroundImage": "none",
+          "padding": "8px",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "borderTop": "0px none rgb(179, 179, 179)",
+          "position": "relative",
+          "overflow": "visible",
+          "gap": "normal"
+        }
+      },
+      "content": {
+        "rect": {
+          "x": 347,
+          "y": 64,
+          "w": 1525,
+          "h": 754
+        },
+        "style": {
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "backgroundImage": "none",
+          "padding": "0px",
+          "borderRight": "0px none rgb(179, 179, 179)",
+          "borderTop": "0px none rgb(179, 179, 179)",
+          "position": "static",
+          "overflow": "visible",
+          "gap": "normal"
+        }
+      },
+      "bottomBar": null,
+      "shelf": {
+        "gridRect": {
+          "x": 347,
+          "y": 124,
+          "w": 3986,
+          "h": 295
+        },
+        "rowRect": {
+          "x": 375,
+          "y": 124,
+          "w": 196,
+          "h": 295
+        },
+        "cellCount": 1,
+        "distinctCellWidths": [
+          0
+        ],
+        "horizontalGaps": [],
+        "gridStyle": {
+          "display": "grid",
+          "gap": "normal",
+          "gridAutoFlow": "column",
+          "gridTemplateColumns": "195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 195.5px 243.5px",
+          "overflowX": "visible",
+          "scrollSnapType": "none",
+          "padding": "0px 0px 0px 28px"
+        },
+        "rowStyle": {
+          "display": "block",
+          "gap": "normal",
+          "flexWrap": "nowrap",
+          "padding": "0px"
+        },
+        "heading": null,
+        "shelfTops": [
+          124,
+          499,
+          828,
+          1200,
+          1492
+        ],
+        "shelfGaps": [
+          375,
+          329,
+          372,
+          292
+        ],
+        "showAll": null
+      },
+      "hasPlayerBar": false,
+      "railSections": []
+    }
+  }
+}

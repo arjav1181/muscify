@@ -8,7 +8,6 @@ const YT_API = "https://www.googleapis.com/youtube/v3";
 const OEMBED = "https://www.youtube.com/oembed";
 
 /** YouTube's dedicated music category — keeps search off tutorials and vlogs. */
-const MUSIC_CATEGORY = "10";
 
 export function youtubeApiKey(): string {
   return (process.env.YOUTUBE_API_KEY ?? "").trim();
@@ -114,7 +113,7 @@ export async function searchYoutube(query: string, max = 24): Promise<Track[]> {
     {
       part: "snippet",
       type: "video",
-      videoCategoryId: MUSIC_CATEGORY,
+      // Not filtered by videoCategoryId; see the note below.
       videoEmbeddable: "true",
       maxResults: String(Math.min(max, 50)),
       q: query,
@@ -130,14 +129,24 @@ export async function searchYoutube(query: string, max = 24): Promise<Track[]> {
   return out;
 }
 
-/** The official music chart — one quota unit, so it backs the "trending" shelf. */
+/**
+ * The official music chart — one quota unit, so it backs the "trending" shelf.
+ *
+ * Deliberately NOT filtered by `videoCategoryId`. YouTube auto-assigns categories
+ * and honours the filter inconsistently by region: filtering to category 10
+ * (Music) returned an entirely empty chart from this deployment, and the same
+ * filter did the same to search and to channel video listings. Leaving it off
+ * lets a few non-music videos into a music shelf, which is a far better failure
+ * than an empty shelf: it is visible, and the listener can press next.
+ */
 export async function trendingYoutube(max = 24): Promise<Track[]> {
   const data = await ytFetch(
     "videos",
     {
       part: "snippet",
       chart: "mostPopular",
-      videoCategoryId: MUSIC_CATEGORY,
+      // Not filtered by videoCategoryId; see the note below. With it, this
+      // returned nothing at all in production.
       maxResults: String(Math.min(max, 50)),
     },
     "chart",
@@ -453,7 +462,7 @@ export async function channelVideos(channelId: string, max = 24): Promise<Track[
       part: "snippet",
       type: "video",
       channelId,
-      videoCategoryId: MUSIC_CATEGORY,
+      // Not filtered by videoCategoryId; see the note below.
       videoEmbeddable: "true",
       maxResults: String(Math.min(max, 50)),
       order: "viewCount",

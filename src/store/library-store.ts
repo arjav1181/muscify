@@ -5,6 +5,7 @@ import {
   DEFAULT_SETTINGS,
   SNAPSHOT_VERSION,
   emptySnapshot,
+  type Folder,
   type LibrarySnapshot,
   type LikedEntry,
   type LibraryRepository,
@@ -39,6 +40,9 @@ interface LibraryState {
   durable: boolean;
   catalog: Record<string, LibrarySnapshot["catalog"][string]>;
   playlists: Playlist[];
+  /** Library folders. See `LibrarySnapshot.folders`.
+   */
+  folders: Folder[];
   liked: LikedEntry[];
   recentlyPlayed: RecentlyPlayed[];
   followedArtists: string[];
@@ -104,6 +108,12 @@ interface LibraryState {
   recordPlay: (track: Track) => void;
   clearHistory: () => void;
 
+  createFolder: (name: string) => Folder | null;
+  renameFolder: (id: string, name: string) => void;
+  deleteFolder: (id: string) => void;
+  moveToFolder: (playlistId: string, folderId: string | null) => void;
+  getFolder: (id: string) => Folder | null;
+
   createPlaylist: (name: string, description?: string) => Playlist | null;
   renamePlaylist: (id: string, name: string, description?: string) => void;
   deletePlaylist: (id: string) => void;
@@ -138,6 +148,7 @@ export const useLibrary = create<LibraryState>((set, get) => {
       version: SNAPSHOT_VERSION,
       catalog: s.catalog,
       playlists: s.playlists,
+      folders: s.folders,
       liked: s.liked,
       recentlyPlayed: s.recentlyPlayed,
       followedArtists: s.followedArtists,
@@ -183,6 +194,7 @@ export const useLibrary = create<LibraryState>((set, get) => {
     settings: { ...DEFAULT_SETTINGS },
     taste: emptyTasteState(),
     searchHistory: [],
+    folders: [],
 
     init: async (custom) => {
       repo = custom ?? createRepository();
@@ -192,6 +204,7 @@ export const useLibrary = create<LibraryState>((set, get) => {
         durable: repo.durable,
         catalog: data.catalog,
         playlists: data.playlists,
+        folders: data.folders,
         liked: data.liked,
         recentlyPlayed: data.recentlyPlayed,
         followedArtists: data.followedArtists,
@@ -238,6 +251,7 @@ export const useLibrary = create<LibraryState>((set, get) => {
       set({
         catalog: remote.catalog,
         playlists: remote.playlists,
+        folders: remote.folders,
         liked: remote.liked,
         recentlyPlayed: remote.recentlyPlayed,
         followedArtists: remote.followedArtists,
@@ -397,6 +411,59 @@ export const useLibrary = create<LibraryState>((set, get) => {
     },
 
     clearHistory: () => commit({ recentlyPlayed: [] }),
+
+    createFolder: (name) => {
+      const trimmed = name.trim();
+      if (!trimmed) return null;
+      const now = Date.now();
+      const folder: Folder = { id: id(), name: trimmed, createdAt: now, updatedAt: now };
+      commit({ folders: [...get().folders, folder] });
+      return folder;
+    },
+
+    renameFolder: (folderId, name) => {
+      const trimmed = name.trim();
+      if (!trimmed) return;
+      commit({
+        folders: get().folders.map((f) =>
+          f.id === folderId ? { ...f, name: trimmed, updatedAt: Date.now() } : f,
+        ),
+      });
+    },
+
+    /*
+      Deleting a folder never deletes anything inside it.
+      
+      The playlists it held simply lose their `folderId` and return to the
+      uncategorised shelf. Deleting them as well would mean a gesture aimed at
+      organising a library destroyed the library, which is the one outcome a
+      folder feature must never produce.
+    */
+    deleteFolder: (folderId) =>
+      commit({
+        folders: get().folders.filter((f) => f.id !== folderId),
+        playlists: get().playlists.map((p) =>
+          p.folderId === folderId ? { ...p, folderId: undefined } : p,
+        ),
+      }),
+
+    moveToFolder: (playlistId, folderId) => {
+      const playlists = get().playlists;
+      const target = playlists.find((p) => p.id === playlistId);
+      if (!target) return;
+      // Ignore a move to a folder that does not exist rather than writing a
+      // dangling id: a playlist referencing a missing folder would vanish from
+      // every shelf at once, with no way to get it back.
+      if (folderId && !get().folders.some((f) => f.id === folderId)) return;
+
+      commit({
+        playlists: playlists.map((p) =>
+          p.id === playlistId ? { ...p, folderId: folderId ?? undefined, updatedAt: Date.now() } : p,
+        ),
+      });
+    },
+
+    getFolder: (folderId) => get().folders.find((f) => f.id === folderId) ?? null,
 
     createPlaylist: (name, description = "") => {
       const trimmed = name.trim();
