@@ -1,0 +1,74 @@
+name: CI
+
+# Runs on every push and every pull request.
+#
+# This exists because of a specific failure that reached production and was not
+# caught anywhere: two dependencies were added, and npm wrote their `resolved`
+# URLs in package-lock.json pointing at this environment's internal registry
+# proxy rather than registry.npmjs.org. The local build was green, the type
+# checker was green, 240 tests passed, and the deploy failed with ENOTFOUND
+# before the build even started — with no compiler output and no error message
+# on the deployment record, so it read as a transient network fault.
+#
+# The check below is a one-second guard that would have caught it before it left.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A second push to the same branch makes the first one's result irrelevant.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install
+        run: npm ci --no-audit --no-fund
+
+      - name: Lockfile must resolve publicly
+        run: |
+          # Fails the build rather than the deploy. npm records whichever host
+          # it resolved from, so an entry pointing anywhere but the public
+          # registry will ENOTFOUND on the Vercel build host.
+          node --input-type=module -e '
+            import { readFileSync } from "node:fs";
+            const lock = JSON.parse(readFileSync("package-lock.json", "utf8"));
+            const bad = Object.entries(lock.packages ?? {})
+              .filter(([, m]) => typeof m.resolved === "string")
+              .filter(([, m]) => !m.resolved.startsWith("https://registry.npmjs.org/"));
+            if (bad.length) {
+              console.error("These entries do not resolve on the public registry:");
+              for (const [path, m] of bad) console.error(`  ${path}\n    ${m.resolved}`);
+              process.exit(1);
+            }
+            const total = Object.values(lock.packages ?? {}).filter((m) => m.resolved).length;
+            console.log(`OK: all ${total} entries resolve publicly.`);
+          '
+
+      - name: Types
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npx eslint src/
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
