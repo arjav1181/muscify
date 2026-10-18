@@ -13,6 +13,8 @@
     "@neondatabase/serverless": "^1.2.0",
     "lucide-react": "^1.58.0",
     "next": "16.4.2",
+    "next-auth": "^5.0.0-beta.32",
+    "postgres": "^3.4.9",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "server-only": "^0.0.1",

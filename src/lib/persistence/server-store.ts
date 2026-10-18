@@ -1,3 +1,4 @@
+import { PostgresStore } from "./postgres-store.ts";
 import type { LibrarySnapshot } from "./types.ts";
 
 /**
@@ -46,11 +47,34 @@ export interface RemoteStore {
 }
 
 /**
- * A bound value the driver understands. Snapshot is passed as a JSON string and
- * cast in SQL rather than handed over as an object, because Postgres has no
- * JSON type in its text protocol and `jsonb` needs the literal.
+ * A bound value the driver understands. Snapshot is passed as the object and
+ * serialised by the driver, never as a pre-stringified string.
+ *
+ * This is not a style preference. `${JSON.stringify(snapshot)}::jsonb` stores a
+ * JSON *string scalar* -- double-encoded -- because the driver has already
+ * JSON-encoded a string parameter by the time the cast applies. Reading it back
+ * gives a string where a document is expected, so `snapshot.playlists` is
+ * `undefined` and the library silently comes back empty. Verified against
+ * Postgres 16 with the driver: `::jsonb` + string stores type `string`, + object
+ * stores type `object`. The bug shipped because no deployment has a database
+ * configured, so this code path had never run against a real one.
  */
-const asJson = (snapshot: LibrarySnapshot): string => JSON.stringify(snapshot);
+const asJson = (snapshot: LibrarySnapshot): LibrarySnapshot => snapshot;
+
+/**
+ * Reads a snapshot back, tolerating rows written before the fix above.
+ *
+ * Those are stored double-encoded and would otherwise hand the client a string.
+ * Parsing them here upgrades them in place on the next write.
+ */
+function coerceSnapshot(raw: unknown): LibrarySnapshot {
+  if (typeof raw !== "string") return raw as LibrarySnapshot;
+  try {
+    return JSON.parse(raw) as LibrarySnapshot;
+  } catch {
+    return { version: 2 } as LibrarySnapshot;
+  }
+}
 
 /** PostgREST needs a full URL including scheme; `postgrest.co` is not a host. */
 function supabaseUrl(raw: string): string {
@@ -149,7 +173,8 @@ class NeonStore implements RemoteStore {
        where device_id = ${deviceId}
        limit 1
     `;
-    return (rows[0] as LibraryRow | undefined) ?? null;
+    const row = rows[0] as LibraryRow | undefined;
+    return row ? { ...row, snapshot: coerceSnapshot(row.snapshot) } : null;
   }
 
   async write(deviceId: string, snapshot: LibrarySnapshot): Promise<void> {
@@ -282,4 +307,64 @@ export function getStore(): RemoteStore | null {
 /** Test seam — the store is memoised for the lifetime of the process. */
 export function __resetStore(): void {
   cached = null;
+}
+
+// ---------------------------------------------------------------------------
+// Accounts
+// ---------------------------------------------------------------------------
+
+/**
+ * The database used for signed-in identity and user libraries.
+ *
+ * Separate from `getStore()` on purpose. That function and the `RemoteStore`
+ * interface above are the anonymous device path: stable, unit-tested, and
+ * deliberately untouched by the arrival of accounts. Accounts are additive --
+ * an account is an upgrade on top of sync, never a replacement for it -- so
+ * they get their own accessor rather than a widened interface that every
+ * existing implementation would have to grow a branch for.
+ *
+ * Returns null when no `MUSCIFY_DATABASE_URL` is set, which is the shipped
+ * default. Every caller treats that as "accounts are off", not as an error.
+ *
+ * The same `DATABASE_URL` refusal applies here as in rule 1 above. A bare
+ * `DATABASE_URL` in this environment points at a Postgres holding some other
+ * project's tables, and pointing identity code at it would create `u_*` rows in
+ * someone else's database.
+ */
+let cachedAuth: PostgresStore | null = null;
+let authResolved = false;
+
+export function getAuthStore(): PostgresStore | null {
+  if (authResolved) return cachedAuth;
+  authResolved = true;
+
+  const url = process.env.MUSCIFY_DATABASE_URL ?? "";
+  if (url) {
+    cachedAuth = new PostgresStore(url);
+    return cachedAuth;
+  }
+
+  // Only reachable when explicitly opted in; see rule 1 above.
+  if ((process.env.MUSCIFY_SYNC_BACKEND ?? "").trim().toLowerCase() === "postgres") {
+    const generic = process.env.DATABASE_URL ?? "";
+    if (generic) {
+      console.warn(
+        "[muscify] MUSCIFY_SYNC_BACKEND=postgres is set, so the generic DATABASE_URL " +
+          "is being used for accounts; rename it to MUSCIFY_DATABASE_URL to make that explicit",
+      );
+      cachedAuth = new PostgresStore(generic);
+      return cachedAuth;
+    }
+    console.warn(
+      "[muscify] MUSCIFY_SYNC_BACKEND=postgres but no database URL was found; accounts are off",
+    );
+  }
+
+  return null;
+}
+
+/** Test seam. */
+export function __resetAuthStore(): void {
+  cachedAuth = null;
+  authResolved = false;
 }

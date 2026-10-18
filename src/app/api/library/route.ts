@@ -2,33 +2,37 @@ import "server-only";
 
 import { NextResponse } from "next/server";
 
-import { getStore } from "@/lib/persistence/server-store";
+import { auth } from "@/auth";
+import { getAuthStore, getStore } from "@/lib/persistence/server-store";
+import type { PostgresStore } from "@/lib/persistence/postgres-store";
 import { SNAPSHOT_VERSION, type LibrarySnapshot } from "@/lib/persistence/types";
 
 /**
- * Optional library sync.
+ * Library sync, for signed-in listeners and anonymous ones.
  *
  * The only place the sync backend is touched. It answers 501 when no backend is
  * configured, which is the signal the client uses to stop asking — so a
  * deployment with no database variables costs one request at boot and nothing
  * after.
  *
- * Identity is a random device id supplied by the caller in a header. There is
- * no account system and no credential in the request, so this endpoint cannot
- * be used to read or overwrite anyone's library by guessing an id: ids are 122
- * bits of UUIDv4 and are never transmitted anywhere but to this route.
+ * There are two kinds of caller and they are kept strictly apart:
  *
- * That is a deliberate trade, not an oversight. It makes sync opt-in and
- * credential-free, and in exchange there is no way to recover a library if the
- * browser's localStorage is cleared. Adding accounts later means adding a real
- * auth layer in front of this route and keying rows by user; the storage
- * interface below is already shaped for that change.
+ *  - **Signed in.** The user id comes from the verified session and nothing
+ *    else. Rows live in `muscify_user_library`.
+ *  - **Anonymous.** A random device id in a header. Rows live in
+ *    `muscify_library`.
  *
- * A real user id must NOT simply be substituted for the device header when that
- * day comes. What exists today is implicit authorisation by possession of a
- * 122-bit unguessable id — the weakest thing that can honestly be called
- * authorisation. Adding a real identity means adding real checks, not renaming
- * the existing one.
+ * The rule that makes this safe: **when a session is present the device header
+ * is not read at all.** Not preferred, not validated, not used as a fallback —
+ * ignored. A caller signed in as Alice cannot reach Bob's library by pasting
+ * his device id into a header, because the header is not consulted. Falling back
+ * to it "when there's no account" is the exact bug that would make this
+ * endpoint a way to read anyone else's library, so the fallback exists only in
+ * the branch where there is genuinely no session at all.
+ *
+ * Adoption of a device library into an account is deliberately NOT done here.
+ * The client decides that, visibly, in the person's hands — this route only
+ * ever reads and writes the one row the caller is entitled to.
  */
 
 // No `runtime` export: the Node runtime is the default in this Next version and
@@ -40,6 +44,40 @@ export const maxDuration = 10;
 const DEVICE_HEADER = "x-muscify-device";
 /** Upper bound on a stored snapshot, to reject a runaway or hostile payload. */
 const MAX_BYTES = 4 * 1024 * 1024;
+
+/** Which row this request may touch, and how. */
+type Owner =
+  | { kind: "user"; store: PostgresStore; id: string }
+  | { kind: "device"; store: NonNullable<ReturnType<typeof getStore>>; id: string }
+  | { kind: "none" }
+  /** Configured, but the caller did not identify itself. */
+  | { kind: "bad-request"; reason: string };
+
+/**
+ * Resolves who is calling.
+ *
+ * Session first and unconditionally. The device header is consulted only when
+ * there is no session *and* an anonymous backend exists.
+ */
+async function resolveOwner(req: Request): Promise<Owner> {
+  if (auth) {
+    const session = await auth();
+    const userId = session?.user?.id;
+    if (typeof userId === "string" && userId) {
+      const store = getAuthStore();
+      // Signed in but no database configured: fall through to the anonymous
+      // path rather than erroring, so a partial deployment still works.
+      if (store) return { kind: "user", store, id: userId };
+    }
+  }
+
+  const store = getStore();
+  if (!store) return { kind: "none" };
+
+  const device = readDeviceId(req);
+  if ("error" in device) return { kind: "bad-request", reason: device.error };
+  return { kind: "device", store, id: device.id };
+}
 
 /**
  * Reads and validates the caller's device id.
@@ -63,38 +101,76 @@ const NOT_CONFIGURED = () =>
     { status: 501 },
   );
 
-export async function GET(req: Request) {
-  const store = getStore();
-  if (!store) return NOT_CONFIGURED();
+/**
+ * The clock the client compares against.
+ *
+ * This is the writing device's own stamp, not the database's `now()`. It has to
+ * be: the client decides whether the server copy is newer by comparing it with
+ * its own stamp, and if the two were different clocks a device running behind
+ * would see every pull as "newer than local" and overwrite its own newer edits
+ * on every reconnect. Keeping it end-to-end client-supplied means
+ * last-write-wins means one thing, even if that thing is "the device whose clock
+ * is furthest ahead wins" — which is stated in the README rather than hidden.
+ */
+function sentStamp(row: { snapshot?: LibrarySnapshot; updated_at: string }): number {
+  const sent = typeof row.snapshot?.updatedAt === "number" ? row.snapshot.updatedAt : null;
+  const stamp = sent ?? Date.parse(row.updated_at) ?? 0;
+  return Number.isFinite(stamp) ? stamp : 0;
+}
 
-  const device = readDeviceId(req);
-  if ("error" in device) {
-    return NextResponse.json({ ok: false, reason: device.error }, { status: device.status });
+/** Reads this caller's row, whichever kind of caller they are. */
+async function readOwned(
+  owner: Exclude<Owner, { kind: "none" | "bad-request" }>,
+): Promise<{ version: number; snapshot: LibrarySnapshot; updated_at: string } | null> {
+  return owner.kind === "user"
+    ? owner.store.readUser(owner.id)
+    : owner.store.read(owner.id);
+}
+
+async function writeOwned(
+  owner: Exclude<Owner, { kind: "none" | "bad-request" }>,
+  snapshot: LibrarySnapshot,
+): Promise<void> {
+  return owner.kind === "user"
+    ? owner.store.writeUser(owner.id, snapshot)
+    : owner.store.write(owner.id, snapshot);
+}
+
+async function removeOwned(
+  owner: Exclude<Owner, { kind: "none" | "bad-request" }>,
+): Promise<void> {
+  return owner.kind === "user"
+    ? owner.store.removeUser(owner.id)
+    : owner.store.remove(owner.id);
+}
+
+/** Maps an unresolved owner onto the right status. */
+function refuse(owner: Owner) {
+  if (owner.kind === "bad-request") {
+    return NextResponse.json({ ok: false, reason: owner.reason }, { status: 400 });
   }
+  return NOT_CONFIGURED();
+}
+
+export async function GET(req: Request) {
+  const owner = await resolveOwner(req);
+  if (owner.kind === "none" || owner.kind === "bad-request") return refuse(owner);
 
   try {
-    const row = await store.read(device.id);
+    const row = await readOwned(owner);
+    const backend = owner.kind === "user" ? "account" : owner.store.name;
+
     if (!row) {
       // No row yet means "nothing on the server", not an error. 200 with an
-      // empty object is what lets the client distinguish it from a failure.
-      return NextResponse.json({ ok: true, backend: store.name, snapshot: null });
+      // empty body is what lets the client tell it apart from a failure.
+      return NextResponse.json({ ok: true, backend, scope: owner.kind, snapshot: null });
     }
-
-    // The clock handed back is the one the writing device sent, not the
-    // database's `now()`. This matters: the client compares this against its own
-    // stamp to decide whether the server copy is newer, and the two must be the
-    // same clock or a device running behind will see every pull as "newer than
-    // local" and overwrite its own newer edits on every reconnect. Keeping it
-    // end-to-end client-supplied makes last-write-wins mean one thing, even if
-    // that thing is "the device whose clock is furthest ahead wins" — which is
-    // stated in the README rather than hidden.
-    const sent = typeof row.snapshot?.updatedAt === "number" ? row.snapshot.updatedAt : null;
-    const stamp = sent ?? Date.parse(row.updated_at) ?? 0;
 
     return NextResponse.json({
       ok: true,
-      backend: store.name,
-      snapshot: { ...row.snapshot, updatedAt: Number.isFinite(stamp) ? stamp : 0 },
+      backend,
+      scope: owner.kind,
+      snapshot: { ...row.snapshot, updatedAt: sentStamp(row) },
     });
   } catch (e) {
     console.error("[muscify] sync read failed", e);
@@ -103,13 +179,8 @@ export async function GET(req: Request) {
 }
 
 export async function PUT(req: Request) {
-  const store = getStore();
-  if (!store) return NOT_CONFIGURED();
-
-  const device = readDeviceId(req);
-  if ("error" in device) {
-    return NextResponse.json({ ok: false, reason: device.error }, { status: device.status });
-  }
+  const owner = await resolveOwner(req);
+  if (owner.kind === "none" || owner.kind === "bad-request") return refuse(owner);
 
   let body: string;
   try {
@@ -137,8 +208,13 @@ export async function PUT(req: Request) {
   }
 
   try {
-    await store.write(device.id, snapshot);
-    return NextResponse.json({ ok: true, backend: store.name, at: Date.now() });
+    await writeOwned(owner, snapshot);
+    return NextResponse.json({
+      ok: true,
+      backend: owner.kind === "user" ? "account" : owner.store.name,
+      scope: owner.kind,
+      at: Date.now(),
+    });
   } catch (e) {
     console.error("[muscify] sync write failed", e);
     return NextResponse.json({ ok: false, reason: "write failed" }, { status: 502 });
@@ -146,16 +222,11 @@ export async function PUT(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const store = getStore();
-  if (!store) return NOT_CONFIGURED();
-
-  const device = readDeviceId(req);
-  if ("error" in device) {
-    return NextResponse.json({ ok: false, reason: device.error }, { status: device.status });
-  }
+  const owner = await resolveOwner(req);
+  if (owner.kind === "none" || owner.kind === "bad-request") return refuse(owner);
 
   try {
-    await store.remove(device.id);
+    await removeOwned(owner);
     return NextResponse.json({ ok: true });
   } catch (e) {
     console.error("[muscify] sync delete failed", e);
