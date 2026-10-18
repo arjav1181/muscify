@@ -1,6 +1,20 @@
 "use client";
 
-import { BarChart3, Compass, Heart, Home, Library as LibraryIcon, ListMusic, Plus, Radio as RadioIcon, Search, Settings, Sparkles, Timer } from "lucide-react";
+import {
+  BarChart3,
+  Compass,
+  Heart,
+  Home,
+  Library as LibraryIcon,
+  ListMusic,
+  Mic2,
+  Plus,
+  Radio as RadioIcon,
+  Search,
+  Settings,
+  Sparkles,
+  Timer,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { artFallback } from "@/lib/art";
@@ -14,6 +28,7 @@ const NAV = [
   { href: "/search", label: "Search", icon: Search },
   { href: "/library", label: "Your Library", icon: LibraryIcon },
   { href: "/radio", label: "Radio", icon: RadioIcon },
+  { href: "/podcasts", label: "Podcasts", icon: Mic2 },
   { href: "/stats", label: "Listening stats", icon: BarChart3 },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
