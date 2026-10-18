@@ -116,6 +116,59 @@ export const usePlayer = create<PlayerState>((set, get) => {
     set({ isPlaying: false, position: 0 });
   };
 
+  /**
+   * Fills a finished queue with tracks related to what just played, then
+   * continues into them.
+   *
+   * Guarded so a slow or failing fetch cannot queue the same batch twice: the
+   * request id is remembered until it resolves, and a failure simply stops
+   * playback rather than retrying in a loop. Suppressed tracks are filtered by
+   * the store, so a hidden or snoozed track cannot reappear here.
+   */
+  let topUpToken = 0;
+
+  const topUpFrom = (seed: Track) => {
+    const token = ++topUpToken;
+    set({ isLoading: true });
+
+    void (async () => {
+      try {
+        const { seededTracks } = await import("@/lib/sources/recommend");
+        const { results } = await seededTracks({
+          source: seed.source,
+          id: seed.id,
+          title: seed.title,
+          artist: seed.artist,
+          artistId: seed.artistId,
+          album: seed.album,
+        });
+
+        if (token !== topUpToken) return; // superseded by a newer request
+
+        const { filterByTaste } = useLibrary.getState();
+        const fresh = filterByTaste(results.slice(0, 10)).filter(
+          (t) => trackKey(t) !== trackKey(seed),
+        );
+
+        if (fresh.length === 0) {
+          stopAtEnd();
+          return;
+        }
+
+        useLibrary.getState().putTracks(fresh);
+        const at = get().queue.length;
+        set((s) => ({ queue: [...s.queue, ...fresh] }));
+        goTo(at, true);
+      } catch {
+        // Nothing related was found, or the sources are down. Stop rather than
+        // leaving the player apparently stuck at the end of the queue.
+        if (token === topUpToken) stopAtEnd();
+      } finally {
+        if (token === topUpToken) set({ isLoading: false });
+      }
+    })();
+  };
+
   return {
     queue: [],
     index: -1,
@@ -241,6 +294,16 @@ export const usePlayer = create<PlayerState>((set, get) => {
       } else if (repeat === "all") {
         target = 0;
       } else if (fromTrackEnd) {
+        // Queue exhausted. When "autoplay similar" is on, top it up from the
+        // track that just finished instead of stopping dead. The fetch is
+        // deliberately not awaited: the track ends on schedule and playback
+        // continues into whatever arrives.
+        const { settings } = useLibrary.getState();
+        const finished = queue[index];
+        if (settings.autoplaySimilar && finished) {
+          topUpFrom(finished);
+          return;
+        }
         stopAtEnd();
         return;
       } else {

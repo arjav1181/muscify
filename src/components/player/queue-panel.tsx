@@ -1,6 +1,6 @@
 "use client";
 
-import { ListMusic, X } from "lucide-react";
+import { ArrowDown, ArrowUp, ListMusic, X } from "lucide-react";
 import { usePlayer } from "@/store/player-store";
 import { TrackRow } from "@/components/track-row";
 
@@ -10,6 +10,7 @@ export function QueuePanel({ inline = false }: { inline?: boolean }) {
   const clearQueue = usePlayer((s) => s.clearQueue);
   const jump = usePlayer((s) => s.jump);
   const remove = usePlayer((s) => s.remove);
+  const reorder = usePlayer((s) => s.reorder);
 
   return (
     <section
@@ -41,15 +42,45 @@ export function QueuePanel({ inline = false }: { inline?: boolean }) {
       ) : (
         <div className="overflow-y-auto px-1 pb-2">
           {queue.map((track, i) => (
-            <TrackRow
-              key={`${track.source}:${track.id}:${i}`}
-              track={track}
-              index={i}
-              active={i === index}
-              onPlay={() => jump(i)}
-              onRemove={() => remove(i)}
-              showArtwork={false}
-            />
+            <div key={`${track.source}:${track.id}:${i}`} className="group/q relative flex items-center">
+              <div className="min-w-0 flex-1">
+                <TrackRow
+                  track={track}
+                  index={i}
+                  active={i === index}
+                  onPlay={() => jump(i)}
+                  onRemove={() => remove(i)}
+                  showArtwork={false}
+                />
+              </div>
+
+              {/*
+                Reorder controls. Buttons rather than drag-and-drop: dragging a
+                queue row needs a pointer-capture dance that breaks with
+                scroll containers, and two buttons are reachable by keyboard and
+                usable on a touch screen without any gesture support at all.
+              */}
+              <div className="flex shrink-0 flex-col opacity-0 transition-opacity group-hover/q:opacity-100 focus-within:opacity-100">
+                <button
+                  type="button"
+                  onClick={() => reorder(i, i - 1)}
+                  disabled={i === 0}
+                  aria-label={`Move ${track.title} up`}
+                  className="rounded p-1 text-dim transition hover:bg-white/10 hover:text-on disabled:opacity-25"
+                >
+                  <ArrowUp size={13} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => reorder(i, i + 1)}
+                  disabled={i === queue.length - 1}
+                  aria-label={`Move ${track.title} down`}
+                  className="rounded p-1 text-dim transition hover:bg-white/10 hover:text-on disabled:opacity-25"
+                >
+                  <ArrowDown size={13} />
+                </button>
+              </div>
+            </div>
           ))}
         </div>
       )}

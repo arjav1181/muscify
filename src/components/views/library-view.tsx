@@ -19,6 +19,13 @@ import type { Track } from "@/lib/types";
 import { useLibrary } from "@/store/library-store";
 import { usePlayer } from "@/store/player-store";
 import { useUi } from "@/store/ui-store";
+import {
+  filterPlaylists,
+  LIBRARY_SORTS,
+  sortPlaylists,
+  type LibrarySort,
+} from "@/lib/library-sort";
+import { ArrowDownAZ, Clock3, Search } from "lucide-react";
 import { PlaylistArt } from "@/components/track-card";
 import { TrackList } from "@/components/track-row";
 
@@ -34,6 +41,8 @@ const FILTERS: { id: Filter; label: string; icon: typeof ListMusic }[] = [
 
 export function LibraryView() {
   const [filter, setFilter] = useState<Filter>("playlists");
+  const [sort, setSort] = useState<LibrarySort>("recently-added");
+  const [query, setQuery] = useState("");
 
   return (
     <div className="animate-fade-up pt-6">
@@ -64,7 +73,46 @@ export function LibraryView() {
         </button>
       </div>
 
-      {filter === "playlists" ? <Playlists /> : null}
+      {/* Sort and filter apply to playlists, artists, albums and history alike. */}
+      <div className="mb-5 flex flex-wrap items-center gap-2">
+        <div className="relative flex min-w-[180px] flex-1 items-center sm:max-w-xs">
+          <Search
+            size={14}
+            className="pointer-events-none absolute left-3 text-dim"
+            aria-hidden
+          />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Filter your library"
+            aria-label="Filter your library"
+            className="w-full rounded-full border border-line-strong bg-base py-2 pr-3 pl-9 text-sm placeholder:text-dim focus:border-white/40 focus:outline-none"
+          />
+        </div>
+
+        <label className="flex items-center gap-2">
+          <span className="sr-only">Sort library by</span>
+          {sort === "alphabetical" ? (
+            <ArrowDownAZ size={14} className="text-dim" aria-hidden />
+          ) : (
+            <Clock3 size={14} className="text-dim" aria-hidden />
+          )}
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value as LibrarySort)}
+            className="rounded-full border border-line-strong bg-base px-3 py-2 text-sm text-sub focus:border-white/40 focus:outline-none"
+          >
+            {LIBRARY_SORTS.map((option) => (
+              <option key={option.id} value={option.id} className="bg-base text-on">
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      {filter === "playlists" ? <Playlists sort={sort} query={query} /> : null}
       {filter === "liked" ? <Liked /> : null}
       {filter === "artists" ? <Artists /> : null}
       {filter === "albums" ? <Albums /> : null}
@@ -82,12 +130,17 @@ function useTracksFor(keys: string[]): Track[] {
   );
 }
 
-function Playlists() {
-  const playlists = useLibrary((s) => s.playlists);
+function Playlists({ sort, query }: { sort: LibrarySort; query: string }) {
+  const all = useLibrary((s) => s.playlists);
   const openModal = useUi((s) => s.openModal);
   const playTracks = usePlayer((s) => s.playTracks);
 
-  if (!playlists.length) {
+  const playlists = useMemo(
+    () => sortPlaylists(filterPlaylists(all, query), sort),
+    [all, query, sort],
+  );
+
+  if (!all.length) {
     return (
       <EmptyState
         icon={LibraryIcon}
@@ -96,6 +149,14 @@ function Playlists() {
         body="Create a playlist to start collecting the music you love."
         action={{ label: "Create playlist", run: () => openModal({ kind: "create-playlist" }) }}
       />
+    );
+  }
+
+  if (!playlists.length) {
+    return (
+      <p className="py-8 text-sm text-muted">
+        No playlist matches “{query.trim()}”.
+      </p>
     );
   }
 
