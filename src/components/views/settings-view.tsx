@@ -18,6 +18,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { describeNormalization } from "@/lib/audio/normalize";
+import { AccountPanel } from "@/components/account-panel";
 import { useLibrary } from "@/store/library-store";
 import { useUi } from "@/store/ui-store";
 import { MAX_SEARCH_HISTORY } from "@/lib/persistence/types";
@@ -404,6 +405,21 @@ export function SettingsView() {
         ) : null}
 
         {/*
+          Account sits directly above sync because it explains it. The sync row
+          below reports on a device id or an account without the reader knowing
+          which they are looking at, so the answer has to be visible first.
+        */}
+        <div className="border-b border-line px-4 py-3">
+          <p className="text-sm text-on">Account</p>
+          <p className="mt-0.5 text-xs text-muted">
+            Optional. Everything below works without one.
+          </p>
+          <div className="mt-3">
+            <AccountPanel />
+          </div>
+        </div>
+
+        {/*
           Sync has to be visible to be believable. A library that silently
           failed to sync looks identical to one that works, and the listener
           cannot tell which — so this reports what actually happened rather than
@@ -415,7 +431,7 @@ export function SettingsView() {
             syncState === "syncing"
               ? "Checking the server for changes."
               : syncState === "synced"
-                ? "Up to date. Your library follows you between browsers on this account-less device id."
+                ? "Up to date. Your library follows you between browsers."
                 : syncState === "off"
                   ? "Not configured on this deployment. Your library is stored in this browser only, and clearing site data will lose it."
                   : syncStatus === "unreachable"

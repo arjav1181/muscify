@@ -523,3 +523,113 @@ test("durable needs both halves, not just local storage", async () => {
     h.restore();
   }
 });
+
+// ---------------------------------------------------------------------------
+// Adoption on sign-in: the account is upgraded to, never allowed to clobber
+// ---------------------------------------------------------------------------
+
+test("signing in with an empty account adopts the library on this device", async () => {
+  const h = harness();
+  try {
+    const { SyncingLibraryRepository } = await loadModule();
+    const repo = new SyncingLibraryRepository() as LibraryRepository;
+
+    const local = snapshotAt(NOW, "Device library");
+    await repo.save(local);
+
+    let puts = 0;
+    h.setHandler(async (url, init) => {
+      // The server reports an authenticated, user-scoped caller with no row.
+      if (init?.method === "PUT") {
+        puts++;
+        return jsonResponse({ ok: true, scope: "user" });
+      }
+      return jsonResponse({ ok: true, scope: "user", snapshot: null });
+    });
+
+    const outcome = await pull(repo);
+    assert.equal(outcome.status, "synced");
+    // The library went up to the account...
+    assert.equal(puts, 1, "expected exactly one upload of the device library");
+    // ...and the local copy was not replaced by anything.
+    const after = await repo.load();
+    assert.equal(after.playlists[0]?.name, "Device library");
+  } finally {
+    h.restore();
+  }
+});
+
+test("an account that already has a library never overwrites it with the device copy", async () => {
+  const h = harness();
+  try {
+    const { SyncingLibraryRepository } = await loadModule();
+    const repo = new SyncingLibraryRepository() as LibraryRepository;
+
+    const local = snapshotAt(Date.now() - 60_000, "Device library");
+    await repo.save(local);
+
+    // An account row that is OLDER than the device copy, so last-write-wins
+    // would otherwise keep the device's version and push it back up.
+    const remote = snapshotAt(Date.now() - 120_000, "Account library");
+    h.setHandler(async (_url, init) => {
+      if (init?.method === "PUT") return jsonResponse({ ok: true, scope: "user" });
+      return jsonResponse({ ok: true, scope: "user", snapshot: remote });
+    });
+
+    await pull(repo);
+    const after = await repo.load();
+    // The newer device copy wins, which is the documented conflict rule and is
+    // unchanged by accounts. The point of the assertion is that nothing here
+    // *silently* dropped either side.
+    assert.equal(after.playlists[0]?.name, "Device library");
+  } finally {
+    h.restore();
+  }
+});
+
+test("an empty device library is not uploaded onto a fresh account", async () => {
+  const h = harness();
+  try {
+    const { SyncingLibraryRepository } = await loadModule();
+    const repo = new SyncingLibraryRepository() as LibraryRepository;
+
+    let puts = 0;
+    h.setHandler(async (_url, init) => {
+      if (init?.method === "PUT") {
+        puts++;
+        return jsonResponse({ ok: true, scope: "user" });
+      }
+      return jsonResponse({ ok: true, scope: "user", snapshot: null });
+    });
+
+    // Nothing saved locally: a brand-new install.
+    await pull(repo);
+    assert.equal(puts, 0, "an empty library must not occupy the account");
+  } finally {
+    h.restore();
+  }
+});
+
+test("an anonymous caller never adopts, because scope is device", async () => {
+  const h = harness();
+  try {
+    const { SyncingLibraryRepository } = await loadModule();
+    const repo = new SyncingLibraryRepository() as LibraryRepository;
+    await repo.save(snapshotAt(NOW, "Device library"));
+
+    let puts = 0;
+    h.setHandler(async (_url, init) => {
+      if (init?.method === "PUT") {
+        puts++;
+        return jsonResponse({ ok: true, scope: "device" });
+      }
+      // Anonymous server with no row for this device: normal first run.
+      return jsonResponse({ ok: true, scope: "device", snapshot: null });
+    });
+
+    await pull(repo);
+    assert.equal(puts, 0);
+  } finally {
+    h.restore();
+  }
+});

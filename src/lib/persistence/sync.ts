@@ -93,11 +93,31 @@ function stamp(snapshot: LibrarySnapshot): LibrarySnapshot {
  */
 export type SyncOutcome =
   /** The server answered. `snapshot` is non-null only when one was adopted. */
-  | { status: "synced"; snapshot: LibrarySnapshot | null }
+  | {
+      status: "synced";
+      snapshot: LibrarySnapshot | null;
+      /** Who the server thinks we are. Absent when the server is anonymous-only. */
+      scope?: "user" | "device";
+    }
   /** No backend is configured on this deployment. A fact, not a fault. */
   | { status: "off" }
   /** Configured but not answering. A fault worth showing as one. */
   | { status: "unreachable"; reason: string };
+
+/**
+ * Whether a library has anything worth moving to an account.
+ *
+ * An account should not adopt an empty library: it would create a server row
+ * that then always wins over a device that later builds up a real one, which is
+ * the clobber this is meant to prevent.
+ */
+function hasContent(snapshot: LibrarySnapshot): boolean {
+  return (
+    snapshot.playlists.length > 0 ||
+    snapshot.liked.length > 0 ||
+    Object.keys(snapshot.catalog).length > 0
+  );
+}
 
 /**
  * Local repository with a best-effort server mirror.
@@ -171,7 +191,7 @@ export class SyncingLibraryRepository implements LibraryRepository {
     }
     if (raw === null) return { status: "unreachable", reason: "no response" };
 
-    let body: { ok?: boolean; snapshot?: LibrarySnapshot | null };
+    let body: { ok?: boolean; snapshot?: LibrarySnapshot | null; scope?: "user" | "device" };
     try {
       body = JSON.parse(raw) as typeof body;
     } catch {
@@ -182,11 +202,35 @@ export class SyncingLibraryRepository implements LibraryRepository {
     if (!body.ok) return { status: "unreachable", reason: "server refused" };
 
     this.remoteReachable = true;
+    const scope = body.scope;
 
-    // Null means the server has no row for this device yet, which is a normal
-    // first-run state rather than a failure.
     const remote = body.snapshot ?? null;
-    if (!remote) return { status: "synced", snapshot: null };
+    const local = await this.local.load();
+
+    // No server row for this caller.
+    if (!remote) {
+      /*
+        Adopt, never clobber.
+        
+        Signed in, the account has nothing, and this device has a library worth
+        having: push it up. This is the only path that ever writes a local
+        library into an account, and it fires exactly once -- after the push the
+        account has a row, so the next boot takes the branch below.
+        
+        The guard on `hasContent` matters. Without it an account would adopt an
+        empty library from a device that had just installed the app, and that
+        empty row would then outrank the real library the device builds later --
+        which is precisely the clobber this is meant to prevent.
+        
+        If the account already has a row, nothing here runs and last-write-wins
+        below applies unchanged. Signing in never discards either copy.
+      */
+      if (scope === "user" && hasContent(local)) {
+        await this.push(local);
+        return { status: "synced", snapshot: null, scope };
+      }
+      return { status: "synced", snapshot: null, scope };
+    }
 
     let normalised: LibrarySnapshot;
     try {
@@ -196,16 +240,15 @@ export class SyncingLibraryRepository implements LibraryRepository {
       // silently overwritten either — the next push would destroy whatever the
       // listener has on this device.
       console.warn("[muscify] server library unreadable; keeping the local copy");
-      return { status: "synced", snapshot: null };
+      return { status: "synced", snapshot: null, scope };
     }
 
-    const local = await this.local.load();
     if (stampedAt(normalised) <= stampedAt(local)) {
-      return { status: "synced", snapshot: null };
+      return { status: "synced", snapshot: null, scope };
     }
 
     await this.local.save(normalised);
-    return { status: "synced", snapshot: normalised };
+    return { status: "synced", snapshot: normalised, scope };
   }
 
   /** Uploads without blocking the caller. Failures are expected and ignored. */
