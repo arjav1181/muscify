@@ -6,6 +6,7 @@ import {
   searchDeezerArtists,
 } from "@/lib/sources/deezer";
 import { searchArtists, hasYoutubeKey } from "@/lib/sources/youtube";
+import { searchYouTubeScrape } from "@/lib/sources/youtube/scrape";
 import { allStations, search } from "@/lib/sources";
 import type { RadioRegion, SearchTab } from "@/lib/types";
 
@@ -61,13 +62,52 @@ export async function GET(req: Request) {
 }
 
 async function songs(q: string) {
-  return search(q, "auto");
+  const set = await search(q, "auto");
+
+  // If the Data API produced nothing and YouTube was the reason — no key, or
+  // the daily budget spent — fall back to YouTube's own public search page.
+  // Same source, same rights, same player; it just costs a page fetch instead
+  // of 100 quota units.
+  const ytError = set.errors.find((e) => e.startsWith("youtube"));
+  if (set.results.length === 0 && ytError) {
+    const scraped = await searchYouTubeScrape(q, 24);
+    if (scraped.tracks.length > 0) {
+      const seen = new Set(set.results.map((t) => `${t.source}:${t.id}`));
+      const merged = [
+        ...set.results,
+        ...scraped.tracks.filter((t) => !seen.has(`${t.source}:${t.id}`)),
+      ];
+      return {
+        ...set,
+        results: merged,
+        errors: [
+          ...set.errors.filter((e) => e !== ytError),
+          `youtube: showing public-page results — ${ytError.replace("youtube: ", "")}`,
+        ],
+      };
+    }
+  }
+
+  return set;
 }
 
 async function videos(q: string) {
-  if (!hasYoutubeKey()) return { tab: "videos", results: [], errors: ["youtube: API key missing"] };
-  const { results, errors } = await search(q, "youtube");
-  return { tab: "videos", results, errors };
+  if (hasYoutubeKey()) {
+    const { results, errors } = await search(q, "youtube");
+    if (results.length > 0 || !errors.some((e) => e.startsWith("youtube"))) {
+      return { tab: "videos", results, errors };
+    }
+  }
+
+  // No key, or the API failed. YouTube's public results page still works.
+  const scraped = await searchYouTubeScrape(q, 24);
+  return {
+    tab: "videos",
+    results: scraped.tracks,
+    errors: scraped.tracks.length
+      ? []
+      : ["youtube: no key and the public-page fallback returned nothing"],
+  };
 }
 
 async function artists(q: string) {

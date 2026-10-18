@@ -1,6 +1,6 @@
 import { stripTags } from "@/lib/html";
 import type { Track } from "@/lib/types";
-import { cached, type Endpoint } from "./youtube/cache";
+import { cached, quotaStatus, type Endpoint } from "./youtube/cache";
 import { TTL } from "./youtube/policy";
 
 const YT_API = "https://www.googleapis.com/youtube/v3";
@@ -251,106 +251,143 @@ export interface ChannelResult {
 }
 
 /**
- * YouTube's guide category for music channels.
- *
- * YouTube channels carry a `categoryId`, and music channels are categorised as
- * "Music", id `10`. That is the real signal this whole function exists for: a
- * channel search returns every channel whose name matches, so "pritam" surfaces
- * gaming and vlog channels alongside musicians.
- *
- * The `categoryId` *filter* parameter on channels.list is deprecated, but the
- * field is still returned in the snippet, so it is read rather than filtered on.
- */
-const MUSIC_CATEGORY_ID = "10";
-
 /**
- * Batch-resolves channel categories.
- *
- * channels.list accepts up to 50 comma-separated ids and costs one quota unit,
- * so one call covers a whole page of candidates. A failure returns an empty map
- * rather than throwing, because the caller treats "unknown category" as
- * "not confirmed" and falls back rather than hiding every result.
+ * Whether the Data API is unusable for now — no key configured, or the daily
+ * budget spent. Callers use this to decide when to fall back to the public
+ * search page rather than reporting a hard failure.
  */
-async function channelCategories(ids: string[]): Promise<Map<string, { categoryId?: string; topics: string[] }>> {
-  const unique = [...new Set(ids)].filter(Boolean).slice(0, 50);
-  const out = new Map<string, { categoryId?: string; topics: string[] }>();
-  if (unique.length === 0) return out;
-
-  try {
-    const data = await ytFetch<{
-      items?: {
-        id?: string;
-        snippet?: { categoryId?: string };
-        topicDetails?: { topicCategories?: string[] };
-      }[];
-    }>("channels", { part: "snippet,topicDetails", id: unique.join(",") }, "channels");
-
-    for (const item of data.items ?? []) {
-      if (!item.id) continue;
-      out.set(item.id, {
-        categoryId: item.snippet?.categoryId,
-        topics: item.topicDetails?.topicCategories ?? [],
-      });
-    }
-  } catch {
-    // Unknown category is treated as unconfirmed, not as a hard failure.
-  }
-
-  return out;
+export function isQuotaExhausted(): boolean {
+  if (!hasYoutubeKey()) return true;
+  return quotaStatus().exhausted;
 }
 
-/**
- * True when a channel is verifiably a music channel.
- *
- * The category is authoritative. Free-form topic categories are accepted as a
- * secondary signal because a lot of independent musicians never set a guide
- * category but do describe themselves as music.
- */
-function isMusicChannel(
-  info: { categoryId?: string; topics: string[] } | undefined,
-): boolean {
-  if (!info) return false;
-  if (info.categoryId === MUSIC_CATEGORY_ID) return true;
-  return info.topics.some((topic) => /^music$/i.test(topic.trim()));
+/** Picks the largest thumbnail offered, by declared width. */
+function bestThumb(
+  thumbs: Record<string, { url?: string; width?: number }> | undefined,
+): { url?: string; width?: number } | undefined {
+  if (!thumbs) return undefined;
+  let best: { url?: string; width?: number } | undefined;
+  const order = ["maxresdefault", "standard", "high", "medium", "default"];
+  for (const key of order) {
+    const candidate = thumbs[key];
+    if (!candidate?.url) continue;
+    const width =
+      candidate.width ??
+      { maxresdefault: 1280, standard: 640, high: 480, medium: 320, default: 120 }[key] ??
+      0;
+    if (!best || width > (best.width ?? 0)) best = { url: candidate.url, width };
+  }
+  return best;
 }
 
 /**
  * Artist search.
  *
- * YouTube has no artist entity, so a channel search stands in for one. The
- * problem is that channels are not artists: searching "pritam" returns any
- * channel with that word in its name, which is how gaming and vlog channels end
- * up in the artists tab.
+ * YouTube has no artist entity, so this used to search `type=channel` and treat
+ * whatever came back as a musician. That is wrong in a way users noticed: a
+ * channel search for "pritam" returns "Pritam - Topic", "Pritam Officeal61" and
+ * "Pritam Bhartwan Official Channel" — uploads and impersonators, not the
+ * composer.
  *
- * Two steps fix it:
- *  1. Take channel-search candidates, which keeps ids routable to a real
- *     channel page.
- *  2. Resolve each candidate's guide category in one batched call and keep only
- *     music channels.
+ * A channel's guide category looked like the fix and was not. `categoryId` is
+ * auto-assigned and most musician channels land as "Entertainment", so filtering
+ * on "10" rejected everything and fell straight back to the same broken channel
+ * search — which is what shipped.
  *
- * If the category check confirms nothing — an obscure artist who never set a
- * category — the unfiltered results are returned rather than an empty list, and
- * the caller is told the result is unverified so the UI can say so.
+ * What works is the one field YouTube populates from its content-identification
+ * system rather than from the uploader: a music video carries
+ * `topicDetails.musicArtistName`, the credited artist. Searching
+ * `videoType=music` and reading it yields "Pritam" from the credits of his own
+ * releases. The channel id from the same result routes to his channel page.
  */
 export async function searchArtists(
   query: string,
   max = 12,
 ): Promise<{ results: ChannelResult[]; verified: boolean }> {
-  const candidates = await searchChannels(query, Math.min(25, Math.max(max * 2, 10)));
+  try {
+    const data = await ytFetch<{
+      items?: {
+        snippet?: {
+          channelId?: string;
+          thumbnails?: Record<string, { url?: string; width?: number }>;
+          topicDetails?: { musicArtistName?: string };
+        };
+      }[];
+    }>(
+      "search",
+      {
+        part: "snippet",
+        type: "video",
+        videoType: "music",
+        maxResults: String(Math.min(50, Math.max(max * 3, 15))),
+        q: query,
+      },
+      "search",
+    );
 
-  if (candidates.length === 0) return { results: [], verified: true };
+    const found = new Map<string, ChannelResult>();
+    for (const item of data.items ?? []) {
+      const sn = item.snippet;
+      if (!sn) continue;
+      const artist = sn.topicDetails?.musicArtistName?.trim();
+      if (!artist) continue;
 
-  const categories = await channelCategories(candidates.map((c) => c.id));
+      const existing = found.get(artist);
+      const best = bestThumb(sn.thumbnails);
+      if (!existing) {
+        found.set(artist, {
+          id: sn.channelId ?? "",
+          title: artist,
+          image: best?.url ?? "",
+          followers: 0,
+          videoCount: 0,
+          description: "",
+        });
+      } else if (best?.url && !existing.image) {
+        existing.image = best.url;
+      }
+    }
 
-  const verified = candidates.filter((c) => isMusicChannel(categories.get(c.id)));
-  const source = verified.length > 0 ? verified : candidates;
+    const results = [...found.values()].filter((a) => a.id).slice(0, max);
+    if (results.length > 0) {
+      await enrichChannels(results);
+      return { results, verified: true };
+    }
+  } catch {
+    // Falls through to the channel search below.
+  }
 
-  return {
-    results: source.slice(0, max),
-    // False means the category could not confirm anything, so the list is a
-    // best-effort answer rather than a filtered one.
-    verified: verified.length > 0,
-  };
+  const channels = await searchChannels(query, max);
+  return { results: channels, verified: false };
+}
+
+/** Adds channel images and subscriber counts in one batched call. */
+async function enrichChannels(artists: ChannelResult[]): Promise<void> {
+  const ids = [...new Set(artists.map((a) => a.id).filter(Boolean))];
+  if (ids.length === 0) return;
+
+  try {
+    const data = await ytFetch<{
+      items?: {
+        id?: string;
+        snippet?: { thumbnails?: Record<string, { url?: string; width?: number }> };
+        statistics?: { subscriberCount?: string };
+      }[];
+    }>("channels", { part: "snippet,statistics", id: ids.join(",") }, "channels");
+
+    const byId = new Map((data.items ?? []).map((item) => [item.id!, item]));
+    for (const artist of artists) {
+      const channel = byId.get(artist.id);
+      if (!channel) continue;
+      const best = bestThumb(channel.snippet?.thumbnails);
+      if (best?.url && !artist.image) artist.image = best.url;
+      if (channel.statistics?.subscriberCount) {
+        artist.followers = Number(channel.statistics.subscriberCount);
+      }
+    }
+  } catch {
+    // Enrichment is optional; the credited name and video thumbnail suffice.
+  }
 }
 
 /** Raw channel search. Kept as the imprecise fallback for {@link searchArtists}. */
