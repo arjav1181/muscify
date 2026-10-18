@@ -1,7 +1,7 @@
 "use client";
 
-import { corsAllowsTapping, getAnalyser } from "@/lib/audio/analyser";
-import type { Track } from "@/lib/types";
+import { corsAllowsTapping, getAnalyser } from "../audio/analyser.ts";
+import type { Track } from "../types.ts";
 import type { EngineHandlers, PlaybackEngine } from "./types";
 
 /**
@@ -46,6 +46,42 @@ async function allowsTapping(url: string): Promise<boolean> {
   }
   return probe;
 }
+
+/**
+ * Resolves CORS verdicts ahead of time for stations the listener can see.
+ *
+ * Called when the radio directory renders. By the time anyone presses play the
+ * answer is usually already cached, so `load()` takes its synchronous path and
+ * the station starts with no spinner at all.
+ *
+ * Bounded on purpose: a few dozen requests at a time, and the whole set is
+ * capped. Firing 213 HEADs at a public stream host the moment the page opens is
+ * a good way to get the app's own address blocked, and the stations nobody
+ * scrolls to do not need a verdict.
+ */
+export function prewarmTapping(streams: string[], limit = 48): void {
+  const pending = [...new Set(streams)].filter((s) => s && !tappingVerdicts.has(s)).slice(0, limit);
+  let active = 0;
+
+  const next = () => {
+    if (active >= 6 || pending.length === 0) return;
+    const url = pending.shift();
+    if (!url) return;
+    active++;
+    void allowsTapping(url).finally(() => {
+      active--;
+      next();
+    });
+  };
+
+  next();
+}
+/** Test seam for the verdict cache, which is otherwise module-private. */
+export const __testing = {
+  allowsTapping,
+  verdictCacheSize: () => tappingVerdicts.size,
+};
+
 export function createRadioEngine(handlers: EngineHandlers): PlaybackEngine {
   let audio: HTMLAudioElement | null = null;
   let volume = 80;
@@ -152,14 +188,14 @@ export function createRadioEngine(handlers: EngineHandlers): PlaybackEngine {
         return;
       }
 
-      // Unknown. Play straight away and attach the analyser if the answer
-      // arrives in time — a station should never wait on a HEAD request, and
-      // whether this ends up measurable is not worth a visible stall.
-      begin(false);
-      void allowsTapping(stream).then((ok) => {
-        if (!ok || destroyed || mine !== generation || !audio) return;
-        begin(true);
-      });
+      // Unknown. Waiting here costs one HEAD for this station, once, and the
+      // loading indicator is already up. The alternative — play untainted now
+      // and re-assign src when the answer arrives — restarts the stream and
+      // re-enters the graph mid-playback, which is worse than a brief spinner
+      // and buys nothing. `prewarmTapping` means this branch is usually already
+      // resolved by the time anyone presses play.
+      handlers.onLoading(true);
+      void allowsTapping(stream).then(begin);
     },
     play() {
       if (!audio || !current?.stream) return;

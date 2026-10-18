@@ -23,6 +23,12 @@ import { SNAPSHOT_VERSION, type LibrarySnapshot } from "@/lib/persistence/types"
  * browser's localStorage is cleared. Adding accounts later means adding a real
  * auth layer in front of this route and keying rows by user; the storage
  * interface below is already shaped for that change.
+ *
+ * A real user id must NOT simply be substituted for the device header when that
+ * day comes. What exists today is implicit authorisation by possession of a
+ * 122-bit unguessable id — the weakest thing that can honestly be called
+ * authorisation. Adding a real identity means adding real checks, not renaming
+ * the existing one.
  */
 
 // No `runtime` export: the Node runtime is the default in this Next version and
@@ -73,10 +79,22 @@ export async function GET(req: Request) {
       // empty object is what lets the client distinguish it from a failure.
       return NextResponse.json({ ok: true, backend: store.name, snapshot: null });
     }
+
+    // The clock handed back is the one the writing device sent, not the
+    // database's `now()`. This matters: the client compares this against its own
+    // stamp to decide whether the server copy is newer, and the two must be the
+    // same clock or a device running behind will see every pull as "newer than
+    // local" and overwrite its own newer edits on every reconnect. Keeping it
+    // end-to-end client-supplied makes last-write-wins mean one thing, even if
+    // that thing is "the device whose clock is furthest ahead wins" — which is
+    // stated in the README rather than hidden.
+    const sent = typeof row.snapshot?.updatedAt === "number" ? row.snapshot.updatedAt : null;
+    const stamp = sent ?? Date.parse(row.updated_at) ?? 0;
+
     return NextResponse.json({
       ok: true,
       backend: store.name,
-      snapshot: { ...row.snapshot, updatedAt: Date.parse(row.updated_at) || 0 },
+      snapshot: { ...row.snapshot, updatedAt: Number.isFinite(stamp) ? stamp : 0 },
     });
   } catch (e) {
     console.error("[muscify] sync read failed", e);

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Search, Wifi, X } from "lucide-react";
 import { StationArt } from "@/components/station-art";
+import { prewarmTapping } from "@/lib/engines/radio-engine";
 import type { RadioRegion, Track } from "@/lib/types";
 import { usePlayer } from "@/store/player-store";
 import { useResource } from "@/hooks/use-resource";
@@ -126,6 +127,19 @@ export function RadioView() {
 
   const list = searching ? (matches.data ?? []) : (directory.data ?? []);
   const busy = searching ? matches.loading : directory.loading;
+
+  // Resolve CORS verdicts for the stations on screen, so pressing play takes the
+  // synchronous path in the radio engine rather than waiting on a HEAD request
+  // while the listener watches a spinner. Deliberately after first paint and
+  // not awaited — the directory is the thing that must load fast.
+  const stations = useDebounced(
+    list.map((t) => t.stream).filter((s): s is string => Boolean(s)).join(","),
+    400,
+  );
+  useEffect(() => {
+    if (!stations) return;
+    prewarmTapping(stations.split(",").filter(Boolean));
+  }, [stations]);
 
   return (
     <div className="animate-fade-up pt-6">
