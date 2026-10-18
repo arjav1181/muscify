@@ -128,10 +128,15 @@ async function artists(q: string) {
           videoCount: c.videoCount,
         })),
       );
-      // Say so rather than presenting an unfiltered channel list as artists.
+      // Say what these are rather than what we wish they were. The fallback
+      // path is a filtered channel search, so the entries are plausible artist
+      // pages but not artist entities YouTube confirmed — and presenting the
+      // two identically would be a claim the data does not support.
       if (!verified && channels.length > 0) {
         errors.push(
-          "youtube: no channel could be confirmed as a music channel, so these results are unfiltered",
+          "youtube: these are matching channel pages, not confirmed artist " +
+            "records — auto-generated topic archives are filtered out, but " +
+            "impersonators are not detectable",
         );
       }
     } catch (e) {

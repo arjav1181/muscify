@@ -1,6 +1,7 @@
 import { stripTags } from "@/lib/html";
 import type { Track } from "@/lib/types";
 import { cached, quotaStatus, type Endpoint } from "./youtube/cache";
+import { filterArtistCandidates } from "./youtube/artist-heuristic.ts";
 import { TTL } from "./youtube/policy";
 
 const YT_API = "https://www.googleapis.com/youtube/v3";
@@ -283,22 +284,25 @@ function bestThumb(
 /**
  * Artist search.
  *
- * YouTube has no artist entity, so this used to search `type=channel` and treat
- * whatever came back as a musician. That is wrong in a way users noticed: a
- * channel search for "pritam" returns "Pritam - Topic", "Pritam Officeal61" and
- * "Pritam Bhartwan Official Channel" — uploads and impersonators, not the
- * composer.
+ * YouTube has no artist entity. The primary path below reads the credited
+ * artist off music videos, which is trustworthy because YouTube populates it
+ * from content identification rather than from the uploader.
  *
- * A channel's guide category looked like the fix and was not. `categoryId` is
- * auto-assigned and most musician channels land as "Entertainment", so filtering
- * on "10" rejected everything and fell straight back to the same broken channel
- * search — which is what shipped.
+ * That path is not guaranteed to answer. It returns nothing whenever YouTube has
+ * not identified the videos it returns, and in production on the "pritam" query
+ * it returned nothing — so the fallback is what listeners actually saw.
  *
- * What works is the one field YouTube populates from its content-identification
- * system rather than from the uploader: a music video carries
- * `topicDetails.musicArtistName`, the credited artist. Searching
- * `videoType=music` and reading it yields "Pritam" from the credits of his own
- * releases. The channel id from the same result routes to his channel page.
+ * The fallback is a raw channel search, and a raw channel search is not an
+ * artist list: it surfaces "Pritam - Topic" (an auto-generated upload archive),
+ * "Pritam Officeal61" (a typo'd impersonator) and "Pritam Bhartwan Official
+ * Channel" (a different person). Those are filtered by
+ * `filterArtistCandidates`, which is a heuristic and removes the clearly-wrong
+ * rather than proving who is a musician — see that file for what it does not
+ * catch.
+ *
+ * `verified` reports whether the confirmed path answered. It is false whenever
+ * the caller is looking at the filtered fallback, and the route uses that to
+ * label the results instead of presenting them as equally trustworthy.
  */
 export async function searchArtists(
   query: string,
@@ -357,8 +361,8 @@ export async function searchArtists(
     // Falls through to the channel search below.
   }
 
-  const channels = await searchChannels(query, max);
-  return { results: channels, verified: false };
+  const channels = await searchChannels(query, Math.max(max, 25));
+  return { results: filterArtistCandidates(channels, query).slice(0, max), verified: false };
 }
 
 /** Adds channel images and subscriber counts in one batched call. */
