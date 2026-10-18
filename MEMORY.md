@@ -209,18 +209,17 @@ Ordered by value.
    `AUTH_SECRET`, `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET`,
    `GITHUB_ID`/`GITHUB_SECRET`, `MUSCIFY_DATABASE_URL`, then apply
    `db/schema.sql`. Until someone does this, accounts are correctly inert.
-2. **Playlist folders** — spec §11. `grep -rni folder src/` returns nothing.
-   Note `normalise()` in `src/lib/persistence/local.ts` rebuilds snapshots from
-   named fields and **will silently drop any new field** — that exact trap
-   already cost the sync conflict clock once.
-3. **Offline / downloads** — spec §17. Needs a service worker; the PWA manifest
-   exists and nothing is cached.
-4. **Listening stats** — spec §12. `src/lib/taste/stats.ts` already computes it.
-5. **Gapless playback** — spec §16.
-6. **Volume control in the player bar** — spec §9.
-7. **UI overhaul stages 3+** — player bar, now-playing view, search, library.
-8. **F4** resizable nav. **F5** reduce unnamed `generic` nodes — needs *our*
-   baseline, not Spotify's 351.
+2. **Offline / downloads** — spec §17. No service worker; the manifest exists
+   and nothing is cached. This is the biggest remaining *visible* gap.
+3. **Gapless playback** — spec §16.
+4. **Volume control in the player bar** — spec §9.
+5. **F5** reduce unnamed `generic` nodes — needs *our* baseline, not Spotify's 351.
+6. **A real visual redesign** — see the note in section 9.
+
+**Done, and previously mislabelled as outstanding:** playlist folders (§11,
+`FolderBar` + per-playlist move menu), F4 resizable nav, listening stats (§12 —
+the 246-line `stats-view.tsx` already existed; this file wrongly called it
+missing).
 9. **Follows / social (B4).** REA observed no Messages, Jam, Blend or profiles
    in the logged-out client, so do not assume they are simple. The
    `muscify_play_daily` rollup and `muscify_accounts` table are already there to
@@ -253,6 +252,13 @@ Each of these has already caused a real bug.
   widely-used variable names there is. It already pointed this sandbox's
   Postgres at muscify. Now requires `MUSCIFY_DATABASE_URL`, or
   `MUSCIFY_SYNC_BACKEND=neon` as an explicit opt-in.
+- **`videoCategoryId` is still a filter trap.** Removed from all three call sites
+  (`trendingYoutube`, `searchYoutube`, `channelVideos`), but the chart still
+  returned nothing with quota at 1/9000. The remaining cause is NOT observable
+  from here — the API key lives in Vercel's environment. `trendingYoutube` now
+  falls back to a search rather than throwing, so the shelf degrades instead of
+  saying "youtube: empty chart". **That error was visible in production and sat
+  in a screenshot nobody read.** Look at the screenshots.
 - **Never claim a fix without exercising it.** Twice this session a commit
   message asserted something that was false in production:
   - "artist search is fixed" — `videoType=music` is a **400**, swallowed by a
@@ -317,6 +323,21 @@ Counter-examples, where looking was actively misleading:
 
 So: **measure, don't infer.** When a claim cannot be checked, say it cannot be
 checked rather than asserting it.
+
+### The same mistake, three more times
+
+- "the player bar is missing" — measured `nav`, which is the global top nav
+- "the resizer does not work" — measured `nav` again, so the sidebar never moved
+  in the measurement; it worked fine (240 → 304, Home → 180, End → 420)
+- "the trending shelf is fixed" — it was not; the same screenshot that showed it
+  broken was not looked at until someone complained
+
+And the biggest one, which is not a measurement error but a judgement error:
+**the UI overhaul was invisible.** What shipped was tokens, radii, gutters and
+`aria-labelledby` — real changes that nobody can see without a before/after. The
+request was "absolute next level, exactly like Spotify". Repainting a layout is
+not that. When work is described as user-facing, check whether a user could
+name what changed; if not, the work was aimed at the wrong target.
 
 ---
 
