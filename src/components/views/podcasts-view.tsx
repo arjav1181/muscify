@@ -211,9 +211,23 @@ function ShowTile({ show, onPick }: { show: Show; onPick: () => void }) {
         focus-visible:outline-white"
     >
       <div className="relative mb-3 aspect-square overflow-hidden rounded bg-elevated">
+        <span className="absolute inset-0 flex items-center justify-center text-dim">
+          <Mic2 size={28} aria-hidden />
+        </span>
         {show.image ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={show.image} alt="" loading="lazy" className="h-full w-full object-cover" />
+          <img
+            src={show.image}
+            alt=""
+            loading="lazy"
+            className="h-full w-full object-cover"
+            onError={(e) => {
+              // YouTube hands back thumbnail URLs that 404 for some uploads, and
+              // the 404 image is a grey rectangle. Hiding it exposes the Mic2
+              // fallback underneath rather than showing that placeholder.
+              e.currentTarget.style.display = "none";
+            }}
+          />
         ) : (
           <span className="flex h-full w-full items-center justify-center text-dim">
             <Mic2 size={28} aria-hidden />
