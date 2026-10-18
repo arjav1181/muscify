@@ -28,7 +28,7 @@ export function Sidebar() {
   return (
     <nav
       aria-label="Primary"
-      className="flex h-full w-full shrink-0 flex-col overflow-y-auto md:w-[260px]"
+      className="flex h-full w-full shrink-0 flex-col overflow-y-auto md:w-[240px]"
     >
       <div className="flex items-center gap-2 px-3 py-3">
         <Link href="/" className="flex min-h-11 items-center gap-2">

@@ -47,7 +47,7 @@ export function TopBar() {
   };
 
   return (
-    <header className="sticky top-0 z-30 flex items-center gap-3 bg-surface/90 px-4 py-3 backdrop-blur-md">
+    <header className="flex h-16 items-center gap-3 px-4">
       <form
         role="search"
         className="relative w-full max-w-[420px]"

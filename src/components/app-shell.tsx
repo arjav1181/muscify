@@ -34,21 +34,34 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <PlayerHost />
       <GlobalEffects />
 
-      <div className="flex min-h-0 flex-1 gap-2 overflow-hidden p-2">
-        {/*
-          Skip link. Invisible until focused, then pinned to the top-left. A
-          keyboard user would otherwise tab through the whole sidebar — logo,
-          seven nav items, the create button — on every single page.
-        */}
-        <a
-          href="#muscify-scroll"
-          className="sr-only rounded-full bg-white px-4 py-2 text-sm font-medium text-black focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50"
-        >
-          Skip to content
-        </a>
+      {/*
+        Skip link. Invisible until focused, then pinned to the top-left. A
+        keyboard user would otherwise tab through the whole sidebar — logo,
+        seven nav items, the create button — on every single page.
+      */}
+      <a
+        href="#muscify-scroll"
+        className="sr-only rounded-full bg-white px-4 py-2 text-sm font-medium text-black focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50"
+      >
+        Skip to content
+      </a>
 
+      {/*
+        Global nav spans the full width above everything, on solid black.
+
+        It used to sit inside the content panel, which meant the logo floated
+        over whatever the current page happened to render and the search field
+        inherited that page's tint. Both read as unconsidered. Two fixed black
+        surfaces — this and the player bar — with the inset content panels
+        between them is the arrangement that makes the frame read as deliberate.
+      */}
+      <div className="shrink-0 bg-black">
+        <TopBar />
+      </div>
+
+      <div className="flex min-h-0 flex-1 gap-2 overflow-hidden p-2">
         <div className="hidden shrink-0 md:block">
-          <Suspense fallback={<div className="h-full w-[260px]" />}>
+          <Suspense fallback={<div className="h-full w-[240px] rounded-lg bg-surface" />}>
             <Sidebar />
           </Suspense>
         </div>
@@ -57,7 +70,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           id="muscify-main"
           className="relative flex min-w-0 flex-1 flex-col overflow-hidden rounded-lg bg-surface"
         >
-          <TopBar />
           <Suspense fallback={<div className="h-10 md:hidden" />}>
             <MobileNav />
           </Suspense>
