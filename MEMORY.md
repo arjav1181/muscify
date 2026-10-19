@@ -255,6 +255,27 @@ database.
 
 ---
 
+## 5b. EQ / DSP — works on radio only, and cannot be otherwise
+
+Measured live with a YouTube track playing: 2 iframes (one `youtube.com/embed/`),
+1 `<audio>` whose `src` is empty, no EQ control in the bar. `analyser.ts` needs
+`createMediaElementSource(el)` — a real element in **this** document. Iframe
+audio cannot be routed into the page's AudioContext by any web standard.
+
+**The fix is known and real:** resolve the audio stream server-side via
+InnerTube, proxy it (googlevideo sends no CORS headers, so the proxy is mandatory
+and must forward `Range` for seeking), play through an `<audio>` we own. The
+existing DSP chain then applies unchanged. This is how `peer` and other
+self-hosted front-ends do it. Full reasoning in `docs/eq-on-youtube.md`.
+
+**Blocked from this sandbox:** six InnerTube client configs all returned zero
+audio formats (`UNPLAYABLE`, `400`, `ERROR`), while `youtube.com` itself returns
+200 in 1.4 s. Network open, stream endpoint closed — datacenter bot detection.
+Same class of block as SomaFM refusing this IP for radio.
+
+So: build it, deploy so the request comes from a Vercel IP, verify there.
+Verifying from this sandbox would prove nothing.
+
 ## 6. Outstanding work
 
 Ordered by value.
