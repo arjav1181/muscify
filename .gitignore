@@ -49,6 +49,3 @@ next-env.d.ts
 /playwright-report/
 /smoke-*.cjs
 /diag*.cjs
-# .env.example documents variable NAMES only, no values. Kept in the repo so the
-# setup is discoverable; real .env files stay ignored.
-!.env.example
