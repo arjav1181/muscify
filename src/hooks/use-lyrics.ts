@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { trackKey, type Track } from "@/lib/types";
+import { looksLikeLabel, parseTitleForArtist, pickBest, readings, scoreHit } from "@/lib/lyrics/match";
 
 export interface LrcLine {
   /** Seconds from the start of the track. */
@@ -68,26 +69,19 @@ export function parseLrc(input: string): LrcLine[] {
  * Strip the usual "Artist - Title (feat. X) [Official Video]" noise so the
  * LRCLIB lookup has a real chance of matching.
  */
-function cleanTitle(raw: string): { title: string; artist: string } {
-  let title = raw
-    .replace(/\[[^\]]*\]/g, " ")
-    .replace(/\([^\)]*\)/g, " ")
-    .replace(/\bofficial\s*(music\s*)?video\b/gi, " ")
-    .replace(/\blyrics?\b/gi, " ")
-    .replace(/\b(4k|hd|hq|remaster(ed)?|audio|visualizer|lyric video)\b/gi, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-
-  let artist = "";
-  const feat = /\bfeat\.?\s+(.+)$/i.exec(title);
-  if (feat) title = title.slice(0, feat.index).trim();
-
-  const parts = title.split(/\s+-\s+/);
-  if (parts.length >= 2) {
-    artist = parts[0].trim();
-    title = parts.slice(1).join(" - ").trim();
-  }
-  return { title, artist: artist || "" };
+/**
+ * Fetch with one retry.
+ *
+ * LRCLIB is volunteer-run and rate limits routinely -- a measured run of seven
+ * lookups returned three 429s. Retrying once after a pause converts most of
+ * those into a hit; without it a lookup that was merely throttled is reported to
+ * the listener as "no lyrics found", which is a different and wrong answer.
+ */
+async function fetchWithRetry(url: string, signal: AbortSignal): Promise<Response> {
+  const first = await fetch(url, { signal });
+  if (first.ok || first.status !== 429) return first;
+  await new Promise((r) => setTimeout(r, 600));
+  return fetch(url, { signal });
 }
 
 export function useLyrics(track: Track | null): {
@@ -111,52 +105,86 @@ export function useLyrics(track: Track | null): {
 
     const controller = new AbortController();
     const requestKey = key;
-    const { title, artist } = cleanTitle(track.title);
-    const queryArtist = artist || track.artist;
+    /*
+      The YouTube channel is a label, not a performer -- "T-Series" or
+      "Sony Music India" against LRCLIB's artist field matches nothing and
+      poisons the fuzzy search too. So the artist is taken from the title, and
+      the channel is only consulted when it does not look like a label, which
+      for this app's dominant source is never. Both readings of a split title
+      are tried below rather than one being guessed.
+    */
 
     (async () => {
       try {
-        // Prefer the exact-match endpoint: it returns synced lyrics when a
-        // transcription exists, and plain text when only that does.
-        const params = new URLSearchParams({
-          track_name: title,
-          artist_name: queryArtist,
-          ...(track.album ? { album_name: track.album } : {}),
-          ...(track.duration ? { duration: String(Math.round(track.duration)) } : {}),
-        });
+        /*
+          Try every reading of the title, exact-match first, then fuzzy.
+          
+          The same YouTube title can be "Artist - Song", "Song - Artist" or
+          "Song | Artist, Featured", and a lyric database files it under exactly
+          one of those. Guessing costs a lookup; trying all of them costs at most
+          a few and turns "no lyrics found" into a hit. `/get` is tried for every
+          reading first because an exact match is the only one that reliably
+          carries synced lyrics.
+        */
+        const parsedTitle = parseTitleForArtist(track.title);
+        const channelIsLabel = looksLikeLabel(track.artist);
+        const candidates = readings(parsedTitle)
+          .map((r) => ({ ...r, artist: r.artist || (channelIsLabel ? "" : track.artist) }))
+          .filter((r) => r.title);
 
-        const direct = await fetch(`${LRCLIB}/get?${params}`, {
-          signal: controller.signal,
-        });
+        let best: LrcbGet | null = null as LrcbGet | null;
+        let bestScore = 0;
 
-        if (direct.ok) {
+        for (const c of candidates) {
+          const params = new URLSearchParams({
+            track_name: c.title,
+            artist_name: c.artist,
+            ...(track.album ? { album_name: track.album } : {}),
+            ...(track.duration ? { duration: String(Math.round(track.duration)) } : {}),
+          });
+          const direct = await fetchWithRetry(`${LRCLIB}/get?${params}`, controller.signal);
+          if (!direct.ok) continue;
           const json = (await direct.json()) as LrcbGet;
-          if (json.instrumental) {
-            setState({ key: requestKey, error: "Instrumental — no lyrics." });
-            return;
-          }
-          const synced = json.syncedLyrics?.trim();
-          const plain = json.plainLyrics?.trim() ?? "";
-          if (synced || plain) {
-            setState({
-              key: requestKey,
-              result: {
-                lines: synced ? parseLrc(synced) : [],
-                plain: plain || synced || "",
-                source: "LRCLIB",
-              },
-            });
-            return;
-          }
+          if (!json.syncedLyrics?.trim() && !json.plainLyrics?.trim()) continue;
+          // A synced transcription is worth more than a plain one, so an exact
+          // hit with lyrics wins over an exact hit without them.
+          if (json.syncedLyrics && !best?.syncedLyrics) best = json;
+          else if (!best) best = json;
+          break;
         }
 
-        // Fall back to a fuzzy search, then take the best-scoring hit.
-        const fuzzy = new URLSearchParams({ q: `${queryArtist} ${title}` });
-        const res = await fetch(`${LRCLIB}/search?${fuzzy}`, { signal: controller.signal });
-        if (!res.ok) throw new Error(`lyrics lookup failed (${res.status})`);
+        if (best?.instrumental) {
+          setState({ key: requestKey, error: "Instrumental — no lyrics." });
+          return;
+        }
+        if (best) {
+          const synced = best.syncedLyrics?.trim();
+          const plain = best.plainLyrics?.trim() ?? "";
+          setState({
+            key: requestKey,
+            result: {
+              lines: synced ? parseLrc(synced) : [],
+              plain: plain || synced || "",
+              source: "LRCLIB",
+            },
+          });
+          return;
+        }
 
-        const hits = (await res.json()) as LrcbResponse[];
-        const best = hits[0];
+        // Nothing exact. Search every reading and keep the best-scoring hit.
+        for (const c of candidates) {
+          const fuzzy = new URLSearchParams({ q: `${c.artist} ${c.title}`.trim() });
+          const res = await fetchWithRetry(`${LRCLIB}/search?${fuzzy}`, controller.signal);
+          if (!res.ok) continue;
+          const hits = (await res.json()) as LrcbResponse[];
+          const pick = pickBest(hits, { title: c.title, artist: c.artist, duration: track.duration });
+          if (pick && scoreHit(pick, { title: c.title, artist: c.artist, duration: track.duration }) > bestScore) {
+            bestScore = scoreHit(pick, { title: c.title, artist: c.artist, duration: track.duration });
+            best = pick as LrcbGet;
+          }
+          if (bestScore >= 130) break;
+        }
+
         if (!best) {
           setState({ key: requestKey, error: "No lyrics found." });
           return;

@@ -34,9 +34,27 @@ export const UNIT_COST = {
   videos: 1,
   playlists: 1,
   playlistItems: 1,
+  /**
+   * The public-page scraper.
+   *
+   * Cost 0 and, crucially, **exempt from the budget check** below. It fetches
+   * youtube.com's own results page, so it consumes none of the Data API's daily
+   * quota -- and it is the thing that exists precisely to keep working when that
+   * quota is gone.
+   *
+   * Booking it as a normal endpoint made the fallback refuse to run for exactly
+   * the reason it was written: `canSpend` returned false, the fetch never
+   * happened, and a bare `catch` turned the refusal into an empty result list
+   * indistinguishable from "YouTube has no results". The fallback was dead
+   * precisely when it was needed.
+   */
+  scrapeSearch: 0,
 } as const;
 
 export type Endpoint = keyof typeof UNIT_COST;
+
+/** Endpoints that do not consume Data API quota, so the budget cannot block them. */
+const QUOTA_EXEMPT = new Set<Endpoint>(["scrapeSearch"]);
 
 interface Entry<T> {
   value: T;
@@ -165,7 +183,8 @@ export async function cached<T>(
     const cost = UNIT_COST[endpoint];
 
     // 3. Out of budget: fall back to whatever we last had, or say so.
-    if (!canSpend(cost, now)) {
+    //    Quota-exempt endpoints skip this entirely -- see UNIT_COST.
+    if (!QUOTA_EXEMPT.has(endpoint) && !canSpend(cost, now)) {
       const staleEntry = hit as Entry<T> | undefined;
       if (staleEntry?.staleValue !== undefined && now - (staleEntry.staleAt ?? 0) < STALE_FLOOR_MS) {
         return { value: staleEntry.staleValue, cached: true, stale: true };
@@ -177,7 +196,7 @@ export async function cached<T>(
 
     try {
       const value = await fetcher();
-      quotaUsed += cost;
+      if (!QUOTA_EXEMPT.has(endpoint)) quotaUsed += cost;
 
       const previous = store.get(key) as Entry<T> | undefined;
       store.set(key, {

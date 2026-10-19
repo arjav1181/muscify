@@ -222,7 +222,11 @@ export async function searchYouTubeScrape(query: string, max = 24): Promise<Scra
 
     const tracks = toTracks(collectVideoRenderers(data)).slice(0, max);
     return { tracks, viaScraper: true };
-  } catch {
+  } catch (e) {
+    // Was a bare `catch {}`, which returned an empty list indistinguishable
+    // from "YouTube has no results". That is exactly how this broke unnoticed:
+    // renderers were being parsed and something downstream threw.
+    console.error("[muscify] scrape fallback failed:", e);
     return { tracks: [], viaScraper: true };
   }
 }
