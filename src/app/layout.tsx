@@ -1,6 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { AppShell } from "@/components/app-shell";
-import { LibraryHydrator } from "@/components/library-hydrator";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -45,13 +43,19 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
+/**
+ * The document shell, and nothing else.
+ *
+ * AppShell used to live here, which meant every route inherited the sidebar,
+ * the top bar and the player bar -- including the landing page, which needs none
+ * of them. It now lives in the `(app)` route group, so a page is inside the
+ * player because it is part of the player, rather than because of where it
+ * happens to sit in the tree.
+ */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
-        <LibraryHydrator />
-        <AppShell>{children}</AppShell>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
