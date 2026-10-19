@@ -3,8 +3,35 @@
 Handoff document for muscify. Read this before doing anything else in this repo —
 it records decisions, verified state, and the traps that have already cost time.
 
-**Last updated:** after `88a6316` (deployed READY as `dpl_38jbwNmPib7nNv7QHnMqVTNaua`).
+**Last updated:** after `a30d0fa` (deployed READY as `dpl_38jbwNmPib7nNv7QHnMqVTNaua`),
+plus an uncommitted UI-spec package under `docs/ui-spec/`.
 **Live site:** https://muscify-pearl.vercel.app
+
+---
+
+## 0. The UI spec exists — read it before touching the UI
+
+`docs/ui-spec/` is a measured, hand-off-ready specification of a comparable
+player's UI, built for exactly the "UI overhaul stages 3+" work in §6. Every
+value is labelled **MEASURED** or **INFERRED**.
+
+Start with `docs/ui-spec/README.md`. The headline: **our token layer is already
+correct and was independently confirmed** — colours, radii and the type ramp
+all match. Do not rewrite `globals.css`.
+
+What it establishes that we did not have:
+
+- the shell geometry (331px rail, 64px top bar, 8px gutters)
+- the rail pattern — we use a wrapping `grid-cols-*`, upstream is
+  `grid-auto-flow: column` with fixed tracks
+- `ease-brand` = `cubic-bezier(0.3, 0, 0, 1)` at 150ms, which Tailwind's stock
+  `ease-out` is not. Cheapest change, biggest perceptual difference.
+- **a phone layout**, which we have none of. Our shell is
+  `grid-cols-[331px_1fr]` unconditionally — a 331px sidebar on a 390px phone.
+
+Capture scripts are in `scripts/measure-reference-*.mjs`. Run them from the
+**workspace root** (that is where Playwright is installed), and use the real
+node ELF rather than the wrapper on `PATH` — see §10.
 
 ---
 
@@ -370,7 +397,53 @@ name what changed; if not, the work was aimed at the wrong target.
 
 ---
 
-## 10. GitHub / Vercel
+## 10. REA setup, and the trap that blocks it
+
+REA (`rea-agents` 6.7.0) is installed and working: CLI at
+`~/.local/rea-shim/rea`, MCP registered for Claude Code and OpenCode,
+`rea mcp doctor` healthy at 207/207 tools, skill installed.
+
+**It does not run out of the box here, and the error does not say why.**
+
+The `node` on `PATH` is a *bash wrapper* that exports
+`LD_LIBRARY_PATH="$REPLIT_LD_LIBRARY_PATH:…"`, leaking nix glibc 2.33 into
+every child REA spawns. The system `/usr/bin/ps` (glibc 2.39) then dies at
+load with `undefined symbol: __libc_siglongjmp, version GLIBC_PRIVATE`, and
+REA refuses to launch *any* supervised child, reporting
+`capability_unavailable` / `provider_id: "process-ownership"`.
+
+Fix: a shim that execs the **real** node ELF
+(`/nix/store/9cyx…-nodejs-24.13.0/bin/node`) instead of the wrapper. Both agent
+MCP configs were repointed at it, because `rea setup` registers `rea.mjs`
+directly and its `#!/usr/bin/env node` shebang hits the same bug. Same
+constraint applies to the Playwright measurement scripts.
+
+### Measurement traps that returned plausible wrong numbers
+
+Each of these failed *silently* with plausible-looking output:
+
+- **REA in connect mode attaches too late.** `inspect-web-page` returned 697 KB
+  in which `scripts` and `resources` were both empty —
+  `completeness: policy_filtered`, `conditions: ["attach_limited", …]`. Use
+  `capture-browser-scenario` in **launch** mode, and set
+  `service_workers: "allow"` or the shelves never render.
+- **REA's browser scenario has no JS-evaluation action.** Computed styles are
+  outside its reach by design; use Playwright for the token layer.
+- **A resized desktop window is not a phone.** No touch + desktop UA makes the
+  site serve the desktop layout squeezed — it reported a 320px sidebar beside
+  a 416px column. Use a real device descriptor.
+- **The OneTrust consent banner covers the phone UI** at
+  `z-index: 2147483645`, and the first "mobile tab bar" measurement was 205px
+  of cookie text. Seed `OptanonAlertBoxClosed` before navigating; clicking the
+  button was unreliable.
+- **The mobile shelf is not `role="grid"`.** Anchoring on it reported 0 shelves
+  on all three phones, which looks exactly like an empty page. Anchor on the
+  card artwork instead.
+- **768px is not measurable here.** The iPad UA is refused outright
+  ("Unsupported browser"). iPad showed no rail and no tab bar because it
+  rendered nothing — that is a missing observation, not a tablet layout.
+
+---
 
 - Repo: https://github.com/arjav1181/muscify (public, MIT, issues enabled)
 - Open issues: #1 playlist folders · #2 no service worker · #3 artist search ·

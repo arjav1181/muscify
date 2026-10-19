@@ -73,7 +73,12 @@ same bug.
 | `computed-tokens.json` | Playwright, computed styles | every distinct colour / type step / radius / shadow in use, with usage counts |
 | `layout-geometry.json` | Playwright, geometry | shell regions, shelf internals, hover state, at 7 viewport widths |
 | `responsive-tracks.json` | Playwright | `grid-template-columns` resolved track widths per viewport |
-| **`reference-home-1440.png`** | same capture, screenshot artifact | 1440×900 reference screenshot (sha256 `618c60c7…`) — **start here**, it is the whole layout in one image |
+| `mobile-geometry.json` | Playwright, device emulation | phone shell at 320 / 390 / 393 px: top bar, tab bar, consent banner state |
+| `mobile-rail-tabs.json` | Playwright, device emulation | phone rail track, scroll-snap, card inset, tab item anatomy |
+| **`reference-home-1440.png`** | REA screenshot artifact | 1440×900 desktop (sha256 `618c60c7…`) — **start here** |
+| **`mobile-iphone-13.png`** | Playwright screenshot | 390×664 phone, shelves + tab bar |
+| `mobile-with-upsell.png` | Playwright screenshot | 320×568 phone with the Premium sheet open |
+| `mobile-ipad-unsupported.png` | Playwright screenshot | proof that tablet is **not** measurable — see below |
 
 ## Reproducing
 
@@ -116,6 +121,8 @@ Scripts live in `muscify/scripts/` (they are tooling, not product code, and
 
 - `scripts/measure-reference-ui.mjs` — colour / type / radius / shadow census
 - `scripts/measure-reference-layout.mjs` — shell geometry + hover, 7 widths
+- `scripts/measure-reference-mobile.mjs` — phone shell, 4 device profiles
+- `scripts/measure-reference-mobile-rail.mjs` — phone rail + tab bar anatomy
 - `scripts/rea-browser-scenario.json` — the REA request
 
 Run from the **workspace root** (`~/workspace`), which is where Playwright is
@@ -126,11 +133,44 @@ cd ~/workspace
 node muscify/scripts/measure-reference-ui.mjs \
   https://open.spotify.com/ /tmp/tokens.json 1440 900
 node muscify/scripts/measure-reference-layout.mjs
+node muscify/scripts/measure-reference-mobile.mjs
+node muscify/scripts/measure-reference-mobile-rail.mjs
 ```
 
 Use the **real** node ELF, not the wrapper on `PATH`, for the same
-`LD_LIBRARY_PATH` reason described above. Both scripts hardcode
+`LD_LIBRARY_PATH` reason described above. All scripts hardcode
 `executablePath: "/repl/tools/bin/chromium"`.
+
+## Mobile capture — three traps, all of which produced wrong data first
+
+These are recorded because each one silently returns plausible-looking
+numbers rather than failing.
+
+1. **A resized desktop window is not a phone.** The first mobile run set a
+   480px viewport on a desktop context. With no touch support and a desktop
+   UA, the page served the **desktop** layout squeezed into the window, and it
+   reported a 320px sidebar beside a 416px content column. That is not a
+   layout. Use a device descriptor (`devices["iPhone 13"]`) — it carries touch,
+   UA and device pixel ratio together.
+
+2. **The consent banner covers the phone UI.** `#onetrust-banner-sdk` renders
+   at `z-index: 2147483645`, fills the bottom of a phone viewport, and
+   swallowed the real tab bar entirely — so the first "mobile tab bar"
+   measurement was 205px of `#eeeeee` cookie text. Clicking its button proved
+   unreliable; seeding `OptanonAlertBoxClosed` and `OptanonConsent` for
+   `.spotify.com` before navigation works reliably. No account is involved.
+
+3. **The mobile shelf is not `role="grid"`.** A second run anchored on
+   `[role="grid"]` and reported **0 shelves** on all three phones, which is
+   what a genuinely empty page looks like. It is not empty — the rail is there
+   in `evidence/mobile-iphone-13.png`. Anchor on the card artwork instead and
+   walk up to the nearest scroller.
+
+A fourth, about tablets: **768px is not measurable from here.** The iPad user
+agent is refused outright — the page renders "Unsupported browser"
+(`evidence/mobile-ipad-unsupported.png`). iPad reported no rail and no tab bar
+because it rendered nothing at all. That is a missing observation, not a
+measurement of a tablet layout.
 
 ## What REA could not do, and why it matters
 
@@ -154,6 +194,11 @@ Recorded because negative results stop the next person wasting a day:
   live in external stylesheets that were not fetched. This is arguably a good
   outcome: the values in `tokens.css` are *resolved measurements* of what the
   page actually renders, which is more useful than the variables behind it.
+- **The mobile mini-player and full-screen player never appeared.** No track
+  plays while logged out, so the bar that would sit above the tab bar was
+  never on screen. The mobile play plate is specified as INFERRED (touch
+  target convention) rather than measured, and labelled as such in
+  `components.md` §9.
 
 ## Known disagreement with published guidance
 

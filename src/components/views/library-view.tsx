@@ -196,11 +196,19 @@ function Playlists({
   }
 
   if (!playlists.length) {
-    // Distinguished on purpose: an empty folder is not an empty library, and
-    // telling someone their library is empty when it holds thirty playlists
-    // because a chip is selected is just wrong.
+    /*
+      The bar must be in this branch too, not only in the empty-library one.
+      
+      Creating a folder selects it, a new folder is empty, so this branch is
+      exactly where a user lands after making one -- and it returned without the
+      bar, which removed the chips, the Create button and the only way back to
+      another folder. They were stuck, with a "Show all playlists" link and no
+      navigation at all. The FolderBar is above, on every branch, deliberately.
+    */
     const inFolder = folder ? all.filter((p) => p.folderId === folder).length : 0;
     return (
+      <>
+        <FolderBar active={folder} onChange={onFolderChange} />
       <div className="py-8">
         <p className="text-sm text-muted">
           {query.trim()
@@ -219,6 +227,7 @@ function Playlists({
           </button>
         ) : null}
       </div>
+      </>
     );
   }
 
