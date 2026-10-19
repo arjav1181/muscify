@@ -196,6 +196,22 @@ export function PlayerBar() {
 
           <CompactTransport />
 
+          {/* Lyrics on a phone. The button in the desktop group below is inside
+              a `hidden md:flex` wrapper, so without this one lyrics were
+              unreachable below 768px -- reachable only by keyboard shortcut on a
+              device with no keyboard. */}
+          <button
+            type="button"
+            onClick={() => setLyricsOpen(!lyricsOpen)}
+            aria-label="Lyrics"
+            aria-pressed={lyricsOpen}
+            className={`shrink-0 rounded-full p-2 md:hidden ${
+              lyricsOpen ? "text-spotify" : "text-sub"
+            } ${lyricsEnabled ? "" : "opacity-40"}`}
+          >
+            <Mic2 size={18} aria-hidden />
+          </button>
+
           <div className="hidden shrink-0 items-center gap-1 xl:flex">
             <button
               type="button"

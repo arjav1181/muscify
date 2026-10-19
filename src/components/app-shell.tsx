@@ -85,8 +85,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </main>
       </div>
 
+      {/*
+        Lyrics, sized by what the screen can carry.
+
+        This was `hidden ... lg:block`, so below 1024px the panel existed,
+        rendered, and was invisible -- and the button that opened it was itself
+        inside a `hidden md:flex` group, so on a phone lyrics could not be
+        reached at all.
+
+        A 380px column is right on a desktop and unusable on a phone, where
+        words wrap to one or two per line and the panel is a sliver. Below `lg`
+        it is full-screen instead, which is also where the eye expects it: the
+        same shape as the Now Playing view, which it is.
+      */}
       {lyricsOpen ? (
-        <div className="fixed inset-y-0 right-0 z-40 hidden w-[380px] lg:block">
+        <div className="fixed inset-0 z-40 lg:inset-y-0 lg:right-0 lg:left-auto lg:w-[380px]">
           <LyricsPanel />
         </div>
       ) : null}
