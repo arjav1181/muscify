@@ -4,16 +4,18 @@ A hand-off package. Another agent should be able to read this directory and
 implement the UI without opening the reference site.
 
 ## **Look at [`evidence/reference-home-1440.png`](./evidence/reference-home-1440.png)
-first.** It is the whole layout in one image and it is worth more than any
-table below it.
+first.** It is the whole desktop layout in one image and it is worth more than
+any table below it. The phone layout is
+[`evidence/mobile-iphone-13.png`](./evidence/mobile-iphone-13.png).
 
 Read in this order
 
 | File | What it is |
 |---|---|
 | **[tokens.css](./tokens.css)** | Drop-in Tailwind 4 `@theme` block. Every colour, radius, type step and duration, labelled MEASURED or INFERRED. |
-| **[shell.md](./shell.md)** | The layout geometry: region sizes, the 331/64/8px shell, the shelf rail contract, the accessibility tree. |
-| **[components.md](./components.md)** | Tailwind classes + React skeletons per component, with the measurement behind each. |
+| **[shell.md](./shell.md)** | Desktop layout geometry: region sizes, the 331/64/8px shell, the shelf rail contract, the accessibility tree. |
+| **[mobile.md](./mobile.md)** | Phone layout: 70px tab bar, 56px top bar, fixed 168px rail with scroll-snap. Separate composition, not a shrunk desktop. |
+| **[components.md](./components.md)** | Tailwind classes + React skeletons per component, desktop and mobile, with the measurement behind each. |
 | **[evidence.md](./evidence.md)** | How it was captured and how to re-capture it. |
 
 ## TL;DR for the implementing agent
@@ -31,7 +33,10 @@ The actual gaps, in order of value per unit of effort:
 2. **Shelf → horizontal rail.** Currently a wrapping `grid-cols-*`. Upstream is
    `grid-auto-flow: column` with two fixed track sizes.
 3. **Shell geometry** — fixed 331px rail, 64px top bar, 8px gutters.
-4. **Name the "Show Now Playing view" control.** It exists but has no
+4. **Phone layout.** muscify has **no mobile composition at all** — the shell
+   is `grid-cols-[331px_1fr]` unconditionally. That is a 331px sidebar on a
+   390px phone. See `mobile.md`.
+5. **Name the "Show Now Playing view" control.** It exists but has no
    accessible name, so it is unreachable without a mouse.
 
 ## Ground rules

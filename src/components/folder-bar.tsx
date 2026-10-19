@@ -60,7 +60,11 @@ export function FolderBar({
 
   return (
     <div className="mb-4">
-      <div className="flex flex-wrap items-center gap-2">
+      {/*
+        A named group. Without it these are a handful of unrelated buttons and
+        nothing tells you that picking one narrows the grid below.
+      */}
+      <div role="group" aria-label="Folders" className="flex flex-wrap items-center gap-2">
         {adding ? (
           <form
             onSubmit={(e) => {

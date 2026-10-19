@@ -20,6 +20,7 @@ this capture. Do not rewrite what is right.
 | Shelf = horizontal rail | ❌ currently a wrapping `grid-cols-*` |
 | Shell geometry (331 / 64 / 8px) | ❌ not specified |
 | "Show Now Playing view" name | ❌ present but unlabelled |
+| **Any mobile composition** | ❌ **none at all** — see [mobile.md](./mobile.md) |
 
 ---
 
@@ -395,7 +396,192 @@ unfinished.
 
 ---
 
-## 9. Checklist for the implementing agent
+## 9. Mobile
+
+Full measurements and method in **[mobile.md](./mobile.md)**. This section is
+the implementation summary; the numbers there are the source of truth.
+
+**Change:** muscify has no mobile composition at all today — the shell is
+`grid-cols-[331px_1fr]` unconditionally. Mobile is not a squeezed desktop
+shell. It replaces the sidebar with a bottom tab bar and removes the search
+field from the top bar.
+
+### Shell
+
+The rail disappears below 900px. Do not render a 331px sidebar on a phone.
+
+```html
+<!-- desktop -->
+<div class="hidden lg:grid lg:grid-cols-[331px_1fr] gap-2 p-2">
+  <nav aria-label="Main">…</nav>
+  <main id="main-view">…</main>
+</div>
+
+<!-- phone -->
+<div class="lg:hidden">
+  <main id="main-view" class="pb-[calc(var(--tabbar-height)+env(safe-area-inset-bottom))]">
+    …
+  </main>
+  <TabBar />
+</div>
+```
+
+`env(safe-area-inset-bottom)` is not measured — the reference runs on a
+simulator with no notch — but a fixed 70px bar on a real iPhone will sit
+under the home indicator without it. Add it.
+
+### Top bar — 56px, padding 16px
+
+```html
+<header class="flex items-center gap-3 bg-base px-4 lg:h-16 lg:p-2 h-14">
+  <a href="/" aria-label="muscify home"><Logo /></a>
+
+  <!-- search is NOT here on mobile; it is a tab -->
+  <a href="/account"
+     class="ml-auto rounded-pill bg-on px-4 py-2 text-label font-bold text-base">
+    Sign in
+  </a>
+  <button aria-label="Menu" class="grid size-12 place-items-center rounded-round">
+    <Menu class="size-6" />
+  </button>
+</header>
+```
+
+| | Mobile | Desktop |
+|---|---|---|
+| height | `h-14` (56px) | `h-16` (64px) |
+| padding | `p-4` (16px) | `p-2` (8px) |
+| menu button | `size-12` (48px) | 24–32px |
+
+**The 48px menu button is not decorative.** Touch targets need 48px; the
+desktop icon sizes are mouse affordances. Shrinking them on touch is the
+single most common way a ported desktop UI feels broken on a phone.
+
+### Tab bar — 70px, gradient, 11px labels
+
+```html
+<nav aria-label="Main"
+     class="fixed inset-x-0 bottom-0 z-40 flex h-tabbar
+            bg-[image:var(--tabbar-gradient)]">
+
+  <a href="/" aria-current="page"
+     class="flex flex-1 flex-col items-center justify-center gap-1">
+    <Home class="size-6 text-on" />
+    <span class="text-tab text-on">Home</span>
+  </a>
+
+  <a href="/search"
+     class="flex flex-1 flex-col items-center justify-center gap-1">
+    <Search class="size-6 text-sub" />
+    <span class="text-tab text-sub">Search</span>
+  </a>
+
+  <a href="/library"
+     class="flex flex-1 flex-col items-center justify-center gap-1">
+    <Library class="size-6 text-sub" />
+    <span class="text-tab text-sub">Library</span>
+  </a>
+</nav>
+```
+
+| Part | Value | Source |
+|---|---|---|
+| height | `h-tabbar` = 70px | MEASURED |
+| background | `bg-[image:var(--tabbar-gradient)]` | MEASURED — gradient, **not** a flat fill |
+| icon | `size-6` = 24px | MEASURED |
+| label | `text-tab` = 11px / 400 | MEASURED |
+| active | `text-on` + `aria-current="page"` | MEASURED |
+| inactive | `text-sub` | MEASURED |
+
+Three things that are load-bearing:
+
+1. **The gradient.** `backgroundColor` measures as `transparent`; the colour
+   is entirely in `backgroundImage`. A solid `bg-base` reads as a hard-edged
+   bar and is visibly heavier.
+2. **No active indicator besides colour.** No underline, no pill, no filled
+   circle. `aria-current="page"` is the non-colour channel — keep it, or the
+   active state becomes colour-only.
+3. **11px is the smallest text in the UI**, below `--text-micro`. It is
+   measured and it is what the reference ships, but check `--color-sub` at
+   11px for contrast before adopting.
+
+### Rail — fixed 168px track, with scroll snap
+
+Same component as desktop, different track and the snap it lacks:
+
+```html
+<div role="grid" aria-labelledby={id}
+     class="flex snap-x snap-mandatory gap-0 overflow-x-auto pb-2
+            pl-[var(--shell-pad-mobile)]
+            [@media(min-width:900px)]:grid
+            [@media(min-width:900px)]:grid-flow-col
+            [@media(min-width:900px)]:auto-cols-[177.72px]
+            [@media(min-width:900px)]:snap-none
+            [@media(min-width:1440px)]:auto-cols-[195.5px]">
+  {children}
+</div>
+```
+
+| | Mobile | Desktop |
+|---|---|---|
+| display | `flex` | `grid` + `grid-flow-col` |
+| track | `10.5rem` = **168px fixed** | 177.72px → 195.5px |
+| snap | `snap-x snap-mandatory` | `snap-none` |
+| padding-left | `1rem` = 16px | `1.75rem` = 28px |
+| card inset | `0.5rem` = 8px | `0.75rem` = 12px |
+
+**The mobile track does not reflow.** 168px at 320, at 390 and at 393 — three
+widths, one value. A phone shows one card plus a peek of the next. Resist the
+instinct to make it two columns on a small screen.
+
+`scroll-snap-type: x mandatory` is measured on mobile and `none` on desktop.
+It is a touch affordance with no mouse equivalent.
+
+### Card
+
+Unchanged except the inset:
+
+```html
+<div role="gridcell" class="px-[var(--card-inset-mobile)] lg:px-[var(--card-inset)]">
+  <div class="rounded-control p-2 lg:p-3 transition-colors duration-fast ease-brand
+              group-hover:bg-elevated">
+    <img class="aspect-square w-full rounded-card object-cover" />
+    <p class="truncate text-read text-on mt-3">{title}</p>
+  </div>
+</div>
+```
+
+### Shelf heading drops one step
+
+```html
+<h2 class="text-[20px] lg:text-title font-bold text-on">{title}</h2>
+```
+
+`20px / 700 / #ffffff` on mobile, `24px / 700 / #ffffff` on desktop. Same
+weight, same colour, one step smaller.
+
+### Touch substitutes for hover
+
+Desktop reveals the play plate on `:hover`. There is no hover on touch, so
+the play control has to be permanently visible on mobile:
+
+```html
+<button aria-label={`Play ${title}`}
+        class="absolute bottom-2 right-2 grid size-11 place-items-center
+               rounded-pill bg-base/90 text-on backdrop-blur
+               lg:size-12 lg:opacity-0 lg:group-hover:opacity-100
+               transition-[background-color,transform,opacity]
+               duration-fast ease-brand active:scale-95" />
+```
+
+The `size-11`/`size-12` are **not measured** — the reference's mobile play
+plate was never captured, because it only appears on hover upstream and no
+track plays logged out. They are the 44/48px touch-target convention, chosen
+deliberately, and are labelled accordingly. Verify them in a real render.
+
+---
+
+## 10. Checklist for the implementing agent
 
 1. Add `--ease-brand` / `--duration-fast`; apply `ease-brand` to every
    interactive transition. *Biggest win, smallest change.*
@@ -408,6 +594,9 @@ unfinished.
 5. Label the Now-Playing expand control.
 6. Verify the subtitle colour against a real render, then use `--color-sub`.
 7. Measure card padding in muscify to confirm the derived `12px`.
+8. **Build the phone layout** — tab bar, 56px top bar, 168px rail with snap,
+   per [mobile.md](./mobile.md). This is a separate composition, not a media
+   query on the desktop one.
 
 Then: `npx tsc --noEmit && npx eslint src/ && node --test "src/**/*.test.ts" && npm run build`.
 

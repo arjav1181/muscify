@@ -114,10 +114,10 @@
 }
 
 /* ── 9. Layout constants ─────────────────────────────────────────────────
- * All MEASURED at 1440x900. See shell.md for how these combine and for the
- * responsive behaviour. */
+ * All MEASURED at 1440x900 unless noted. See shell.md for the desktop
+ * composition and mobile.md for the phone composition. */
 :root {
-  --topbar-height: 4rem;        /* 64px  MEASURED  full-bleed, bg base       */
+  --topbar-height: 4rem;        /* 64px  MEASURED  desktop, bg base          */
   --sidebar-width: 20.6875rem;  /* 331px MEASURED  rail, radius 8px          */
   --sidebar-width-sm: 20rem;    /* 320px MEASURED  at 768px viewport         */
   --gutter: 0.5rem;             /* 8px   MEASURED  shell outer margin        */
@@ -126,4 +126,39 @@
   --card-track: 11.107rem;      /* 177.72px MEASURED <=1280px viewport       */
   --card-track-lg: 12.21875rem; /* 195.5px  MEASURED >=1440px viewport      */
   --card-inset: 0.75rem;        /* 12px  DERIVED  track - artwork = 24px      */
+}
+
+/* ── 10. Mobile layout ───────────────────────────────────────────────────
+ * MEASURED with real device emulation at 320x568, 390x664 and 393x727.
+ * These are NOT the desktop values shrunk. The rail track in particular is
+ * fixed at 168px on every phone width measured — it is not fluid, and a
+ * phone still shows one card plus a peek, not two columns.
+ *
+ * Do not obtain these by resizing a desktop browser window. Without touch and
+ * mobile-UA emulation the site serves the desktop layout squeezed, and the
+ * measurement is meaningless. See mobile.md. */
+:root {
+  --topbar-height-mobile: 3.5rem;   /* 56px MEASURED  vs 64px desktop       */
+  --topbar-pad-mobile: 1rem;        /* 16px MEASURED  vs 8px desktop        */
+  --tabbar-height: 4.375rem;        /* 70px MEASURED  fixed bottom nav       */
+  --shell-pad-mobile: 1rem;         /* 16px MEASURED  vs 28px desktop       */
+  --card-track-mobile: 10.5rem;     /* 168px MEASURED  fixed at 320/390/393 */
+  --card-inset-mobile: 0.5rem;      /* 8px  MEASURED  (168 - 152 = 16)      */
+
+  /* 24px tab icons, 11px tab labels. MEASURED. */
+  --text-tab: 0.6875rem;            /* 11px MEASURED  smallest text in the UI */
+}
+
+/*
+ * The mobile tab bar is a gradient, not a flat fill: measured backgroundColor
+ * is `transparent` and the colour lives entirely in backgroundImage. It fades
+ * content out as it scrolls underneath, which is why it has no hard edge.
+ * Implementing it as a solid `--color-base` looks noticeably heavier.
+ */
+:root {
+  --tabbar-gradient: linear-gradient(
+    rgb(0 0 0 / 0.7),
+    rgb(0 0 0 / 0.9),
+    #121212
+  );
 }

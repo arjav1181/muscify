@@ -1,0 +1,786 @@
+{
+  "url": "https://open.spotify.com/",
+  "capturedAt": "2026-10-19T06:25:19.504Z",
+  "devices": {
+    "iPhone SE": {
+      "viewport": {
+        "w": 320,
+        "h": 568
+      },
+      "rail": {
+        "display": "flex",
+        "flexDirection": "row",
+        "overflowX": "scroll",
+        "gap": "0px",
+        "columnGap": "0px",
+        "padding": "0px",
+        "paddingLeft": "0px",
+        "scrollSnapType": "x mandatory",
+        "rect": {
+          "x": 0,
+          "y": 116,
+          "w": 320,
+          "h": 220,
+          "right": 320,
+          "bottom": 336
+        },
+        "childCount": 20,
+        "childWidths": [
+          168
+        ],
+        "childGaps": [
+          0
+        ],
+        "scrollWidth": 3376,
+        "clientWidth": 320,
+        "overflows": true
+      },
+      "card": {
+        "rect": {
+          "x": 0,
+          "y": 56,
+          "w": 320,
+          "h": 2509,
+          "right": 320,
+          "bottom": 2565
+        },
+        "padding": "0px",
+        "display": "block",
+        "flexDirection": "row",
+        "gap": "normal",
+        "lines": [
+          {
+            "text": "Trending songs",
+            "fontSize": "20px",
+            "fontWeight": "700",
+            "color": "#ffffff",
+            "margin": "0px"
+          },
+          {
+            "text": "Ala Bolelo",
+            "fontSize": "16px",
+            "fontWeight": "400",
+            "color": "#ffffff",
+            "margin": "0px"
+          },
+          {
+            "text": "Chalre chalre jaan",
+            "fontSize": "16px",
+            "fontWeight": "400",
+            "color": "#ffffff",
+            "margin": "0px"
+          }
+        ],
+        "artwork": {
+          "rect": {
+            "x": 16,
+            "y": 124,
+            "w": 152,
+            "h": 152,
+            "right": 168,
+            "bottom": 276
+          },
+          "radius": "4px"
+        }
+      },
+      "heading": {
+        "text": "Trending songs",
+        "tag": "H2",
+        "fontSize": "20px",
+        "fontWeight": "700",
+        "color": "#ffffff",
+        "margin": "0px",
+        "rect": {
+          "x": 16,
+          "y": 80,
+          "w": 288,
+          "h": 24,
+          "right": 304,
+          "bottom": 104
+        }
+      },
+      "tabs": {
+        "rect": {
+          "x": 0,
+          "y": 498,
+          "w": 320,
+          "h": 70,
+          "right": 320,
+          "bottom": 568
+        },
+        "style": {
+          "bg": "#000000 / 0",
+          "bgImage": "linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9), rgb(18, 18, 18))",
+          "borderTop": "0px none rgb(255, 255, 255)",
+          "padding": "0px",
+          "position": "fixed",
+          "zIndex": "auto",
+          "backdropFilter": "none"
+        },
+        "items": [
+          {
+            "href": "/",
+            "current": "page",
+            "rect": {
+              "x": 0,
+              "y": 498,
+              "w": 80,
+              "h": 70,
+              "right": 80,
+              "bottom": 568
+            },
+            "padding": "0px",
+            "icon": {
+              "w": 24,
+              "h": 24,
+              "color": "#ffffff"
+            },
+            "label": {
+              "t": "Home",
+              "fontSize": "11px",
+              "fontWeight": "400",
+              "color": "#ffffff",
+              "marginTop": "0px"
+            }
+          },
+          {
+            "href": "/search",
+            "current": null,
+            "rect": {
+              "x": 80,
+              "y": 498,
+              "w": 80,
+              "h": 70,
+              "right": 160,
+              "bottom": 568
+            },
+            "padding": "0px",
+            "icon": {
+              "w": 24,
+              "h": 24,
+              "color": "#b3b3b3"
+            },
+            "label": {
+              "t": "Search",
+              "fontSize": "11px",
+              "fontWeight": "400",
+              "color": "#b3b3b3",
+              "marginTop": "0px"
+            }
+          },
+          {
+            "href": "/",
+            "current": "page",
+            "rect": {
+              "x": 160,
+              "y": 498,
+              "w": 80,
+              "h": 70,
+              "right": 240,
+              "bottom": 568
+            },
+            "padding": "0px",
+            "icon": {
+              "w": 24,
+              "h": 24,
+              "color": "#b3b3b3"
+            },
+            "label": {
+              "t": "Your Library",
+              "fontSize": "11px",
+              "fontWeight": "400",
+              "color": "#b3b3b3",
+              "marginTop": "0px"
+            }
+          }
+        ]
+      },
+      "top": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 320,
+          "h": 56,
+          "right": 320,
+          "bottom": 56
+        },
+        "bg": "#000000",
+        "padding": "16px",
+        "children": [
+          {
+            "tag": "a",
+            "label": "Spotify",
+            "rect": {
+              "x": 16,
+              "y": 16,
+              "w": 88,
+              "h": 24,
+              "right": 104,
+              "bottom": 40
+            },
+            "radius": "0px",
+            "bg": "#000000 / 0"
+          },
+          {
+            "tag": "button",
+            "label": "Open App",
+            "rect": {
+              "x": 147,
+              "y": 12,
+              "w": 93,
+              "h": 32,
+              "right": 240,
+              "bottom": 44
+            },
+            "radius": "9999px",
+            "bg": "#000000 / 0"
+          },
+          {
+            "tag": "button",
+            "label": "Menu",
+            "rect": {
+              "x": 256,
+              "y": 4,
+              "w": 48,
+              "h": 48,
+              "right": 304,
+              "bottom": 52
+            },
+            "radius": "9999px",
+            "bg": "#000000 / 0"
+          }
+        ]
+      },
+      "hasSearchField": false
+    },
+    "iPhone 13": {
+      "viewport": {
+        "w": 390,
+        "h": 664
+      },
+      "rail": {
+        "display": "flex",
+        "flexDirection": "row",
+        "overflowX": "scroll",
+        "gap": "0px",
+        "columnGap": "0px",
+        "padding": "0px",
+        "paddingLeft": "0px",
+        "scrollSnapType": "x mandatory",
+        "rect": {
+          "x": 0,
+          "y": 116,
+          "w": 390,
+          "h": 220,
+          "right": 390,
+          "bottom": 336
+        },
+        "childCount": 20,
+        "childWidths": [
+          168
+        ],
+        "childGaps": [
+          0
+        ],
+        "scrollWidth": 3376,
+        "clientWidth": 390,
+        "overflows": true
+      },
+      "card": {
+        "rect": {
+          "x": 0,
+          "y": 56,
+          "w": 390,
+          "h": 2457,
+          "right": 390,
+          "bottom": 2513
+        },
+        "padding": "0px",
+        "display": "block",
+        "flexDirection": "row",
+        "gap": "normal",
+        "lines": [
+          {
+            "text": "Trending songs",
+            "fontSize": "20px",
+            "fontWeight": "700",
+            "color": "#ffffff",
+            "margin": "0px"
+          },
+          {
+            "text": "Ala Bolelo",
+            "fontSize": "16px",
+            "fontWeight": "400",
+            "color": "#ffffff",
+            "margin": "0px"
+          },
+          {
+            "text": "Chalre chalre jaan",
+            "fontSize": "16px",
+            "fontWeight": "400",
+            "color": "#ffffff",
+            "margin": "0px"
+          }
+        ],
+        "artwork": {
+          "rect": {
+            "x": 16,
+            "y": 124,
+            "w": 152,
+            "h": 152,
+            "right": 168,
+            "bottom": 276
+          },
+          "radius": "4px"
+        }
+      },
+      "heading": {
+        "text": "Trending songs",
+        "tag": "H2",
+        "fontSize": "20px",
+        "fontWeight": "700",
+        "color": "#ffffff",
+        "margin": "0px",
+        "rect": {
+          "x": 16,
+          "y": 80,
+          "w": 358,
+          "h": 24,
+          "right": 374,
+          "bottom": 104
+        }
+      },
+      "tabs": {
+        "rect": {
+          "x": 0,
+          "y": 594,
+          "w": 390,
+          "h": 70,
+          "right": 390,
+          "bottom": 664
+        },
+        "style": {
+          "bg": "#000000 / 0",
+          "bgImage": "linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9), rgb(18, 18, 18))",
+          "borderTop": "0px none rgb(255, 255, 255)",
+          "padding": "0px",
+          "position": "fixed",
+          "zIndex": "auto",
+          "backdropFilter": "none"
+        },
+        "items": [
+          {
+            "href": "/",
+            "current": "page",
+            "rect": {
+              "x": 0,
+              "y": 594,
+              "w": 98,
+              "h": 70,
+              "right": 98,
+              "bottom": 664
+            },
+            "padding": "0px",
+            "icon": {
+              "w": 24,
+              "h": 24,
+              "color": "#ffffff"
+            },
+            "label": {
+              "t": "Home",
+              "fontSize": "11px",
+              "fontWeight": "400",
+              "color": "#ffffff",
+              "marginTop": "0px"
+            }
+          },
+          {
+            "href": "/search",
+            "current": null,
+            "rect": {
+              "x": 98,
+              "y": 594,
+              "w": 98,
+              "h": 70,
+              "right": 195,
+              "bottom": 664
+            },
+            "padding": "0px",
+            "icon": {
+              "w": 24,
+              "h": 24,
+              "color": "#b3b3b3"
+            },
+            "label": {
+              "t": "Search",
+              "fontSize": "11px",
+              "fontWeight": "400",
+              "color": "#b3b3b3",
+              "marginTop": "0px"
+            }
+          },
+          {
+            "href": "/",
+            "current": "page",
+            "rect": {
+              "x": 195,
+              "y": 594,
+              "w": 98,
+              "h": 70,
+              "right": 293,
+              "bottom": 664
+            },
+            "padding": "0px",
+            "icon": {
+              "w": 24,
+              "h": 24,
+              "color": "#b3b3b3"
+            },
+            "label": {
+              "t": "Your Library",
+              "fontSize": "11px",
+              "fontWeight": "400",
+              "color": "#b3b3b3",
+              "marginTop": "0px"
+            }
+          }
+        ]
+      },
+      "top": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 56,
+          "right": 390,
+          "bottom": 56
+        },
+        "bg": "#000000",
+        "padding": "16px",
+        "children": [
+          {
+            "tag": "a",
+            "label": "Spotify",
+            "rect": {
+              "x": 16,
+              "y": 16,
+              "w": 88,
+              "h": 24,
+              "right": 104,
+              "bottom": 40
+            },
+            "radius": "0px",
+            "bg": "#000000 / 0"
+          },
+          {
+            "tag": "button",
+            "label": "Open App",
+            "rect": {
+              "x": 217,
+              "y": 12,
+              "w": 93,
+              "h": 32,
+              "right": 310,
+              "bottom": 44
+            },
+            "radius": "9999px",
+            "bg": "#000000 / 0"
+          },
+          {
+            "tag": "button",
+            "label": "Menu",
+            "rect": {
+              "x": 326,
+              "y": 4,
+              "w": 48,
+              "h": 48,
+              "right": 374,
+              "bottom": 52
+            },
+            "radius": "9999px",
+            "bg": "#000000 / 0"
+          }
+        ]
+      },
+      "hasSearchField": false
+    },
+    "Pixel 5": {
+      "viewport": {
+        "w": 393,
+        "h": 727
+      },
+      "rail": {
+        "display": "flex",
+        "flexDirection": "row",
+        "overflowX": "scroll",
+        "gap": "0px",
+        "columnGap": "0px",
+        "padding": "0px",
+        "paddingLeft": "0px",
+        "scrollSnapType": "x mandatory",
+        "rect": {
+          "x": 0,
+          "y": 116,
+          "w": 393,
+          "h": 220,
+          "right": 393,
+          "bottom": 336
+        },
+        "childCount": 20,
+        "childWidths": [
+          168
+        ],
+        "childGaps": [
+          0
+        ],
+        "scrollWidth": 3376,
+        "clientWidth": 393,
+        "overflows": true
+      },
+      "card": {
+        "rect": {
+          "x": 0,
+          "y": 56,
+          "w": 393,
+          "h": 2457,
+          "right": 393,
+          "bottom": 2513
+        },
+        "padding": "0px",
+        "display": "block",
+        "flexDirection": "row",
+        "gap": "normal",
+        "lines": [
+          {
+            "text": "Trending songs",
+            "fontSize": "20px",
+            "fontWeight": "700",
+            "color": "#ffffff",
+            "margin": "0px"
+          },
+          {
+            "text": "Ala Bolelo",
+            "fontSize": "16px",
+            "fontWeight": "400",
+            "color": "#ffffff",
+            "margin": "0px"
+          },
+          {
+            "text": "Chalre chalre jaan",
+            "fontSize": "16px",
+            "fontWeight": "400",
+            "color": "#ffffff",
+            "margin": "0px"
+          }
+        ],
+        "artwork": {
+          "rect": {
+            "x": 16,
+            "y": 124,
+            "w": 152,
+            "h": 152,
+            "right": 168,
+            "bottom": 276
+          },
+          "radius": "4px"
+        }
+      },
+      "heading": {
+        "text": "Trending songs",
+        "tag": "H2",
+        "fontSize": "20px",
+        "fontWeight": "700",
+        "color": "#ffffff",
+        "margin": "0px",
+        "rect": {
+          "x": 16,
+          "y": 80,
+          "w": 361,
+          "h": 24,
+          "right": 377,
+          "bottom": 104
+        }
+      },
+      "tabs": {
+        "rect": {
+          "x": 0,
+          "y": 657,
+          "w": 393,
+          "h": 70,
+          "right": 393,
+          "bottom": 727
+        },
+        "style": {
+          "bg": "#000000 / 0",
+          "bgImage": "linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9), rgb(18, 18, 18))",
+          "borderTop": "0px none rgb(255, 255, 255)",
+          "padding": "0px",
+          "position": "fixed",
+          "zIndex": "auto",
+          "backdropFilter": "none"
+        },
+        "items": [
+          {
+            "href": "/",
+            "current": "page",
+            "rect": {
+              "x": 0,
+              "y": 657,
+              "w": 98,
+              "h": 70,
+              "right": 98,
+              "bottom": 727
+            },
+            "padding": "0px",
+            "icon": {
+              "w": 24,
+              "h": 24,
+              "color": "#ffffff"
+            },
+            "label": {
+              "t": "Home",
+              "fontSize": "11px",
+              "fontWeight": "400",
+              "color": "#ffffff",
+              "marginTop": "0px"
+            }
+          },
+          {
+            "href": "/search",
+            "current": null,
+            "rect": {
+              "x": 98,
+              "y": 657,
+              "w": 98,
+              "h": 70,
+              "right": 197,
+              "bottom": 727
+            },
+            "padding": "0px",
+            "icon": {
+              "w": 24,
+              "h": 24,
+              "color": "#b3b3b3"
+            },
+            "label": {
+              "t": "Search",
+              "fontSize": "11px",
+              "fontWeight": "400",
+              "color": "#b3b3b3",
+              "marginTop": "0px"
+            }
+          },
+          {
+            "href": "/",
+            "current": "page",
+            "rect": {
+              "x": 197,
+              "y": 657,
+              "w": 98,
+              "h": 70,
+              "right": 295,
+              "bottom": 727
+            },
+            "padding": "0px",
+            "icon": {
+              "w": 24,
+              "h": 24,
+              "color": "#b3b3b3"
+            },
+            "label": {
+              "t": "Your Library",
+              "fontSize": "11px",
+              "fontWeight": "400",
+              "color": "#b3b3b3",
+              "marginTop": "0px"
+            }
+          }
+        ]
+      },
+      "top": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 393,
+          "h": 56,
+          "right": 393,
+          "bottom": 56
+        },
+        "bg": "#000000",
+        "padding": "16px",
+        "children": [
+          {
+            "tag": "a",
+            "label": "Spotify",
+            "rect": {
+              "x": 16,
+              "y": 16,
+              "w": 88,
+              "h": 24,
+              "right": 104,
+              "bottom": 40
+            },
+            "radius": "0px",
+            "bg": "#000000 / 0"
+          },
+          {
+            "tag": "button",
+            "label": "Open App",
+            "rect": {
+              "x": 220,
+              "y": 12,
+              "w": 93,
+              "h": 32,
+              "right": 313,
+              "bottom": 44
+            },
+            "radius": "9999px",
+            "bg": "#000000 / 0"
+          },
+          {
+            "tag": "button",
+            "label": "Menu",
+            "rect": {
+              "x": 329,
+              "y": 4,
+              "w": 48,
+              "h": 48,
+              "right": 377,
+              "bottom": 52
+            },
+            "radius": "9999px",
+            "bg": "#000000 / 0"
+          }
+        ]
+      },
+      "hasSearchField": false
+    },
+    "iPad Mini": {
+      "viewport": {
+        "w": 768,
+        "h": 1024
+      },
+      "rail": null,
+      "card": null,
+      "heading": {
+        "text": "Unsupported browser",
+        "tag": "H1",
+        "fontSize": "48px",
+        "fontWeight": "700",
+        "color": "#ffffff",
+        "margin": "40px 0px 16px",
+        "rect": {
+          "x": 32,
+          "y": 434,
+          "w": 704,
+          "h": 48,
+          "right": 736,
+          "bottom": 482
+        }
+      },
+      "tabs": null,
+      "top": null,
+      "hasSearchField": false
+    }
+  }
+}

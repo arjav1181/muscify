@@ -52,7 +52,17 @@ export function LibraryView() {
     <div className="animate-fade-up pt-6">
       <h1 className="text-2xl font-bold tracking-tight text-on">Your Library</h1>
 
-      <div className="my-5 flex flex-wrap items-center gap-2">
+      {/*
+        A named group, not a bare row of buttons. Without this the five filters
+        are announced as unrelated controls with no indication they are
+        alternatives to each other, and no way to tell which one is active other
+        than pressing each in turn.
+      */}
+      <div
+        role="group"
+        aria-label="Filter library"
+        className="my-5 flex flex-wrap items-center gap-2"
+      >
         {FILTERS.map(({ id, label, icon: Icon }) => (
           <button
             key={id}
@@ -215,7 +225,11 @@ function Playlists({
   return (
     <>
       <FolderBar active={folder} onChange={onFolderChange} />
-    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+    <div
+      role="list"
+      aria-label="Playlists"
+      className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+    >
       {playlists.map((p) => (
         <PlaylistTile key={p.id} playlist={p} onPlay={() => playTracks([], 0)} />
       ))}
@@ -239,6 +253,7 @@ function PlaylistTile({
   return (
     <Link
       href={`/playlist/${playlist.id}`}
+      role="listitem"
       className="group relative flex flex-col rounded-card bg-surface p-3 transition-colors hover:bg-highlight"
     >
       <div className="relative mb-4">
@@ -356,7 +371,11 @@ function Artists() {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+    <div
+      role="list"
+      aria-label="Artists you follow"
+      className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5"
+    >
       {artists.map((a) => (
         <div key={`${a.source}:${a.id}`} className="group relative">
           <Link
@@ -412,7 +431,11 @@ function Albums() {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+    <div
+      role="list"
+      aria-label="Albums you have played"
+      className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5"
+    >
       {albums.map((a) => (
         <Link
           key={`${a.source}:${a.id}`}

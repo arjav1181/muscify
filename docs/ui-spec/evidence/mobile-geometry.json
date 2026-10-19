@@ -1,0 +1,608 @@
+{
+  "url": "https://open.spotify.com/",
+  "capturedAt": "2026-10-19T06:19:10.548Z",
+  "devices": {
+    "iphone-se": {
+      "consentBanner": {
+        "present": false,
+        "shelvesRendered": 0
+      },
+      "viewport": {
+        "w": 320,
+        "h": 568,
+        "dpr": 2
+      },
+      "touch": {
+        "maxTouchPoints": 1,
+        "coarse": true
+      },
+      "bottomLayers": [
+        {
+          "rect": {
+            "x": 0,
+            "y": 498,
+            "w": 320,
+            "h": 70,
+            "bottom": 568
+          },
+          "tag": "div",
+          "role": null,
+          "aria": null,
+          "bg": "#000000 / 0",
+          "borderTop": "0px none rgb(255, 255, 255)",
+          "padding": "0px",
+          "position": "fixed",
+          "zIndex": "auto",
+          "links": [
+            {
+              "label": "Home",
+              "href": "/",
+              "iconOnly": false,
+              "current": "page"
+            },
+            {
+              "label": "Search",
+              "href": "/search",
+              "iconOnly": false,
+              "current": null
+            },
+            {
+              "label": "Your Library",
+              "href": "/",
+              "iconOnly": false,
+              "current": "page"
+            }
+          ]
+        }
+      ],
+      "shelf": null,
+      "search": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "bottom": 0
+        },
+        "role": null,
+        "name": "Cookie list search",
+        "placeholder": "Search…",
+        "style": {
+          "fontSize": "12.8px",
+          "padding": "6px 35px 6px 15px",
+          "bg": "#ffffff",
+          "radius": "50px"
+        }
+      },
+      "topbar": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 320,
+          "h": 56,
+          "bottom": 56
+        },
+        "bg": "#000000",
+        "padding": "16px"
+      },
+      "types": [
+        {
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "n": 256,
+          "e": [
+            "SpotifyOpen AppSpotify logoG",
+            "Spotify",
+            "Spotify logo"
+          ]
+        },
+        {
+          "fontSize": "12.992px",
+          "fontWeight": "400",
+          "n": 15,
+          "e": [
+            "When you visit any website, ",
+            "Cookie Policy",
+            "These cookies are necessary "
+          ]
+        },
+        {
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "n": 10,
+          "e": [
+            "First Party Functional Cooki",
+            "First Party Performance Cook",
+            "First Party Targeting Cookie"
+          ]
+        },
+        {
+          "fontSize": "13px",
+          "fontWeight": "400",
+          "n": 8,
+          "e": [
+            "Equivalent to ₹66.59/month. ",
+            "Legal",
+            "Safety & Privacy Center"
+          ]
+        },
+        {
+          "fontSize": "20px",
+          "fontWeight": "700",
+          "n": 7,
+          "e": [
+            "Get 12 months of Premium Sta",
+            "Trending songs",
+            "Popular artists"
+          ]
+        },
+        {
+          "fontSize": "16px",
+          "fontWeight": "700",
+          "n": 7,
+          "e": [
+            "Company",
+            "Communities",
+            "Useful links"
+          ]
+        },
+        {
+          "fontSize": "11px",
+          "fontWeight": "400",
+          "n": 6,
+          "e": [
+            "Limited time offer. Limited ",
+            "Terms Apply",
+            "Home"
+          ]
+        },
+        {
+          "fontSize": "13px",
+          "fontWeight": "700",
+          "n": 4,
+          "e": [
+            "Open App",
+            "Get Premium Standard",
+            "View all plans"
+          ]
+        },
+        {
+          "fontSize": "14.4px",
+          "fontWeight": "700",
+          "n": 4,
+          "e": [
+            "Allow All",
+            "Clear",
+            "Apply"
+          ]
+        },
+        {
+          "fontSize": "14px",
+          "fontWeight": "700",
+          "n": 1,
+          "e": [
+            "Strictly Necessary Cookies"
+          ]
+        }
+      ],
+      "screenshot": "device-iphone-se.png"
+    },
+    "iphone-13": {
+      "consentBanner": {
+        "present": false,
+        "shelvesRendered": 0
+      },
+      "viewport": {
+        "w": 390,
+        "h": 664,
+        "dpr": 3
+      },
+      "touch": {
+        "maxTouchPoints": 1,
+        "coarse": true
+      },
+      "bottomLayers": [
+        {
+          "rect": {
+            "x": 0,
+            "y": 594,
+            "w": 390,
+            "h": 70,
+            "bottom": 664
+          },
+          "tag": "div",
+          "role": null,
+          "aria": null,
+          "bg": "#000000 / 0",
+          "borderTop": "0px none rgb(255, 255, 255)",
+          "padding": "0px",
+          "position": "fixed",
+          "zIndex": "auto",
+          "links": [
+            {
+              "label": "Home",
+              "href": "/",
+              "iconOnly": false,
+              "current": "page"
+            },
+            {
+              "label": "Search",
+              "href": "/search",
+              "iconOnly": false,
+              "current": null
+            },
+            {
+              "label": "Your Library",
+              "href": "/",
+              "iconOnly": false,
+              "current": "page"
+            }
+          ]
+        }
+      ],
+      "shelf": null,
+      "search": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "bottom": 0
+        },
+        "role": null,
+        "name": "Cookie list search",
+        "placeholder": "Search…",
+        "style": {
+          "fontSize": "12.8px",
+          "padding": "6px 35px 6px 15px",
+          "bg": "#ffffff",
+          "radius": "50px"
+        }
+      },
+      "topbar": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 56,
+          "bottom": 56
+        },
+        "bg": "#000000",
+        "padding": "16px"
+      },
+      "types": [
+        {
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "n": 256,
+          "e": [
+            "SpotifyOpen AppSpotify logoG",
+            "Spotify",
+            "Spotify logo"
+          ]
+        },
+        {
+          "fontSize": "12.992px",
+          "fontWeight": "400",
+          "n": 15,
+          "e": [
+            "When you visit any website, ",
+            "Cookie Policy",
+            "These cookies are necessary "
+          ]
+        },
+        {
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "n": 10,
+          "e": [
+            "First Party Functional Cooki",
+            "First Party Performance Cook",
+            "First Party Targeting Cookie"
+          ]
+        },
+        {
+          "fontSize": "13px",
+          "fontWeight": "400",
+          "n": 8,
+          "e": [
+            "Equivalent to ₹66.59/month. ",
+            "Legal",
+            "Safety & Privacy Center"
+          ]
+        },
+        {
+          "fontSize": "20px",
+          "fontWeight": "700",
+          "n": 7,
+          "e": [
+            "Get 12 months of Premium Sta",
+            "Trending songs",
+            "Popular artists"
+          ]
+        },
+        {
+          "fontSize": "16px",
+          "fontWeight": "700",
+          "n": 7,
+          "e": [
+            "Company",
+            "Communities",
+            "Useful links"
+          ]
+        },
+        {
+          "fontSize": "11px",
+          "fontWeight": "400",
+          "n": 6,
+          "e": [
+            "Limited time offer. Limited ",
+            "Terms Apply",
+            "Home"
+          ]
+        },
+        {
+          "fontSize": "13px",
+          "fontWeight": "700",
+          "n": 4,
+          "e": [
+            "Open App",
+            "Get Premium Standard",
+            "View all plans"
+          ]
+        },
+        {
+          "fontSize": "14.4px",
+          "fontWeight": "700",
+          "n": 4,
+          "e": [
+            "Allow All",
+            "Clear",
+            "Apply"
+          ]
+        },
+        {
+          "fontSize": "14px",
+          "fontWeight": "700",
+          "n": 1,
+          "e": [
+            "Strictly Necessary Cookies"
+          ]
+        }
+      ],
+      "screenshot": "device-iphone-13.png"
+    },
+    "pixel-5": {
+      "consentBanner": {
+        "present": false,
+        "shelvesRendered": 0
+      },
+      "viewport": {
+        "w": 393,
+        "h": 727,
+        "dpr": 2.75
+      },
+      "touch": {
+        "maxTouchPoints": 1,
+        "coarse": true
+      },
+      "bottomLayers": [
+        {
+          "rect": {
+            "x": 0,
+            "y": 657,
+            "w": 393,
+            "h": 70,
+            "bottom": 727
+          },
+          "tag": "div",
+          "role": null,
+          "aria": null,
+          "bg": "#000000 / 0",
+          "borderTop": "0px none rgb(255, 255, 255)",
+          "padding": "0px",
+          "position": "fixed",
+          "zIndex": "auto",
+          "links": [
+            {
+              "label": "Home",
+              "href": "/",
+              "iconOnly": false,
+              "current": "page"
+            },
+            {
+              "label": "Search",
+              "href": "/search",
+              "iconOnly": false,
+              "current": null
+            },
+            {
+              "label": "Your Library",
+              "href": "/",
+              "iconOnly": false,
+              "current": "page"
+            }
+          ]
+        }
+      ],
+      "shelf": null,
+      "search": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "bottom": 0
+        },
+        "role": null,
+        "name": "Cookie list search",
+        "placeholder": "Search…",
+        "style": {
+          "fontSize": "12.8px",
+          "padding": "6px 35px 6px 15px",
+          "bg": "#ffffff",
+          "radius": "50px"
+        }
+      },
+      "topbar": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 393,
+          "h": 56,
+          "bottom": 56
+        },
+        "bg": "#000000",
+        "padding": "16px"
+      },
+      "types": [
+        {
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "n": 256,
+          "e": [
+            "SpotifyOpen AppSpotify logoG",
+            "Spotify",
+            "Spotify logo"
+          ]
+        },
+        {
+          "fontSize": "12.992px",
+          "fontWeight": "400",
+          "n": 15,
+          "e": [
+            "When you visit any website, ",
+            "Cookie Policy",
+            "These cookies are necessary "
+          ]
+        },
+        {
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "n": 10,
+          "e": [
+            "First Party Functional Cooki",
+            "First Party Performance Cook",
+            "First Party Targeting Cookie"
+          ]
+        },
+        {
+          "fontSize": "13px",
+          "fontWeight": "400",
+          "n": 8,
+          "e": [
+            "Equivalent to ₹66.59/month. ",
+            "Legal",
+            "Safety & Privacy Center"
+          ]
+        },
+        {
+          "fontSize": "20px",
+          "fontWeight": "700",
+          "n": 7,
+          "e": [
+            "Get 12 months of Premium Sta",
+            "Trending songs",
+            "Popular artists"
+          ]
+        },
+        {
+          "fontSize": "16px",
+          "fontWeight": "700",
+          "n": 7,
+          "e": [
+            "Company",
+            "Communities",
+            "Useful links"
+          ]
+        },
+        {
+          "fontSize": "11px",
+          "fontWeight": "400",
+          "n": 6,
+          "e": [
+            "Limited time offer. Limited ",
+            "Terms Apply",
+            "Home"
+          ]
+        },
+        {
+          "fontSize": "13px",
+          "fontWeight": "700",
+          "n": 4,
+          "e": [
+            "Open App",
+            "Get Premium Standard",
+            "View all plans"
+          ]
+        },
+        {
+          "fontSize": "14.4px",
+          "fontWeight": "700",
+          "n": 4,
+          "e": [
+            "Allow All",
+            "Clear",
+            "Apply"
+          ]
+        },
+        {
+          "fontSize": "14px",
+          "fontWeight": "700",
+          "n": 1,
+          "e": [
+            "Strictly Necessary Cookies"
+          ]
+        }
+      ],
+      "screenshot": "device-pixel-5.png"
+    },
+    "ipad-mini": {
+      "consentBanner": {
+        "present": false,
+        "shelvesRendered": 0
+      },
+      "viewport": {
+        "w": 768,
+        "h": 1024,
+        "dpr": 2
+      },
+      "touch": {
+        "maxTouchPoints": 1,
+        "coarse": true
+      },
+      "bottomLayers": [],
+      "shelf": null,
+      "search": null,
+      "topbar": null,
+      "types": [
+        {
+          "fontSize": "16px",
+          "fontWeight": "700",
+          "n": 2,
+          "e": [
+            "Get the App",
+            "Learn more"
+          ]
+        },
+        {
+          "fontSize": "48px",
+          "fontWeight": "700",
+          "n": 1,
+          "e": [
+            "Unsupported browser"
+          ]
+        },
+        {
+          "fontSize": "16px",
+          "fontWeight": "200",
+          "n": 1,
+          "e": [
+            "Spotify is unavailable on th"
+          ]
+        }
+      ],
+      "screenshot": "device-ipad-mini.png"
+    }
+  }
+}

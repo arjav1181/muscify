@@ -59,11 +59,14 @@ shelf track size.
 | 768 | 320px | 336 | 416 | 177.72px |
 
 - The rail is a **fixed 331px**, not fluid, from 900px up. Below 900 it drops
-  to 320px, and below that the reference switches to a different layout that
-  was not measured here — treat sub-768 as unspecified.
+  to 320px.
 - The shelf track steps at **1280 → 1440**. It is a breakpoint, not a
   continuous calculation. There are exactly two card sizes.
 - Visible cards = `floor((content width − 28px) / (track + 24px))`.
+
+**Below 900px this is not the layout.** At 320–393px the rail, the search field
+and the top bar are all replaced — see [mobile.md](./mobile.md). Phone is a
+different composition, not a narrower version of this one.
 
 ## 3. Top bar
 
@@ -208,10 +211,16 @@ Do not let these get invented later and presented as measured:
 
 - The player bar's visual layout — nothing plays while logged out.
 - Any hover state on the *card* — cells virtualise to width 0 and never
-  receive the pointer.
-- Mobile / sub-768px layout.
+  receive the pointer. (Hover is a pointer concept anyway; see mobile.md §4
+  for what replaces it.)
 - Album, artist and playlist detail pages. The logged-out client does not
   render them without a session, and this capture deliberately used none.
 - The full-screen "Now Playing" view.
+- **Tablet.** 768px was attempted with an iPad descriptor and the site
+  returned "Unsupported browser" — it refuses that user agent outright. iPad
+  showed no rail and no tab bar because it showed *nothing*. That is not a
+  measurement of a tablet layout.
 
-If another agent needs one of these, it has to be captured, not recalled.
+Phone widths (320–393px) **are** measured — see [mobile.md](./mobile.md).
+
+If another agent needs one of the above, it has to be captured, not recalled.
