@@ -47,6 +47,21 @@ app owner would need Premium as of Feb 2026. `src/lib/spotify/` is deleted.
 
 ---
 
+## 1b. Current state
+
+Live and proven: Neon Postgres (pooled, `backend: "neon"`), Google OAuth,
+email+password with an enforced allowlist, library sync round-tripping through
+Neon, landing page at `/welcome`.
+
+Env set on the project: `AUTH_SECRET`, `AUTH_URL`, `GOOGLE_CLIENT_ID`,
+`GOOGLE_CLIENT_SECRET`, `MUSCIFY_DATABASE_URL`, `MUSCIFY_ALLOWED_EMAILS`
+(two owner addresses), `MUSCIFY_APP_PATH`, `YOUTUBE_API_KEY`.
+
+**Not yet set: `MUSCIFY_LANDING`.** That is the one switch left, and it must
+stay unset until a real sign-in has been completed by a human.
+
+---
+
 ## 2. ⚠ Rotate the Vercel token
 
 The Vercel token has been in plaintext chat across many turns. It has write
@@ -303,6 +318,19 @@ Each of these has already caused a real bug.
 - **A Postgres URL in this sandbox points at another project.** `DATABASE_URL`
   hosts `feedback`, `users`, `conversations`, `messages`, `overrides`. Give
   muscify its own database; never point it at that.
+- **Middleware defaults to the Edge runtime, and Edge has no `node:crypto`.**
+  Adding password support made `@/auth` transitively pull in scrypt, and the
+  deploy failed with `NOW_SANDBOX_WORKER_EDGE_FUNCTION_UNSUPPORTED_MODULES`
+  while **CI stayed green the whole time** — a local build resolves `node:crypto`
+  regardless of the declared runtime, so only the deployment ever saw it.
+  Fixed with `runtime: "nodejs"` in the middleware config. **A green CI run
+  proves nothing about the runtime the deployment uses.** Check
+  `errorCode`/`errorMessage` on the deployment object when a build errors with
+  no log text — the events endpoint often returns nothing useful.
+- **`constructor(private db: X)` breaks the test runner.** Node's type
+  stripping runs in strip-only mode and rejects TypeScript parameter properties
+  outright, so the file fails to load before a single assertion runs. tsc
+  accepts them, so `tsc` passing is not sufficient either.
 - **`normalise()` drops undeclared fields.** `updatedAt` was stripped, so sync
   silently never adopted anything while looking healthy. It is now a declared
   field on `LibrarySnapshot` with a regression test.
