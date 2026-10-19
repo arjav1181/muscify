@@ -121,16 +121,31 @@ function BootSkeleton() {
 
 function MobileNav() {
   const pathname = usePathname();
+  /*
+    The same seven destinations the desktop sidebar has.
+    
+    This listed five, which quietly made Podcasts, Listening stats and Settings
+    unreachable on a phone -- and Settings is where sync, accounts, the
+    equaliser and the export all live. Someone testing on a phone could not turn
+    on loudness normalisation or see their stats without knowing to type the URL.
+
+    Kept scrollable rather than shrunk to fit: seven labels in 390px would each
+    be about 50px wide, which is below a comfortable tap target. Swiping a row
+    of chips is the pattern the rest of the app already uses.
+  */
   const links = [
     ["/", "Home"],
     ["/discover", "For you"],
     ["/search", "Search"],
     ["/library", "Library"],
     ["/radio", "Radio"],
+    ["/podcasts", "Podcasts"],
+    ["/stats", "Stats"],
+    ["/settings", "Settings"],
   ] as const;
 
   return (
-    <nav className="flex gap-1 overflow-x-auto border-b border-line px-2 py-2 md:hidden">
+    <nav className="flex gap-1 overflow-x-auto border-b border-line px-2 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:hidden">
       {links.map(([href, label]) => {
         const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
         return (
@@ -138,7 +153,7 @@ function MobileNav() {
             key={href}
             href={href}
             aria-current={active ? "page" : undefined}
-            className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
+            className={`flex min-h-9 shrink-0 items-center rounded-full px-3.5 text-xs font-semibold transition-colors ${
               active ? "bg-on text-black" : "bg-highlight text-sub"
             }`}
           >

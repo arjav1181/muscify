@@ -17,7 +17,40 @@ export function GlobalEffects() {
   usePauseOnBlur();
   useCrossfade();
   useMediaSession();
+  useOfflineWorker();
   return null;
+}
+
+/**
+ * Registers the offline service worker.
+ *
+ * Registration is deliberately late and failure-tolerant:
+ *
+ *  - only in production. A worker caching hashed assets during development
+ *    serves a stale build after every hot reload, which is a genuinely awful
+ *    thing to debug and looks exactly like "my changes did not appear"
+ *  - only when the browser supports it, and only in a secure context. On plain
+ *    http://localhost it is unavailable, and registering anyway throws
+ *  - after `load`, so it never competes with the first paint
+ *
+ * Every failure path is swallowed on purpose. Offline support is a nicety; a
+ * thrown registration must not take the app down with it.
+ */
+function useOfflineWorker() {
+  useEffect(() => {
+    if (typeof navigator === "undefined" || !("serviceWorker" in navigator)) return;
+    if (process.env.NODE_ENV === "production" && !window.isSecureContext) return;
+    if (process.env.NODE_ENV !== "production") return;
+
+    const register = () => {
+      navigator.serviceWorker.register("/sw.js").catch(() => {
+        // No worker, no offline page. The app is otherwise unaffected.
+      });
+    };
+
+    if (document.readyState === "complete") register();
+    else window.addEventListener("load", register, { once: true });
+  }, []);
 }
 
 /**

@@ -274,3 +274,34 @@ input[type="range"].mus-range:focus-visible::-webkit-slider-thumb {
     scroll-behavior: auto !important;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Touch targets
+   ---------------------------------------------------------------------------
+   Audited at 390x844: 7-11 interactive elements per page were under 32px,
+   almost all icon-only buttons -- the player bar's transport controls, the
+   track-row overflow menu, the settings toggles. None of them are hard to use
+   with a mouse, which is exactly why they went unnoticed; a 24px target is a
+   coin toss with a thumb and only just tolerable with a cursor.
+
+   Applied at `md` and below only. The desktop layout has hover states and a
+   pointer, and forcing 44px there would reflow the player bar for no benefit.
+
+   Deliberately not `width`/`height` on everything: that would stretch inline
+   links inside running text. This targets the controls that are actually
+   buttons, and uses `min-` so it can only ever make a target bigger.
+--------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  button,
+  [role="button"],
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-height: 40px;
+  }
+
+  /* Square icon controls need the width too; a 40x40 pill would look wrong. */
+  button:has(> svg:only-child),
+  button:has(> span:only-child > svg:only-child) {
+    min-width: 40px;
+  }
+}
