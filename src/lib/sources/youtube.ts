@@ -1,6 +1,7 @@
 import { stripTags } from "@/lib/html";
 import type { Track } from "@/lib/types";
 import { cached, quotaStatus, type Endpoint } from "./youtube/cache";
+import { rejectReason } from "./youtube/shorts";
 import { filterArtistCandidates } from "./youtube/artist-heuristic.ts";
 import { TTL } from "./youtube/policy";
 
@@ -42,6 +43,8 @@ interface YoutubeItem {
     statistics?: { viewCount?: string };
     thumbnails?: Record<string, { url?: string; width?: number; height?: number }>;
   };
+  /** Present when  is part of the request -- see toVideo(). */
+  contentDetails?: { videoId?: string; videoDuration?: string };
 }
 
 function thumb(id: string, name: "hqdefault" | "mqdefault" | "maxresdefault"): string {
@@ -111,7 +114,7 @@ export async function searchYoutube(query: string, max = 24): Promise<Track[]> {
   const data = await ytFetch(
     "search",
     {
-      part: "snippet",
+      part: "snippet,contentDetails",
       type: "video",
       // Not filtered by videoCategoryId; see the note below.
       videoEmbeddable: "true",
@@ -143,7 +146,7 @@ export async function trendingYoutube(max = 24): Promise<Track[]> {
   const data = await ytFetch(
     "videos",
     {
-      part: "snippet",
+      part: "snippet,contentDetails",
       chart: "mostPopular",
       // Not filtered by videoCategoryId; see the note below. With it, this
       // returned nothing at all in production.
@@ -156,6 +159,9 @@ export async function trendingYoutube(max = 24): Promise<Track[]> {
     const id = item.id?.videoId;
     if (!id) continue;
     const sn = item.snippet ?? {};
+    // Shorts, live streams and other non-recordings, dropped before they become
+    // a Track. See ./youtube/shorts.ts for why each signal is trusted.
+    if (rejectReason({ ...sn, duration: item.contentDetails?.videoDuration })) continue;
     out.push({
       source: "youtube",
       id,
@@ -256,10 +262,28 @@ export async function playlistItems(
   return { tracks, nextPageToken: data.nextPageToken };
 }
 
+/**
+ * Maps a search item to a Track, or null when it should not appear at all.
+ *
+ * The Shorts filter lives here rather than at each call site because this is the
+ * single funnel every YouTube result passes through -- search, trending and
+ * channel listings alike. Filtering at the call sites meant three places to keep
+ * in step and one of them had already drifted.
+ */
 function toVideo(item: YoutubeItem): Track | null {
   const id = item.id?.videoId;
   if (!id) return null;
   const sn = item.snippet ?? {};
+
+  // Shorts and other non-recordings never become a Track. Once they did, nothing
+  // downstream could tell a fifteen-second vertical reel apart from a song.
+  const reason = rejectReason({ ...sn, duration: item.contentDetails?.videoDuration });
+  if (reason) {
+    // Kept out of the result, not logged: this runs for every result of every
+    // search, and a per-result log line would be noise nobody reads.
+    return null;
+  }
+
   const best = sn.thumbnails?.high ?? sn.thumbnails?.medium ?? sn.thumbnails?.default;
   return {
     source: "youtube",
@@ -480,7 +504,7 @@ export async function channelVideos(channelId: string, max = 24): Promise<Track[
   const data = await ytFetch(
     "search",
     {
-      part: "snippet",
+      part: "snippet,contentDetails",
       type: "video",
       channelId,
       // Not filtered by videoCategoryId; see the note below.
