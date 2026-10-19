@@ -236,13 +236,19 @@ Ordered by value.
    `AUTH_SECRET`, `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET`,
    `GITHUB_ID`/`GITHUB_SECRET`, `MUSCIFY_DATABASE_URL`, then apply
    `db/schema.sql`. Until someone does this, accounts are correctly inert.
-2. **Gapless playback** — spec §16. Untouched; only visible during playback,
-   which cannot be exercised from this sandbox.
-3. **F5.** Baseline now measured: home 528 unnamed (48%), library 185 (79%),
-   search 142 (76%), against Spotify's 351. Library is the outlier. Chasing the
-   number by deleting wrapper divs is regression risk for little gain; the right
-   fix is adding semantics to the library grid specifically.
-4. **A real visual redesign** — see section 9.
+2. **A real visual redesign** — see section 9. The only genuinely open item.
+
+**Gapless (§16) is closed, not deferred.** Every source that ends is a
+single-player SDK: `loadVideoById` replaces the video on the one YouTube player
+the SDK gives you; Deezer and SoundCloud are the same shape. The one source
+that could double-buffer is radio, which never reaches an end. Reasoning and the
+rejected double-player alternative are in `docs/gapless.md`. It would need raw
+streams through Web Audio, which is a sourcing decision, not a feature.
+
+**F5 done where it mattered.** Library grids are named lists, tiles are
+listitems, the filter row and folder row are named groups. Verified with real
+content: role=list 2, role=listitem 9. Remaining unnamed nodes are inert layout
+wrappers — removing them is regression risk for a number, not for users.
 
 **Offline (§17) is built**: `public/sw.js` caches the offline page and hashed
 build assets, never `/api/*` and never third-party media. Registered in
@@ -380,13 +386,29 @@ Counter-examples, where looking was actively misleading:
 So: **measure, don't infer.** When a claim cannot be checked, say it cannot be
 checked rather than asserting it.
 
-### The same mistake, three more times
+### A regression hidden by a number moving the wrong way
+
+Adding `role="list"`/`role="listitem"` is purely additive, so the unnamed count
+should only fall. It rose. That is what made it worth investigating instead of
+committing: the library was empty, so none of the grids were in the DOM. Driving
+the UI to create a playlist and a folder then showed the real bug — the empty
+branch returned without `FolderBar`, so creating a folder (which auto-selects an
+empty one) left the user with no chips, no Create button and no way out.
+
+**An additive change that makes a metric worse is reporting a measurement
+problem or a regression. Neither is a reason to keep going.**
+
+### The same mistakes, four more times
 
 - "the player bar is missing" — measured `nav`, which is the global top nav
 - "the resizer does not work" — measured `nav` again, so the sidebar never moved
   in the measurement; it worked fine (240 → 304, Home → 180, End → 420)
 - "the trending shelf is fixed" — it was not; the same screenshot that showed it
   broken was not looked at until someone complained
+- "the mobile tiles are clipping" — measured: 165x165 tile, 64px title, flush to
+  the edge. `line-clamp-2` working as intended, read as a bug off a screenshot
+- "the resizer does not work" — measured `nav`, which is the global top nav
+- "folders are broken" — measured wrong element, twice
 
 And the biggest one, which is not a measurement error but a judgement error:
 **the UI overhaul was invisible.** What shipped was tokens, radii, gutters and
@@ -444,6 +466,8 @@ Each of these failed *silently* with plausible-looking output:
   rendered nothing — that is a missing observation, not a tablet layout.
 
 ---
+
+## 11. GitHub / Vercel
 
 - Repo: https://github.com/arjav1181/muscify (public, MIT, issues enabled)
 - Open issues: #1 playlist folders · #2 no service worker · #3 artist search ·
