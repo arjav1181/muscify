@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { LogIn } from "lucide-react";
 
+import { SignInButtons } from "@/components/signin-buttons";
 import { availableProviders, auth, authConfigured } from "@/auth";
 
 /**
@@ -19,6 +20,9 @@ import { availableProviders, auth, authConfigured } from "@/auth";
  *  - It does not collect an email address. There is no password to forget and
  *    nothing to verify here; the provider owns all of that, and asking for an
  *    address we have no use for would be collecting a credential for nothing.
+ *
+ * The buttons are a client component because Auth.js v5 sign-in is a POST with a
+ * CSRF token, not a link. See `SignInButtons`.
  */
 
 export const metadata = { title: "Sign in · muscify" };
@@ -53,17 +57,7 @@ export default async function SignInPage() {
         </p>
       </div>
 
-      <div className="flex w-full max-w-xs flex-col gap-3">
-        {availableProviders.map((id) => (
-          <a
-            key={id}
-            href={`/api/auth/signin/${id}`}
-            className="flex items-center justify-center gap-2 rounded-full border border-line px-6 py-3 text-label font-semibold text-on transition hover:border-line-strong hover:bg-elevated"
-          >
-            {PROVIDER_LABELS[id]}
-          </a>
-        ))}
-      </div>
+      <SignInButtons providers={availableProviders} labels={PROVIDER_LABELS} />
 
       <p className="max-w-xs text-center text-micro text-dim">
         muscify stores no password and sends no email. Your display name and avatar come from the
