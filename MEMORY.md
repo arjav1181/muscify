@@ -209,17 +209,22 @@ Ordered by value.
    `AUTH_SECRET`, `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET`,
    `GITHUB_ID`/`GITHUB_SECRET`, `MUSCIFY_DATABASE_URL`, then apply
    `db/schema.sql`. Until someone does this, accounts are correctly inert.
-2. **Offline / downloads** — spec §17. No service worker; the manifest exists
-   and nothing is cached. This is the biggest remaining *visible* gap.
-3. **Gapless playback** — spec §16.
-4. **Volume control in the player bar** — spec §9.
-5. **F5** reduce unnamed `generic` nodes — needs *our* baseline, not Spotify's 351.
-6. **A real visual redesign** — see the note in section 9.
+2. **Gapless playback** — spec §16. Untouched; only visible during playback,
+   which cannot be exercised from this sandbox.
+3. **F5.** Baseline now measured: home 528 unnamed (48%), library 185 (79%),
+   search 142 (76%), against Spotify's 351. Library is the outlier. Chasing the
+   number by deleting wrapper divs is regression risk for little gain; the right
+   fix is adding semantics to the library grid specifically.
+4. **A real visual redesign** — see section 9.
 
-**Done, and previously mislabelled as outstanding:** playlist folders (§11,
-`FolderBar` + per-playlist move menu), F4 resizable nav, listening stats (§12 —
-the 246-line `stats-view.tsx` already existed; this file wrongly called it
-missing).
+**Offline (§17) is built**: `public/sw.js` caches the offline page and hashed
+build assets, never `/api/*` and never third-party media. Registered in
+production only. It does **not** cache audio for offline listening — that is a
+rights question and most free streams are not CORS-readable.
+
+**Done, and previously mislabelled as outstanding:** playlist folders (§11),
+F4 resizable nav, listening stats (§12 — the view already existed; this file
+wrongly called it missing), mobile volume, mobile transport.
 9. **Follows / social (B4).** REA observed no Messages, Jam, Blend or profiles
    in the logged-out client, so do not assume they are simple. The
    `muscify_play_daily` rollup and `muscify_accounts` table are already there to
@@ -305,6 +310,30 @@ system libraries:
 p.chromium.launch(executable_path="/repl/tools/bin/chromium",
                   args=["--no-sandbox", "--disable-dev-shm-usage"])
 ```
+
+---
+
+## 8b. Mobile — tested on the phone, not the desktop
+
+Most of the early work was desktop-shaped and verified at 1440px while the user
+was testing at 390. Auditing properly found four bugs, all invisible from a
+desktop viewport:
+
+- **no transport controls in the bar** — play/pause/prev/next lived in a
+  `hidden md:flex` group, so a phone had no transport in the persistent bar
+- **no volume anywhere** — `VolumeControl` was in that same hidden group; it now
+  lives on Now Playing below md, which is where Spotify puts it
+- **the progress bar could not be dragged** — it used `onMouseDown`/`onMouseMove`,
+  which do not fire for a finger. Pointer events throughout now
+- **the nav chip row wrapped onto three lines** — replaced by `MobileDrawer`
+
+Audit scripts live in `/tmp/opencode/mobile_audit.py` (structure at 390x844) and
+`verify_drawer.py` (drawer behaviour). Recreate if `/tmp` was wiped.
+
+Note `document.body` has `overflow: hidden` from the app's own CSS, because the
+scroll container is inside `<main>`. Body scroll is therefore never the thing
+that moves behind a drawer, and "is body scroll locked" is the wrong question to
+ask about a drawer — assert on the scroll container instead.
 
 ---
 
