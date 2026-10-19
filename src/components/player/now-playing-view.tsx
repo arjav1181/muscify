@@ -22,6 +22,7 @@ import { useUi } from "@/store/ui-store";
 import { useTrackMenu } from "@/components/track-menu";
 import { PlaybackControls } from "@/components/player/playback-controls";
 import { ProgressBar } from "@/components/player/progress-bar";
+import { VolumeControl } from "@/components/player/volume-control";
 
 /**
  * Full-screen Now Playing.
@@ -244,6 +245,20 @@ export function NowPlayingView({ onClose }: { onClose: () => void }) {
           */}
           <div className="mt-4 flex justify-center">
             <PlaybackControls />
+          </div>
+
+          {/*
+            Volume lives here for phones, not in the bar.
+
+            The bar's volume control sits in a `hidden md:flex` group, because on
+            a 390px screen there is no room for it beside the title and the
+            transport. That left mobile with no volume control *anywhere* — the
+            one thing a music player cannot be missing. It belongs on the full
+            screen view, where there is room for a thumb-width slider, and that
+            is also where Spotify puts it.
+          */}
+          <div className="mt-5 rounded-lg bg-black/25 px-4 py-2 md:hidden">
+            <VolumeControl wide />
           </div>
 
           {colour.fellBack ? (

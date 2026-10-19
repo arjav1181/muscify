@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { SlidersHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { AlertTriangle, Heart, ListMusic, ListPlus, Maximize2, Mic2, MoreHorizontal, Radio as RadioIcon } from "lucide-react";
+import { AlertTriangle, Heart, ListMusic, ListPlus, Maximize2, Mic2, MoreHorizontal, Pause, Play, Radio as RadioIcon, SkipBack, SkipForward } from "lucide-react";
 import { artFallback } from "@/lib/art";
 import { trackKey, type Track } from "@/lib/types";
 import { useLibrary } from "@/store/library-store";
@@ -106,6 +106,16 @@ export function PlayerBar() {
         </div>
       ) : null}
 
+      {/*
+        Progress, as a 2px line along the top of the bar on a phone. The full
+        ProgressBar lives in the `hidden md:flex` group, so without this there
+        is no way to see how far through a track you are, or to seek, without
+        opening Now Playing.
+      */}
+      <div className="absolute inset-x-0 top-0 md:hidden">
+        <ProgressBar variant="line" />
+      </div>
+
       {unavailable ? (
         <div className="flex flex-wrap items-center justify-center gap-2 border-b border-line bg-highlight px-4 py-1.5 text-xs text-sub">
           <AlertTriangle size={13} className="shrink-0 text-amber-400" />
@@ -183,6 +193,8 @@ export function PlayerBar() {
               {track.artist || "—"}
             </p>
           </div>
+
+          <CompactTransport />
 
           <div className="hidden shrink-0 items-center gap-1 xl:flex">
             <button
@@ -344,5 +356,61 @@ export function PlayerBar() {
         </button>
       ) : null}
     </aside>
+  );
+}
+
+/**
+ * The transport that the bar shows on a phone.
+ *
+ * Below `md` the bar's transport, progress and volume groups are all
+ * `hidden md:flex`, which left mobile with no play, pause, skip or seek
+ * anywhere in the persistent bar — the whole reason a player bar exists.
+ *
+ * Deliberately three controls, not `PlaybackControls`: that includes shuffle
+ * and repeat, and reusing it here would either overflow 390px or put a second
+ * identically-named set of controls on screen for a keyboard and screen-reader
+ * user to walk through. Previous / play-pause / next is what fits and is what
+ * people reach for.
+ */
+function CompactTransport() {
+  const isPlaying = usePlayer((s) => s.isPlaying);
+  const hasTrack = usePlayer((s) => s.index >= 0);
+  const toggle = usePlayer((s) => s.toggle);
+  const next = usePlayer((s) => s.next);
+  const previous = usePlayer((s) => s.previous);
+
+  return (
+    <div className="flex shrink-0 items-center gap-1 md:hidden" role="group" aria-label="Playback">
+      <button
+        type="button"
+        onClick={() => previous()}
+        disabled={!hasTrack}
+        aria-label="Previous"
+        className="rounded-full p-2 text-on disabled:opacity-30"
+      >
+        <SkipBack size={20} fill="currentColor" aria-hidden />
+      </button>
+      <button
+        type="button"
+        onClick={toggle}
+        aria-label={isPlaying ? "Pause" : "Play"}
+        className="rounded-full p-2 text-on"
+      >
+        {isPlaying ? (
+          <Pause size={22} fill="currentColor" aria-hidden />
+        ) : (
+          <Play size={22} fill="currentColor" aria-hidden />
+        )}
+      </button>
+      <button
+        type="button"
+        onClick={() => next()}
+        disabled={!hasTrack}
+        aria-label="Next"
+        className="rounded-full p-2 text-on disabled:opacity-30"
+      >
+        <SkipForward size={20} fill="currentColor" aria-hidden />
+      </button>
+    </div>
   );
 }

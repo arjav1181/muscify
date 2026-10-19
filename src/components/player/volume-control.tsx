@@ -3,7 +3,16 @@
 import { Volume1, Volume2, VolumeX } from "lucide-react";
 import { usePlayer } from "@/store/player-store";
 
-export function VolumeControl() {
+/**
+ * Volume, as a mute button plus a range input.
+ *
+ * `wide` is for the Now Playing view on a phone. The bar's default is w-24,
+ * which is right beside the other desktop controls and far too narrow to drag
+ * with a thumb — the two places that use this have genuinely different needs,
+ * so the difference is a prop rather than a second component with duplicated
+ * state handling.
+ */
+export function VolumeControl({ wide = false }: { wide?: boolean }) {
   const volume = usePlayer((s) => s.volume);
   const muted = usePlayer((s) => s.muted);
   const setVolume = usePlayer((s) => s.setVolume);
@@ -13,7 +22,7 @@ export function VolumeControl() {
   const Icon = effective === 0 ? VolumeX : effective < 50 ? Volume1 : Volume2;
 
   return (
-    <div className="flex items-center gap-2">
+    <div className={wide ? "flex w-full items-center gap-3" : "flex items-center gap-2"}>
       <button
         type="button"
         onClick={toggleMute}
@@ -24,7 +33,7 @@ export function VolumeControl() {
       </button>
       <input
         type="range"
-        className="mus-range w-24"
+        className={wide ? "mus-range flex-1" : "mus-range w-24"}
         min={0}
         max={100}
         value={effective}

@@ -7,7 +7,20 @@ import { usePlayer } from "@/store/player-store";
 
 const LIVE = "radio";
 
-export function ProgressBar() {
+/**
+ * Seek bar.
+ *
+ * `variant="line"` is the 2px version pinned to the top of the player bar on a
+ * phone, where the full control does not fit and a thumb cannot reliably hit a
+ * 4px target anyway.
+ *
+ * Interaction is on *pointer* events, not mouse events. This bar used
+ * `onMouseDown`/`onMouseMove`, which do not fire for a touch: on a phone the
+ * bar rendered, showed progress, and could not be dragged at all. Every pointer
+ * handler covers touch, pen and mouse in one path, which is also why the hover
+ * tooltip is gated on a pointer that actually reports hover.
+ */
+export function ProgressBar({ variant = "full" }: { variant?: "full" | "line" }) {
   const track = usePlayer((s) => s.queue[s.index] ?? null);
   const position = usePlayer((s) => s.position);
   const duration = usePlayer((s) => s.duration);
@@ -55,10 +68,18 @@ export function ProgressBar() {
       : formatTime(position);
 
   return (
-    <div className="group relative flex items-center gap-2">
-      <span className="w-10 shrink-0 text-right font-mono text-[11px] tabular-nums text-sub">
-        {label}
-      </span>
+    <div
+      className={
+        variant === "line"
+          ? "group relative flex w-full items-center"
+          : "group relative flex items-center gap-2"
+      }
+    >
+      {variant === "full" ? (
+        <span className="w-10 shrink-0 text-right font-mono text-[11px] tabular-nums text-sub">
+          {label}
+        </span>
+      ) : null}
 
       <div
         ref={barRef}
@@ -69,21 +90,22 @@ export function ProgressBar() {
         aria-valuenow={seekable ? Math.round(position) : undefined}
         aria-valuetext={label}
         tabIndex={seekable ? 0 : -1}
-        className={`relative h-1 w-full rounded-full bg-highlight transition-[height] ${
-          seekable ? "cursor-pointer group-hover:h-1.5" : ""
-        }`}
-        onMouseDown={(e) => {
+        className={`relative w-full rounded-full bg-highlight transition-[height] ${
+          variant === "line" ? "h-0.5 touch-none" : "h-1"
+        } ${seekable ? "cursor-pointer group-hover:h-1.5" : ""}`}
+        onPointerDown={(e) => {
           if (!seekable) return;
           setDragFraction(fractionFromEvent(e.clientX));
           setDragging(true);
         }}
-        onMouseMove={(e) => {
+        onPointerMove={(e) => {
           const rect = barRef.current?.getBoundingClientRect();
           if (!rect) return;
           setBarWidth(rect.width);
           setHoverX(e.clientX - rect.left);
         }}
-        onMouseLeave={() => setHoverX(null)}
+        onPointerLeave={() => setHoverX(null)}
+        onPointerCancel={() => { setHoverX(null); setDragging(false); }}
         onMouseUp={(e) => {
           if (!seekable) return;
           commit(e.clientX);
@@ -101,7 +123,7 @@ export function ProgressBar() {
           }
         }}
       >
-        {hoverFraction !== null && !dragging ? (
+        {variant === "full" && hoverFraction !== null && !dragging ? (
           <div
             className="pointer-events-none absolute -top-7 -translate-x-1/2 rounded bg-highlight px-1.5 py-0.5 font-mono text-[10px] text-on"
             style={{ left: `${hoverFraction * 100}%` }}

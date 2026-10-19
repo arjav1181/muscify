@@ -126,12 +126,39 @@ const out = { url: URL, capturedAt: new Date().toISOString(), devices: {} };
 
 for (const p of PROFILES) {
   const ctx = await browser.newContext({ ...devices[p.device], colorScheme: "dark" });
+
+  // A OneTrust consent banner (#onetrust-banner-sdk, z-index 2147483645) covers
+  // the bottom of the viewport, swallows the real tab bar, and prevents the
+  // shelves from rendering. Clicking its button proved unreliable, so seed the
+  // consent cookie instead — OneTrust checks OptanonAlertBoxClosed on load and
+  // never renders the banner when it is present. No account is involved.
+  await ctx.addCookies([
+    {
+      name: "OptanonAlertBoxClosed",
+      value: new Date().toISOString(),
+      domain: ".spotify.com",
+      path: "/",
+    },
+    {
+      name: "OptanonConsent",
+      value: "isGpcEnabled=0&groups=C0001:1,C0002:1,C0003:1",
+      domain: ".spotify.com",
+      path: "/",
+    },
+  ]);
+
   const page = await ctx.newPage();
   const rec = {};
   try {
     await page.goto(URL, { waitUntil: "domcontentloaded", timeout: 60000 });
     await page.waitForSelector('[role="grid"]', { timeout: 30000 }).catch(() => {});
     await page.waitForTimeout(8000);
+
+    rec.consentBanner = await page.evaluate(() => {
+      const b = document.querySelector("#onetrust-banner-sdk");
+      return { present: !!b, shelvesRendered: document.querySelectorAll('[role="grid"]').length };
+    });
+
     Object.assign(rec, await page.evaluate("(() => {" + BODY + "})()"));
     rec.screenshot = "device-" + p.key + ".png";
     await page.screenshot({ path: "/tmp/opencode/" + rec.screenshot });
@@ -141,7 +168,7 @@ for (const p of PROFILES) {
     await ctx.close();
   }
   out.devices[p.key] = rec;
-  console.log(p.key, "->", rec.error || `${rec.viewport?.w}x${rec.viewport?.h} touch:${rec.touch?.coarse} layers:${rec.bottomLayers?.length}`);
+  console.log(p.key, "->", rec.error || `${rec.viewport?.w}x${rec.viewport?.h} touch:${rec.touch?.coarse} layers:${rec.bottomLayers?.length} banner:${rec.consentBanner?.present} grids:${rec.consentBanner?.shelvesRendered}`);
 }
 
 await browser.close();

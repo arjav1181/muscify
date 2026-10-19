@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { MobileDrawer } from "@/components/mobile-drawer";
 import { Search, ShieldHalf, X } from "lucide-react";
 import { resolveMusicUrl } from "@/lib/api-client";
 import { usePlayer } from "@/store/player-store";
@@ -48,6 +49,18 @@ export function TopBar() {
 
   return (
     <header className="flex h-16 items-center gap-3 px-4">
+      {/* Drawer trigger, phones only. It sits before the search field so the
+          search keeps its full width on desktop, where it is the only thing in
+          the bar that matters. */}
+      {/*
+        Behind Suspense because MobileDrawer reads usePathname() for its active
+        state, and this bar sits above every route boundary. Next.js rejects
+        that during prerender -- the same reason the sidebar and the old mobile
+        nav both sat behind a boundary in app-shell.
+      */}
+      <Suspense fallback={<span className="size-10 shrink-0 md:hidden" />}>
+        <MobileDrawer />
+      </Suspense>
       <form
         role="search"
         className="relative w-full max-w-[420px]"
