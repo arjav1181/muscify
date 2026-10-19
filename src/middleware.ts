@@ -124,6 +124,17 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   /*
+    Node.js runtime, explicitly.
+    
+    Middleware defaults to the Edge runtime in this Next version, and Edge has
+    no `node:crypto`. Adding password support meant `@/auth` transitively pulls
+    in scrypt, so the Edge build failed with
+    NOW_SANDBOX_WORKER_EDGE_FUNCTION_UNSUPPORTED_MODULES while CI stayed green:
+    local builds have `node:crypto` available regardless, so only the deployment
+    ever saw the problem.
+  */
+  runtime: "nodejs",
+  /*
     Everything except static assets and image optimisation output. Those never
     need rewriting and running middleware over them is wasted work on every
     request for a hashed file.
