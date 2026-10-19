@@ -60,26 +60,26 @@ if (process.env.MUSCIFY_DATABASE_URL) {
       const email = typeof raw?.email === "string" ? raw.email.trim().toLowerCase() : "";
       const password = typeof raw?.password === "string" ? raw.password : "";
       if (!email || !password) return null;
-      const DIAG = process.env.MUSCIFY_DIAG === "1";
 
       // Enforced at the door, not just at the app. Before this, anyone with a
       // Google account could complete OAuth and hold a valid session for an
       // instance they were not allowed into.
-      if (!isAllowedEmail(email)) { if (DIAG) console.error("[DIAG] allowlist rejected", email, process.env.MUSCIFY_ALLOWED_EMAILS); return null; }
+      if (!isAllowedEmail(email)) return null;
 
       const store = getAuthStore();
-      if (DIAG) console.error("[DIAG] store:", store ? "present" : "NULL", "url set:", Boolean(process.env.MUSCIFY_DATABASE_URL), "email:", email, "pwlen:", password.length);
       if (!store) return null;
 
       const passwords = new PasswordStore(store);
       try {
         const user = await passwords.signIn(email, password, null);
-        if (DIAG) console.error("[DIAG] signIn ->", user ? "ok" : "null");
         if (!user) return null;
         return { id: user.userId, email: user.email, name: null };
       } catch (e) {
-        if (DIAG) console.error("[DIAG] threw:", e instanceof Error ? e.message : String(e));
-        if (e instanceof TooManyAttemptsError) return null;
+        // Rate limited. Returning null here would tell the user their password is
+        // wrong when it is right and merely rate limited -- which sends people
+        // to reset a password that was fine. Redirecting to a page that says so
+        // is the difference between a five-minute wait and a support request.
+        if (e instanceof TooManyAttemptsError) return "/rate-limited";
         console.error("[muscify] password sign-in failed", e);
         return null;
       }

@@ -107,6 +107,7 @@ export async function middleware(req: NextRequest) {
     "/welcome",
     "/signin",
     "/no-access",
+    "/rate-limited",
     "/offline",
     "/manifest.webmanifest",
     "/icon",
