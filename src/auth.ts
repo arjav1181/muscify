@@ -2,6 +2,8 @@ import NextAuth, { type NextAuthConfig } from "next-auth";
 import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
 
+import { isAllowedEmail } from "@/lib/auth/allowlist";
+import { PasswordStore, TooManyAttemptsError } from "@/lib/persistence/password-store";
 import { getAuthStore } from "@/lib/persistence/server-store";
 
 /**
@@ -32,6 +34,54 @@ import { getAuthStore } from "@/lib/persistence/server-store";
  */
 
 const providers: NextAuthConfig["providers"] = [];
+
+/**
+ * Email and password.
+ *
+ * Registered only when a database is configured, because verifying a credential
+ * means looking one up. With no database the provider simply is not there and
+ * the app falls back to OAuth and anonymous use.
+ *
+ * The `authorize` callback returns a user or null -- that is the whole contract.
+ * Every rejection below returns null with the *same* message the client shows
+ * for a wrong password, because a distinct error per cause turns the form into
+ * an account-enumeration oracle.
+ */
+if (process.env.MUSCIFY_DATABASE_URL) {
+  providers.push({
+    id: "password",
+    name: "Email and password",
+    type: "credentials",
+    credentials: {
+      email: { label: "Email", type: "email" },
+      password: { label: "Password", type: "password" },
+    },
+    async authorize(raw) {
+      const email = typeof raw?.email === "string" ? raw.email.trim().toLowerCase() : "";
+      const password = typeof raw?.password === "string" ? raw.password : "";
+      if (!email || !password) return null;
+
+      // Enforced at the door, not just at the app. Before this, anyone with a
+      // Google account could complete OAuth and hold a valid session for an
+      // instance they were not allowed into.
+      if (!isAllowedEmail(email)) return null;
+
+      const store = getAuthStore();
+      if (!store) return null;
+
+      const passwords = new PasswordStore(store);
+      try {
+        const user = await passwords.signIn(email, password, null);
+        if (!user) return null;
+        return { id: user.userId, email: user.email, name: null };
+      } catch (e) {
+        if (e instanceof TooManyAttemptsError) return null;
+        console.error("[muscify] password sign-in failed", e);
+        return null;
+      }
+    },
+  } as NextAuthConfig["providers"][number]);
+}
 
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
   providers.push(
@@ -105,6 +155,18 @@ export const authConfig = {
   // Not setting this makes Auth.js refuse to build the callback URL.
   trustHost: true,
   callbacks: {
+    /**
+     * The allowlist, applied to OAuth as well as passwords.
+     *
+     * A rejected person is redirected to `/no-access` rather than the error
+     * page, because "this address is not on the list" is an accurate answer and
+     * Auth.js's generic configuration error is not. It confirms nothing that
+     * matters -- it does not say who *is* on the list.
+     */
+    async signIn({ user }) {
+      if (isAllowedEmail(user?.email)) return true;
+      return "/no-access";
+    },
     /**
      * Puts our own user id in the token.
      *

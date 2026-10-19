@@ -260,4 +260,88 @@ export class PostgresStore {
     );
     return rows[0]?.present === true;
   }
+  // -------------------------------------------------------------------------
+  // Password credentials
+  // -------------------------------------------------------------------------
+
+  /**
+   * Creates the account and its password row together.
+   *
+   * One statement rather than two so a failure cannot leave an account with no
+   * way to sign in. `on conflict do nothing` rather than `do update` so
+   * registering an address that already has a password is a no-op instead of
+   * silently overwriting somebody's credential with the new one.
+   */
+  async ensurePasswordUser(userId: string, email: string, hash: string): Promise<boolean> {
+    const rows = await this.query<{ id: string }>(
+      `insert into muscify_users (id, email, name) values ($1, $2, $3)
+       on conflict (id) do nothing
+       returning id`,
+      [userId, email, null],
+    );
+    if (!rows.length) return false;
+
+    await this.query(
+      `insert into muscify_passwords (user_id, email, hash) values ($1, $2, $3)
+       on conflict (email) do nothing`,
+      [userId, email, hash],
+    );
+    return true;
+  }
+
+  async setPasswordForEmail(email: string, hash: string): Promise<boolean> {
+    const rows = await this.query<{ user_id: string }>(
+      `update muscify_passwords set hash = $2, rotated_at = now()
+        where lower(email) = lower($1)
+        returning user_id`,
+      [email, hash],
+    );
+    return rows.length > 0;
+  }
+
+  /**
+   * Looks up a credential by address.
+   *
+   * `lower(email)` on both sides rather than normalising in the application, so
+   * a row written with any capitalisation is still findable.
+   */
+  async findPasswordUser(email: string): Promise<{ userId: string; email: string; hash: string } | null> {
+    const rows = await this.query<{ user_id: string; email: string; hash: string }>(
+      `select user_id, email, hash from muscify_passwords where lower(email) = lower($1) limit 1`,
+      [email],
+    );
+    const r = rows[0];
+    return r ? { userId: r.user_id, email: r.email, hash: r.hash } : null;
+  }
+
+  /**
+   * Failures in the recent window, counted per address AND per IP.
+   *
+   * Both, because either alone is trivially evaded: rotating addresses defeats
+   * a per-IP limit, and one IP guessing many addresses defeats a per-address
+   * one. Successful attempts are not counted -- locking someone out for logging
+   * in correctly would be its own denial of service.
+   */
+  async countRecentAttempts(email: string, ip: string | null, minutes: number): Promise<number> {
+    const rows = await this.query<{ n: number }>(
+      `select count(*)::int as n
+         from muscify_signin_attempts
+        where succeeded = false
+          and at > now() - make_interval(mins => $3)
+          and (lower(email) = lower($1) or ($2::text is not null and ip = $2))`,
+      [email, ip, minutes],
+    );
+    return rows[0]?.n ?? 0;
+  }
+
+  async recordSigninAttempt(
+    email: string,
+    ip: string | null,
+    succeeded: boolean,
+  ): Promise<void> {
+    await this.query(
+      `insert into muscify_signin_attempts (email, ip, succeeded) values ($1, $2, $3)`,
+      [email, ip, succeeded],
+    );
+  }
 }

@@ -103,7 +103,15 @@ export async function middleware(req: NextRequest) {
   // Landing and auth assets stay reachable; everything else is simply not there,
   // so the player's routes are not even mapped for anyone who did not arrive
   // through the secret path.
-  const OPEN = ["/welcome", "/signin", "/offline", "/manifest.webmanifest", "/icon", "/sw.js"];
+  const OPEN = [
+    "/welcome",
+    "/signin",
+    "/no-access",
+    "/offline",
+    "/manifest.webmanifest",
+    "/icon",
+    "/sw.js",
+  ];
   if (OPEN.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
     return NextResponse.next();
   }

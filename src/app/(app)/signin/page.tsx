@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { LogIn } from "lucide-react";
 
+import { PasswordForm } from "@/components/password-form";
 import { SignInButtons } from "@/components/signin-buttons";
 import { availableProviders, auth, authConfigured } from "@/auth";
 
@@ -32,6 +33,19 @@ const PROVIDER_LABELS: Record<(typeof availableProviders)[number], string> = {
   github: "Continue with GitHub",
 };
 
+/**
+ * Whether to offer "create an account".
+ *
+ * Only when an allowlist is configured, because signup is closed otherwise --
+ * showing a registration link that always returns 403 is worse than not
+ * offering it. `*` in the list means the owner has explicitly opted into open
+ * registration.
+ */
+const signupOpen = (() => {
+  const raw = (process.env.MUSCIFY_ALLOWED_EMAILS ?? "").trim();
+  return raw.length > 0;
+})();
+
 export default async function SignInPage() {
   // Already signed in? There is nothing to do here.
   if (auth) {
@@ -39,7 +53,11 @@ export default async function SignInPage() {
     if (session?.user) redirect("/");
   }
 
-  if (!authConfigured || availableProviders.length === 0) redirect("/");
+  // Reachable when either method exists: a database for passwords, or a
+  // configured OAuth provider. Neither is present means there is nothing to
+  // sign in to, and the app is anonymous-only.
+  const databaseConfigured = Boolean(process.env.MUSCIFY_DATABASE_URL);
+  if (!authConfigured || (availableProviders.length === 0 && !databaseConfigured)) redirect("/");
 
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center gap-8 px-6">
@@ -57,7 +75,19 @@ export default async function SignInPage() {
         </p>
       </div>
 
-      <SignInButtons providers={availableProviders} labels={PROVIDER_LABELS} />
+      {databaseConfigured ? <PasswordForm canRegister={signupOpen} /> : null}
+
+      {availableProviders.length && databaseConfigured ? (
+        <div className="flex w-full max-w-xs items-center gap-3">
+          <span className="h-px flex-1 bg-line" />
+          <span className="text-micro text-dim">or</span>
+          <span className="h-px flex-1 bg-line" />
+        </div>
+      ) : null}
+
+      {availableProviders.length ? (
+        <SignInButtons providers={availableProviders} labels={PROVIDER_LABELS} />
+      ) : null}
 
       <p className="max-w-xs text-center text-micro text-dim">
         muscify stores no password and sends no email. Your display name and avatar come from the
